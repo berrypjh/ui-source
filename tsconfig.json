@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./libs/ui-core"
+    },
+    {
+      "path": "./libs/react-ui"
+    },
+    {
+      "path": "./libs/react-native-ui"
+    },
+    {
+      "path": "./apps/demo-mobile"
+    }
+  ]
+}
