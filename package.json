@@ -6,7 +6,9 @@
     "lint": "nx run-many -t lint --all",
     "lint:fix": "nx run-many -t lint --all --fix",
     "format": "nx format:write",
-    "format:check": "nx format:check"
+    "format:check": "nx format:check",
+    "ai:commit": "tsx tools/scripts/ai/ai-commit-msg.mts",
+    "ai:ui": "tsx tools/scripts/ai/ai-ui-scaffold.mts"
   },
   "private": true,
   "devDependencies": {
@@ -75,14 +77,17 @@
   "dependencies": {
     "@expo/metro-config": "~54.0.9",
     "@expo/metro-runtime": "~6.1.2",
+    "dotenv": "^17.2.3",
     "expo": "~54.0.0",
     "expo-splash-screen": "~31.0.11",
     "expo-status-bar": "~3.0.8",
     "expo-system-ui": "~6.0.8",
+    "openai": "^6.16.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-native": "0.81.5",
-    "react-native-web": "~0.21.0"
+    "react-native-web": "~0.21.0",
+    "tsx": "^4.21.0"
   },
   "nx": {
     "includedScripts": [],

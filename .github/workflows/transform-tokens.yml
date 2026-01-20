@@ -7,11 +7,12 @@ on:
       - 'shared/design-tokens/src/data.json'
 
 jobs:
-  transform:
-    name: Transform & Build Tokens
+  build-and-pr:
+    name: Transform & Create PR
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -32,15 +33,6 @@ jobs:
         working-directory: ./shared/design-tokens
         run: npm run build:tokens
 
-  pr:
-    name: Create Pull Request
-    runs-on: ubuntu-latest
-    needs: transform
-    permissions:
-      contents: write
-      pull-requests: write
-
-    steps:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
