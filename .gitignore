@@ -142,3 +142,6 @@ cache/
 
 # npm
 .npmrc
+
+# Storybook
+storybook-static
