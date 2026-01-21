@@ -1,1 +1,1 @@
-export * from './lib/react-ui';
+export { Button } from './lib/button';
