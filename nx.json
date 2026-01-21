@@ -33,7 +33,6 @@
       "plugin": "@nx/vite/plugin",
       "options": {
         "buildTargetName": "build",
-        "testTargetName": "test",
         "serveTargetName": "serve",
         "devTargetName": "dev",
         "previewTargetName": "preview",
@@ -45,6 +44,7 @@
     },
     {
       "plugin": "@nx/vitest",
+      "exclude": ["libs/react-ui/vite.config.mts", "libs/ui-core/vite.config.mts"],
       "options": {
         "testTargetName": "test",
         "ciTargetName": "test-ci",

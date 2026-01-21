@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "test": "nx run-many -t test --all",
+    "test:ci": "nx run-many -t test-ci --all",
+    "test:watch": "nx run-many -t test --all --watch",
+    "test:watch:ci": "nx run-many -t test-ci --all --watch",
     "lint": "nx run-many -t lint --all",
     "lint:fix": "nx run-many -t lint --all --fix",
     "format": "nx format:write",
