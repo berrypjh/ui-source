@@ -1,0 +1,20 @@
+{
+  "targets": {
+    "test": {
+      "executor": "@nx/vitest:test",
+      "options": {
+        "configFile": "libs/react-ui/vitest.config.mts",
+        "watch": false,
+        "reportsDirectory": "libs/react-ui/test-output/vitest/coverage"
+      }
+    },
+    "test-ci": {
+      "executor": "@nx/vitest:test",
+      "options": {
+        "configFile": "libs/react-ui/vitest.config.mts",
+        "watch": false,
+        "reportsDirectory": "libs/react-ui/test-output/vitest/coverage"
+      }
+    }
+  }
+}
