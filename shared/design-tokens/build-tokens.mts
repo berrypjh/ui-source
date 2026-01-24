@@ -7,17 +7,14 @@ register(StyleDictionary, {
 
 StyleDictionary.registerTransformGroup({
   name: 'tokens-studio/js',
-  transforms: [
-    ...getTransforms({ platform: 'css' }),
-    'name/camel',
-  ].filter(
+  transforms: [...getTransforms({ platform: 'css' }), 'name/camel'].filter(
     (t) =>
       ![
         'ts/size/px',
         'ts/size/css/letterspacing',
         'ts/color/css/hexrgba',
         'ts/shadow/innerShadow',
-      ].includes(t)
+      ].includes(t),
   ),
 });
 
