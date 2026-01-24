@@ -1,19 +1,62 @@
 {
+  "name": "@berrypjh/react-ui",
+  "projectType": "library",
+  "sourceRoot": "libs/react-ui/src",
   "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "parallel": false,
+        "commands": ["nx run @berrypjh/react-ui:build-js", "nx run @berrypjh/react-ui:build-types"]
+      }
+    },
+    "build-js": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "main": "libs/react-ui/src/index.ts",
+        "outputPath": "libs/react-ui/dist",
+        "tsConfig": "libs/react-ui/tsconfig.lib.json",
+        "compiler": "babel",
+        "format": ["esm"],
+        "outputFileName": "index",
+        "external": ["react", "react-dom", "react/jsx-runtime", "@berrypjh/ui-core"],
+        "assets": [
+          {
+            "input": ".",
+            "output": ".",
+            "glob": "README.md"
+          }
+        ],
+        "rollupConfig": "libs/react-ui/rollup.config.cjs",
+        "skipTypeCheck": true
+      }
+    },
+    "build-types": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "tsc -b libs/react-ui/tsconfig.lib.json"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/react-ui/tsconfig.lib.json --noEmit"
+      }
+    },
     "test": {
       "executor": "@nx/vitest:test",
       "options": {
         "configFile": "libs/react-ui/vitest.config.mts",
         "watch": false,
         "reportsDirectory": "libs/react-ui/test-output/vitest/coverage"
-      }
-    },
-    "test-ci": {
-      "executor": "@nx/vitest:test",
-      "options": {
-        "configFile": "libs/react-ui/vitest.config.mts",
-        "watch": false,
-        "reportsDirectory": "libs/react-ui/test-output/vitest/coverage"
+      },
+      "configurations": {
+        "ci": {
+          "runMode": "run"
+        }
       }
     }
   }

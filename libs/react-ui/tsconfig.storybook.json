@@ -4,27 +4,11 @@
     "outDir": "out-tsc/storybook",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "lib": ["ES2022", "DOM"]
   },
-  "exclude": [
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-    "src/**/*.spec.js",
-    "src/**/*.test.js",
-    "src/**/*.spec.tsx",
-    "src/**/*.test.tsx",
-    "src/**/*.spec.jsx",
-    "src/**/*.test.js"
-  ],
-  "include": [
-    "src/**/*.stories.ts",
-    "src/**/*.stories.js",
-    "src/**/*.stories.jsx",
-    "src/**/*.stories.tsx",
-    "src/**/*.stories.mdx",
-    ".storybook/*.js",
-    ".storybook/*.ts"
-  ],
+  "exclude": ["src/**/*.spec.*", "src/**/*.test.*"],
+  "include": ["src/**/*.stories.*", ".storybook/**/*"],
   "references": [
     {
       "path": "./tsconfig.lib.json"

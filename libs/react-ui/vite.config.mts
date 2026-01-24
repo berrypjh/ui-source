@@ -1,12 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(() => ({
   root: __dirname,
-  cacheDir: '../../node_modules/.vite/libs/react-ui',
+  cacheDir: resolve(__dirname, '../../node_modules/.vite/libs/react-ui'),
   plugins: [react()],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [],
-  // },
+  resolve: {
+    alias: {
+      '@berrypjh/ui-core': resolve(__dirname, '../ui-core/src/index.ts'),
+    },
+  },
 }));
