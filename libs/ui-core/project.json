@@ -1,19 +1,33 @@
 {
+  "name": "@berrypjh/ui-core",
+  "projectType": "library",
+  "sourceRoot": "libs/ui-core/src",
   "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "configFile": "libs/ui-core/vite.config.mts",
+        "outputPath": "libs/ui-core/dist"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/ui-core/tsconfig.lib.json --noEmit"
+      }
+    },
     "test": {
       "executor": "@nx/vitest:test",
       "options": {
         "configFile": "libs/ui-core/vitest.config.mts",
         "watch": false,
         "reportsDirectory": "libs/ui-core/test-output/vitest/coverage"
-      }
-    },
-    "test-ci": {
-      "executor": "@nx/vitest:test",
-      "options": {
-        "configFile": "libs/ui-core/vitest.config.mts",
-        "watch": false,
-        "reportsDirectory": "libs/ui-core/test-output/vitest/coverage"
+      },
+      "configurations": {
+        "ci": {
+          "runMode": "run"
+        }
       }
     }
   }
