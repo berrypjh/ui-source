@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "defaultBase": "master",
+  "defaultBase": "main",
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -16,7 +16,6 @@
     ],
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
-  "nxCloudId": "696cf5a239e8e26289bfaf54",
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
@@ -62,6 +61,7 @@
     },
     {
       "plugin": "@nx/rollup/plugin",
+      "exclude": ["libs/react-ui/rollup.config.cjs"],
       "options": {
         "buildTargetName": "build",
         "buildDepsTargetName": "build-deps",
@@ -111,13 +111,43 @@
     }
   ],
   "release": {
+    "projects": ["@berrypjh/react-ui", "@berrypjh/ui-core"],
+    "projectsRelationship": "independent",
     "version": {
-      "preVersionCommand": "pnpm dlx nx run-many -t build"
+      "conventionalCommits": true
+    },
+    "changelog": {
+      "automaticFromRef": true,
+      "workspaceChangelog": {
+        "createRelease": "github",
+        "renderOptions": {
+          "authors": false
+        }
+      },
+      "projectChangelogs": {
+        "renderOptions": {
+          "authors": false
+        }
+      }
     }
   },
   "targetDefaults": {
+    "build": {
+      "cache": true,
+      "inputs": ["production", "^production"]
+    },
     "test": {
-      "dependsOn": ["^build"]
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^default"]
+    },
+    "lint": {
+      "cache": true,
+      "inputs": ["default", "^default"]
+    },
+    "e2e": {
+      "cache": true,
+      "inputs": ["default", "^default"]
     }
   },
   "generators": {
