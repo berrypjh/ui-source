@@ -13,6 +13,12 @@
       "path": "./libs/react-native-ui"
     },
     {
+      "path": "./apps/demo-web-e2e"
+    },
+    {
+      "path": "./apps/demo-web"
+    },
+    {
       "path": "./apps/demo-mobile"
     }
   ]
