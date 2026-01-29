@@ -5,8 +5,27 @@
   "files": [
     "dist"
   ],
-  "main": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "sideEffects": [
+    "./dist/css/variables.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./web": {
+      "types": "./dist/web.d.ts",
+      "default": "./dist/web.js"
+    },
+    "./rn": {
+      "types": "./dist/rn.d.ts",
+      "default": "./dist/rn.js"
+    },
+    "./css": {
+      "types": "./dist/css/index.d.ts",
+      "default": "./dist/css/variables.css"
+    }
+  },
   "devDependencies": {
     "@tokens-studio/sd-transforms": "^2.0.3",
     "style-dictionary": "^5.2.0"

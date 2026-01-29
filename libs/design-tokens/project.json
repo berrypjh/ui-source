@@ -10,6 +10,17 @@
         "command": "tsx libs/design-tokens/src/build.ts"
       }
     },
+    "build:ts": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build:tokens"],
+      "options": {
+        "command": "tsc -p libs/design-tokens/tsconfig.lib.json"
+      }
+    },
+    "build": {
+      "executor": "nx:noop",
+      "dependsOn": ["build:tokens", "build:ts"]
+    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"

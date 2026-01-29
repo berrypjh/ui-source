@@ -5,6 +5,7 @@ import StyleDictionary from 'style-dictionary';
 
 import { splitAndMergeThemes } from './preprocess';
 import { registerAll, makeSdConfig, type ThemeName } from './sd';
+import { mergeCssThemes, mergeThemeTs, writeCssSideEffectTypes } from './postprocess';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, '..');
@@ -25,7 +26,6 @@ const ensureDirs = async (): Promise<void> => {
 
   await fs.mkdir(path.join(GENERATED_DIR, 'web', 'themes'), { recursive: true });
   await fs.mkdir(path.join(GENERATED_DIR, 'rn', 'themes'), { recursive: true });
-  await fs.mkdir(path.join(GENERATED_DIR, 'tailwind'), { recursive: true });
 };
 
 const buildTheme = async (theme: ThemeName, sourceFileAbs: string): Promise<void> => {
@@ -65,6 +65,21 @@ const main = async (): Promise<void> => {
 
   // dark SD
   await buildTheme('dark', darkMergedFileAbs);
+
+  // CSS 병합 → dist/css/variables.css
+  await mergeCssThemes({
+    distCssDirAbs: DIST_CSS_DIR,
+  });
+
+  // import 타입 생성 → dist/css/index.d.ts
+  await writeCssSideEffectTypes({
+    outputDirAbs: DIST_CSS_DIR,
+  });
+
+  // web/rn tokens.ts 각각 병합 → src/.generated/web/tokens.ts, src/.generated/rn/tokens.ts
+  await mergeThemeTs({
+    generatedDirAbs: GENERATED_DIR,
+  });
 };
 
 main().catch((e) => {
