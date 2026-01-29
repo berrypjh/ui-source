@@ -3,6 +3,16 @@ import fs from 'node:fs/promises';
 
 import { deepMergeTokens } from './deepMerge.js';
 
+/**
+ * Tokens Studio JSON에서 테마를 분리하고, 특정 테마(예: dark)를
+ * global + override 방식으로 병합한 뒤 파일로 저장합니다.
+ *
+ * @param args 함수 인자
+ * @param args.inputFileAbs Tokens Studio export JSON의 절대 경로
+ * @param args.outputDirAbs 결과 JSON들을 저장할 디렉터리의 절대 경로
+ * @returns 생성된 파일들의 절대 경로
+ * @throws `values.global` 또는 `values.dark`가 없으면 예외를 던집니다.
+ */
 export const splitAndMergeThemes = async (args: {
   inputFileAbs: string;
   outputDirAbs: string;

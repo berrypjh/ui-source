@@ -2,7 +2,8 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
-import { splitAndMergeThemes } from './preprocess/splitAndMerge.js';
+import { splitAndMergeThemes } from './preprocess';
+import { registerAll } from './sd';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, '..');
@@ -22,6 +23,9 @@ const main = async (): Promise<void> => {
     inputFileAbs: TOKENS_INPUT,
     outputDirAbs: TOKENS_GEN_DIR,
   });
+
+  // 2) SD 등록(토큰스튜디오 호환)
+  registerAll();
 
   console.log(globalFileAbs);
   console.log(darkMergedFileAbs);
