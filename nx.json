@@ -123,7 +123,7 @@
     }
   ],
   "release": {
-    "projects": ["@berrypjh/react-ui", "@berrypjh/ui-core"],
+    "projects": ["@berrypjh/react-ui", "@berrypjh/ui-core", "@berrypjh/design-tokens"],
     "projectsRelationship": "independent",
     "version": {
       "conventionalCommits": true

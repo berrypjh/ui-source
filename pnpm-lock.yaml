@@ -316,6 +316,8 @@ importers:
         specifier: '*'
         version: 0.21.2(encoding@0.1.13)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
+  libs/design-tokens: {}
+
   libs/react-native-ui:
     dependencies:
       react:
