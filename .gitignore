@@ -145,3 +145,7 @@ cache/
 
 # Storybook
 storybook-static
+
+# design token
+**/.generated/
+**/_generated/
