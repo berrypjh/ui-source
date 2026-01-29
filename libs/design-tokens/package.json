@@ -24,6 +24,10 @@
     "./css": {
       "types": "./dist/css/index.d.ts",
       "default": "./dist/css/variables.css"
+    },
+    "./tailwind": {
+      "types": "./dist/tailwind.d.ts",
+      "default": "./dist/tailwind.js"
     }
   },
   "devDependencies": {

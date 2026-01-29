@@ -5,7 +5,12 @@ import StyleDictionary from 'style-dictionary';
 
 import { splitAndMergeThemes } from './preprocess';
 import { registerAll, makeSdConfig, type ThemeName } from './sd';
-import { mergeCssThemes, mergeThemeTs, writeCssSideEffectTypes } from './postprocess';
+import {
+  mergeCssThemes,
+  mergeThemeTs,
+  writeCssSideEffectTypes,
+  generateTailwindPreset,
+} from './postprocess';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, '..');
@@ -79,6 +84,12 @@ const main = async (): Promise<void> => {
   // web/rn tokens.ts 각각 병합 → src/.generated/web/tokens.ts, src/.generated/rn/tokens.ts
   await mergeThemeTs({
     generatedDirAbs: GENERATED_DIR,
+  });
+
+  // Tailwind preset 생성
+  await generateTailwindPreset({
+    distJsonDirAbs: DIST_JSON_DIR,
+    outFileAbs: path.join(GENERATED_DIR, 'tailwind', 'preset.ts'),
   });
 };
 
