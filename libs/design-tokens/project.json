@@ -1,17 +1,13 @@
 {
-  "name": "design-tokens",
+  "name": "@berrypjh/design-tokens",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/design-tokens/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+    "build:tokens": {
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/libs/design-tokens",
-        "main": "libs/design-tokens/src/index.ts",
-        "tsConfig": "libs/design-tokens/tsconfig.lib.json",
-        "assets": ["libs/design-tokens/*.md"]
+        "command": "tsx libs/design-tokens/src/build.ts"
       }
     },
     "nx-release-publish": {
