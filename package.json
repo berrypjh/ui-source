@@ -7,7 +7,7 @@
     "start:mobile:expo": "cd apps/demo-mobile && expo start",
     "build": "nx run-many -t build --all",
     "build:libs": "nx run-many -t build --projects=@berrypjh/ui-core,@berrypjh/react-ui",
-    "build:design-tokens": "nx run @berrypjh/design-tokens:build:tokens",
+    "build:design-tokens": "nx run-many -t build --projects=@berrypjh/design-tokens",
     "storybook": "nx storybook @berrypjh/react-ui",
     "build-storybook": "nx build-storybook @berrypjh/react-ui",
     "test": "nx run-many -t test --all",
