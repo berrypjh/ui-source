@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@berrypjh/design-tokens':
+        specifier: ^0.0.1
+        version: 0.0.1
       '@expo/metro-config':
         specifier: ~54.0.9
         version: 54.0.13(expo@54.0.31)
@@ -327,6 +330,9 @@ importers:
 
   libs/react-native-ui:
     dependencies:
+      '@berrypjh/design-tokens':
+        specifier: ^0.0.1
+        version: 0.0.1
       react:
         specifier: ^19.0.0
         version: 19.2.3
@@ -336,6 +342,9 @@ importers:
 
   libs/react-ui:
     dependencies:
+      '@berrypjh/design-tokens':
+        specifier: ^0.0.1
+        version: 0.0.1
       react:
         specifier: ^19.0.0
         version: 19.2.3
@@ -1074,6 +1083,9 @@ packages:
   '@bcoe/v8-coverage@1.0.2':
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
+
+  '@berrypjh/design-tokens@0.0.1':
+    resolution: {integrity: sha512-TugOTA46aPhYIMDa6NxfpVtz+l7bZPL2hg2/DwPDJYJzTsh4X7uZksSmqbluZ/Y69/eNnXcD5EsfRoNHV1cmUg==, tarball: https://npm.pkg.github.com/download/@berrypjh/design-tokens/0.0.1/4b95d44d908d342d0b4f8ff8d2c7ceba4d714d9b}
 
   '@borewit/text-codec@0.2.1':
     resolution: {integrity: sha512-k7vvKPbf7J2fZ5klGRD9AeKfUvojuZIQ3BT5u7Jfv+puwXkUBUT5PVyMDfJZpy30CBDXGMgw7fguK/lpOMBvgw==}
@@ -11207,6 +11219,8 @@ snapshots:
   '@bcoe/v8-coverage@0.2.3': {}
 
   '@bcoe/v8-coverage@1.0.2': {}
+
+  '@berrypjh/design-tokens@0.0.1': {}
 
   '@borewit/text-codec@0.2.1': {}
 

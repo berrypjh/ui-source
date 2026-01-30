@@ -106,6 +106,7 @@
     "vitest": "^4.0.0"
   },
   "dependencies": {
+    "@berrypjh/design-tokens": "^0.0.1",
     "@expo/metro-config": "~54.0.9",
     "@expo/metro-runtime": "~6.1.2",
     "expo": "~54.0.0",
