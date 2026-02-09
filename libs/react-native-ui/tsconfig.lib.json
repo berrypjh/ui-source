@@ -1,29 +1,24 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.lib.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "types": ["node"],
-    "module": "esnext",
-    "moduleResolution": "bundler",
     "rootDir": "src",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
     "jsx": "react-jsx",
-    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo"
+    "lib": ["ES2022"]
   },
   "exclude": [
     "out-tsc",
     "dist",
-    "src/**/*.test.ts",
-    "src/**/*.spec.ts",
-    "src/**/*.test.tsx",
-    "src/**/*.spec.tsx",
-    "src/**/*.test.js",
-    "src/**/*.spec.js",
-    "src/**/*.test.jsx",
-    "src/**/*.spec.jsx",
+    "**/*.spec.*",
+    "**/*.test.*",
     "src/test-setup.ts",
-    "eslint.config.js",
-    "eslint.config.cjs",
-    "eslint.config.mjs"
+    "eslint.config.*"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    {
+      "path": "../ui-core/tsconfig.lib.json"
+    }
+  ]
 }

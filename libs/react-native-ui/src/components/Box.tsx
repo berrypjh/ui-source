@@ -1,0 +1,82 @@
+import { View } from 'react-native';
+import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
+import type { BoxProps, BoxRadiusValue, BoxSpacingValue, Tokens } from '@berrypjh/ui-core';
+import { getColor } from '@berrypjh/ui-core';
+
+import { useTheme } from '../theme/useTheme.js';
+
+const spacingToNumber = (
+  themeTokens: Tokens,
+  v: BoxSpacingValue | undefined,
+): number | undefined => {
+  if (v === undefined) return undefined;
+  if (typeof v === 'number') return v;
+  return themeTokens.spacing[v];
+};
+
+const radiusToNumber = (themeTokens: Tokens, v: BoxRadiusValue | undefined): number | undefined => {
+  if (v === undefined) return undefined;
+  if (typeof v === 'number') return v;
+  return themeTokens.radius[v];
+};
+
+export type NativeBoxProps = BoxProps &
+  Omit<ViewProps, keyof BoxProps> & {
+    style?: StyleProp<ViewStyle>;
+  };
+
+export const Box = ({
+  style,
+  p,
+  px,
+  py,
+  pt,
+  pr,
+  pb,
+  pl,
+  m,
+  mx,
+  my,
+  mt,
+  mr,
+  mb,
+  ml,
+  bg,
+  radius,
+  ...rest
+}: NativeBoxProps) => {
+  const theme = useTheme();
+  const t = theme.tokens;
+
+  const computed: ViewStyle = {};
+
+  // padding
+  const pTop = spacingToNumber(t, pt ?? py ?? p);
+  const pRight = spacingToNumber(t, pr ?? px ?? p);
+  const pBottom = spacingToNumber(t, pb ?? py ?? p);
+  const pLeft = spacingToNumber(t, pl ?? px ?? p);
+
+  if (pTop !== undefined) computed.paddingTop = pTop;
+  if (pRight !== undefined) computed.paddingRight = pRight;
+  if (pBottom !== undefined) computed.paddingBottom = pBottom;
+  if (pLeft !== undefined) computed.paddingLeft = pLeft;
+
+  // margin
+  const mTop = spacingToNumber(t, mt ?? my ?? m);
+  const mRight = spacingToNumber(t, mr ?? mx ?? m);
+  const mBottom = spacingToNumber(t, mb ?? my ?? m);
+  const mLeft = spacingToNumber(t, ml ?? mx ?? m);
+
+  if (mTop !== undefined) computed.marginTop = mTop;
+  if (mRight !== undefined) computed.marginRight = mRight;
+  if (mBottom !== undefined) computed.marginBottom = mBottom;
+  if (mLeft !== undefined) computed.marginLeft = mLeft;
+
+  // visuals
+  if (bg) computed.backgroundColor = getColor(theme, bg);
+
+  const r = radiusToNumber(t, radius);
+  if (r !== undefined) computed.borderRadius = r;
+
+  return <View {...rest} style={[computed, style]} />;
+};

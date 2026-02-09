@@ -6,10 +6,16 @@ module.exports = withNx(
   {
     main: './src/index.ts',
     outputPath: './dist',
-    tsConfig: './tsconfig.lib.json',
-    compiler: 'babel',
-    external: ['react/jsx-runtime', 'react-native', 'react', 'react-dom'],
-    format: ['cjs', 'esm'],
+    tsConfig: './tsconfig.rollup.json',
+    compiler: 'swc',
+    external: [
+      'react/jsx-runtime',
+      'react-native',
+      'react',
+      '@berrypjh/ui-core',
+      '@berrypjh/design-tokens',
+    ],
+    format: ['esm'],
     assets: [{ input: '.', output: '.', glob: 'README.md' }],
   },
   {

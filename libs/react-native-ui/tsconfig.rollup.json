@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.lib.json",
+  "compilerOptions": {
+    "baseUrl": "../..",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "verbatimModuleSyntax": true,
+    "paths": {
+      "@berrypjh/ui-core": ["./ui-core/src/index.ts"],
+      "@berrypjh/design-tokens": ["./design-tokens/src/index.ts"],
+      "@berrypjh/react-native-ui": ["./src/index.ts"]
+    }
+  }
+}
