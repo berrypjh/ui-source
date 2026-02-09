@@ -1,5 +1,6 @@
 export type {
   ThemeMode,
+  Theme,
   Tokens,
   ColorTokens,
   SpacingTokens,
@@ -17,8 +18,9 @@ export type {
   SpacingToken,
   RadiusToken,
   TypographyToken,
+  PathValue,
 } from './tokens';
 
 export type { BoxRadiusValue, BoxSpacingValue, BoxProps } from './contracts';
 
-export { cx } from './utils';
+export { cx, getToken, getColor, getSpacing, getRadius, getTypography, createTheme } from './utils';
