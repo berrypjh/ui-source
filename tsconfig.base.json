@@ -17,7 +17,8 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@berrypjh/ui-core": ["./libs/ui-core/src/index.ts"],
-      "@berrypjh/react-ui": ["./libs/react-ui/src/index.ts"]
+      "@berrypjh/react-ui": ["./libs/react-ui/src/index.ts"],
+      "@berrypjh/react-native-ui": ["./libs/react-native-ui/src/index.ts"]
     }
   }
 }
