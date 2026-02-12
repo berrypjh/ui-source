@@ -25,7 +25,7 @@ const without = <T>(arr: T[], remove: T[]): T[] => {
  * - `web`: Web용 TypeScript 토큰(`tokens.ts`)
  * - `rn`: React Native용 TypeScript 토큰(`tokens.ts`)
  *
- * ## 테마 셀렉터 규칙
+ * 테마 셀렉터 규칙
  * - global: `:root`
  * - dark: `[data-theme="dark"], .theme-dark`
  *

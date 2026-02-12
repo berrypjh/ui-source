@@ -1,4 +1,5 @@
 import type { Format } from 'style-dictionary/types';
+import { mapTokenPath } from '../utils';
 
 /**
  * 주어진 객체에 대해 `path`(키 배열) 위치에 값을 "깊게" 설정합니다.
@@ -34,14 +35,25 @@ export const tsThemeTokensFormat: Format = {
   format: ({ dictionary, options }) => {
     const theme = (options as any)?.theme ?? 'unknown';
 
-    // dictionary.allTokens는 leaf token만 모여있음
     const tokens = [...dictionary.allTokens] as any[];
-
-    // path 기준 정렬로 출력 안정화
     tokens.sort((a, b) => a.path.join('.').localeCompare(b.path.join('.')));
 
-    const root: any = {};
-    for (const t of tokens) setDeep(root, t.path, t.value);
+    const root: any = {
+      color: {},
+      spacing: {},
+      radius: {},
+      borderWidth: {},
+      border: {},
+      typography: {},
+      shadow: {},
+      elevation: {},
+      component: {},
+    };
+
+    for (const t of tokens) {
+      const destPath = mapTokenPath(t);
+      setDeep(root, destPath, t.value);
+    }
 
     const json = JSON.stringify(root, null, 2);
 
