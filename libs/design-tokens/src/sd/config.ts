@@ -10,7 +10,7 @@ export type ThemeName = 'global' | 'dark';
  * @param remove 제거할 값 목록
  * @returns `remove`에 포함되지 않은 원소들로 구성된 새 배열
  */
-const without = <T>(arr: T[], remove: T[]): T[] => {
+const without = (arr: string[], remove: string[]): string[] => {
   const set = new Set(remove);
   return arr.filter((x) => !set.has(x));
 };
@@ -52,25 +52,21 @@ export const makeSdConfig = (args: {
   const themeSelector = args.theme === 'global' ? ':root' : '[data-theme="dark"], .theme-dark';
 
   const base = getTransforms({ platform: 'css' });
+  const baseStrings = base.filter((t): t is string => typeof t === 'string');
 
-  // name은 "path 기반" name/kebab 로 다시 강제해 충돌을 제거
-  const baseNoName = base.filter((t) => !(typeof t === 'string' && t.startsWith('name/')));
-
+  // name/* 제거 후 name/kebab 강제
+  const baseNoName = baseStrings.filter((t) => !t.startsWith('name/'));
   const NAME = 'name/kebab' as const;
 
   // CSS용
-  const cssTransforms = [...without(baseNoName, ['ts/color/css/hexrgba'] as any), NAME];
+  const cssTransforms = [...without(baseNoName, ['ts/color/css/hexrgba']), NAME];
 
   // Web TS용
   const webTsTransforms = [...cssTransforms];
 
   // RN용
   const rnTransforms = [
-    ...without(baseNoName, [
-      'ts/size/px',
-      'ts/size/css/letterspacing',
-      'ts/color/css/hexrgba',
-    ] as any),
+    ...without(baseNoName, ['ts/size/px', 'ts/size/css/letterspacing', 'ts/color/css/hexrgba']),
     'ds/rn/number',
     NAME,
   ];

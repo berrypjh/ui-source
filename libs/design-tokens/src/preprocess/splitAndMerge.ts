@@ -2,6 +2,14 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 
 import { deepMergeTokens } from './deepMerge.js';
+import { isJsonObject } from '../types/json.js';
+import type { TokensStudioExport } from '../types/tokensStudio.js';
+
+const isTokensStudioExport = (v: unknown): v is TokensStudioExport => {
+  if (!isJsonObject(v)) return false;
+  if (!('values' in v)) return false;
+  return isJsonObject((v as { values?: unknown }).values);
+};
 
 /**
  * Tokens Studio JSON에서 테마를 분리하고, 특정 테마(예: dark)를
@@ -18,14 +26,19 @@ export const splitAndMergeThemes = async (args: {
   outputDirAbs: string;
 }): Promise<{ globalFileAbs: string; darkMergedFileAbs: string }> => {
   const raw = await fs.readFile(args.inputFileAbs, 'utf8');
-  const data = JSON.parse(raw);
+  const parsed: unknown = JSON.parse(raw);
 
-  const values = data?.values;
-  if (!values?.global) throw new Error('Tokens Studio export: values.global not found');
-  if (!values?.dark) throw new Error('Tokens Studio export: values.dark not found');
+  if (!isTokensStudioExport(parsed)) {
+    throw new Error('Tokens Studio export: invalid shape (missing values)');
+  }
+
+  const values = parsed.values;
 
   const globalTokens = values.global;
   const darkTokens = values.dark;
+
+  if (!globalTokens) throw new Error('Tokens Studio export: values.global not found');
+  if (!darkTokens) throw new Error('Tokens Studio export: values.dark not found');
 
   // dark는 "global + override"
   const darkMerged = deepMergeTokens(globalTokens, darkTokens);

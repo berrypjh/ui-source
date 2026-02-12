@@ -1,6 +1,12 @@
-import type { Format } from 'style-dictionary/types';
+import type { Format, TransformedToken } from 'style-dictionary/types';
 
 import { makeCssVariableName, colorToRgbChannels } from '../utils';
+
+type CssVariablesOptions = {
+  selector?: string;
+  prefix?: string;
+  includeRgb?: boolean;
+};
 
 /**
  * Style Dictionary token의 value를 CSS에서 안전하게 사용할 수 있는 문자열로 변환합니다.
@@ -21,20 +27,32 @@ const cssValue = (value: unknown): string => {
   return JSON.stringify(value);
 };
 
+const getTokenType = (t: TransformedToken): string | undefined => {
+  const maybe = t as TransformedToken & { $type?: unknown; original?: { $type?: unknown } };
+  const type =
+    (maybe.type as unknown) ??
+    maybe.$type ??
+    (maybe.original?.type as unknown) ??
+    maybe.original?.$type;
+
+  return typeof type === 'string' ? type : undefined;
+};
+
 /**
  * Style Dictionary 커스텀 포맷: CSS Variables 파일을 생성합니다.
  */
 export const dsCssVariablesFormat: Format = {
   name: 'ds/css/variables',
   format: ({ dictionary, options }) => {
-    const selector = (options as any)?.selector ?? ':root';
-    const prefix = (options as any)?.prefix as string | undefined;
-    const includeRgb = Boolean((options as any)?.includeRgb);
+    const opt = (options ?? {}) as CssVariablesOptions;
+    const selector = opt.selector ?? ':root';
+    const prefix = opt.prefix;
+    const includeRgb = Boolean(opt.includeRgb);
 
-    const tokens = [...dictionary.allTokens];
+    const tokens = [...dictionary.allTokens] as TransformedToken[];
 
     // 안정적인 diff를 위해 이름 기준 정렬
-    tokens.sort((a: any, b: any) => {
+    tokens.sort((a, b) => {
       const na = makeCssVariableName(prefix, a.path);
       const nb = makeCssVariableName(prefix, b.path);
       return na.localeCompare(nb);
@@ -42,16 +60,14 @@ export const dsCssVariablesFormat: Format = {
 
     const lines: string[] = [];
 
-    for (const token of tokens as any[]) {
+    for (const token of tokens) {
       const name = makeCssVariableName(prefix, token.path);
       const val = cssValue(token.value);
 
       lines.push(`  ${name}: ${val};`);
 
-      // Tailwind alpha 지원을 위한 채널 변수 (예: 46 144 250)
       if (includeRgb) {
-        const t = token.type ?? token.$type ?? token.original?.type;
-        if (t === 'color') {
+        if (getTokenType(token) === 'color') {
           const channels = colorToRgbChannels(token.value);
           if (channels) lines.push(`  ${name}-rgb: ${channels};`);
         }

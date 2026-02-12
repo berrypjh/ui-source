@@ -1,11 +1,12 @@
 type TokenLike = {
   path: string[];
   type?: string;
-  original?: { type?: string };
+  $type?: string;
+  original?: { type?: string; $type?: string };
 };
 
 const getTokenType = (t: TokenLike): string | undefined => {
-  return (t.type ?? t.original?.type) as string | undefined;
+  return (t.type ?? t.$type ?? t.original?.type ?? t.original?.$type) as string | undefined;
 };
 
 // typography 묶을 대상

@@ -1,4 +1,4 @@
-type PlainObject = Record<string, any>;
+import type { JsonObject, JsonValue } from '../types/json.js';
 
 /**
  * "순수 객체(Plain Object)"인지 판별합니다.
@@ -9,7 +9,7 @@ type PlainObject = Record<string, any>;
  * @param v 검사할 값
  * @returns v가 PlainObject이면 true
  */
-const isPlainObject = (v: unknown): v is PlainObject => {
+const isPlainObject = (v: unknown): v is JsonObject => {
   return !!v && typeof v === 'object' && !Array.isArray(v);
 };
 
@@ -20,7 +20,7 @@ const isPlainObject = (v: unknown): v is PlainObject => {
  * @param v 검사할 값
  * @returns v가 토큰 leaf 형태이면 true
  */
-const isTokenLeaf = (v: unknown): v is { value?: unknown; $value?: unknown } => {
+const isTokenLeaf = (v: unknown): v is JsonObject & { value?: JsonValue; $value?: JsonValue } => {
   return isPlainObject(v) && ('value' in v || '$value' in v);
 };
 
@@ -31,23 +31,31 @@ const isTokenLeaf = (v: unknown): v is { value?: unknown; $value?: unknown } => 
  * @param override 덮어쓸 토큰 객체
  * @returns 병합된 결과 토큰 객체
  */
-export const deepMergeTokens = (base: any, override: any): any => {
+export const deepMergeTokens = (
+  base: JsonValue | undefined,
+  override: JsonValue | undefined,
+): JsonValue | undefined => {
+  if (override === undefined) return base;
+  if (base === undefined) return override;
+
   if (isTokenLeaf(base) || isTokenLeaf(override)) {
-    return override ?? base;
+    return override; // leaf는 override가 우선
   }
 
   if (Array.isArray(base) || Array.isArray(override)) {
-    return override ?? base;
+    return override; // 배열도 override 우선
   }
 
   if (!isPlainObject(base) || !isPlainObject(override)) {
-    return override ?? base;
+    return override; // 타입 다르면 override 우선
   }
 
-  const out: PlainObject = { ...base };
+  const out: JsonObject = { ...base };
 
   for (const [k, v] of Object.entries(override)) {
-    out[k] = k in out ? deepMergeTokens(out[k], v) : v;
+    const merged = deepMergeTokens(out[k], v);
+    if (merged === undefined) continue;
+    out[k] = merged;
   }
 
   return out;

@@ -1,5 +1,26 @@
-import type { Format } from 'style-dictionary/types';
+import type { Format, TransformedToken } from 'style-dictionary/types';
 import { mapTokenPath } from '../utils';
+import type { ThemeName } from '../config.js';
+
+type ThemeTokensOptions = { theme?: ThemeName };
+
+type MutableRecord = Record<string, unknown>;
+
+type ThemeTokensOut = {
+  color: MutableRecord;
+  spacing: MutableRecord;
+  radius: MutableRecord;
+  borderWidth: MutableRecord;
+  border: MutableRecord;
+  typography: MutableRecord;
+  shadow: MutableRecord;
+  elevation: MutableRecord;
+  component: MutableRecord;
+};
+
+const isRecord = (v: unknown): v is MutableRecord => {
+  return !!v && typeof v === 'object' && !Array.isArray(v);
+};
 
 /**
  * 주어진 객체에 대해 `path`(키 배열) 위치에 값을 "깊게" 설정합니다.
@@ -17,14 +38,24 @@ import { mapTokenPath } from '../utils';
  * @param path 키 경로 배열
  * @param value 설정할 값
  */
-const setDeep = (obj: any, path: string[], value: any) => {
-  let cur = obj;
+
+const setDeep = (obj: MutableRecord, path: readonly string[], value: unknown) => {
+  if (path.length === 0) return;
+
+  let cur: MutableRecord = obj;
+
   for (let i = 0; i < path.length - 1; i++) {
-    const k = path[i]!;
-    cur[k] ??= {};
-    cur = cur[k];
+    const k = path[i];
+    if (!k) return;
+
+    const existing = cur[k];
+    if (!isRecord(existing)) cur[k] = {};
+    cur = cur[k] as MutableRecord;
   }
-  cur[path[path.length - 1]!] = value;
+
+  const last = path[path.length - 1];
+  if (!last) return;
+  cur[last] = value;
 };
 
 /**
@@ -33,12 +64,13 @@ const setDeep = (obj: any, path: string[], value: any) => {
 export const tsThemeTokensFormat: Format = {
   name: 'ds/ts/theme-tokens',
   format: ({ dictionary, options }) => {
-    const theme = (options as any)?.theme ?? 'unknown';
+    const opt = (options ?? {}) as ThemeTokensOptions;
+    const theme = opt.theme ?? 'global';
 
-    const tokens = [...dictionary.allTokens] as any[];
+    const tokens = [...dictionary.allTokens] as TransformedToken[];
     tokens.sort((a, b) => a.path.join('.').localeCompare(b.path.join('.')));
 
-    const root: any = {
+    const root: ThemeTokensOut = {
       color: {},
       spacing: {},
       radius: {},
@@ -51,8 +83,13 @@ export const tsThemeTokensFormat: Format = {
     };
 
     for (const t of tokens) {
-      const destPath = mapTokenPath(t);
-      setDeep(root, destPath, t.value);
+      const destPath = mapTokenPath({
+        path: t.path,
+        type: (t as { type?: string }).type,
+        $type: (t as { $type?: string }).$type,
+        original: (t as { original?: { type?: string; $type?: string } }).original,
+      });
+      setDeep(root as unknown as MutableRecord, destPath, t.value as unknown);
     }
 
     const json = JSON.stringify(root, null, 2);
@@ -64,6 +101,29 @@ export const tsThemeTokensFormat: Format = {
 export const tokens = ${json} as const;
 
 export type Tokens = typeof tokens;
+
+// 그룹 타입(원하신 형태로 바로 꺼내쓰기)
+export type ColorTokens = Tokens['color'];
+export type SpacingTokens = Tokens['spacing'];
+export type RadiusTokens = Tokens['radius'];
+export type BorderWidthTokens = Tokens['borderWidth'];
+export type BorderTokens = Tokens['border'];
+export type TypographyTokens = Tokens['typography'];
+export type ShadowTokens = Tokens['shadow'];
+export type ElevationTokens = Tokens['elevation'];
+export type ComponentTokens = Tokens['component'];
+
+export type ThemeTokens = {
+  color: ColorTokens;
+  spacing: SpacingTokens;
+  radius: RadiusTokens;
+  borderWidth: BorderWidthTokens;
+  border: BorderTokens;
+  typography: TypographyTokens;
+  shadow: ShadowTokens;
+  elevation: ElevationTokens;
+  component: ComponentTokens;
+};
 `;
   },
 };
