@@ -1,0 +1,12 @@
+export type ButtonVariant = 'contained' | 'outlined' | 'text';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonColor = 'primary' | 'secondary';
+
+export interface ButtonProps {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  color?: ButtonColor;
+
+  disabled?: boolean;
+  fullWidth?: boolean;
+}

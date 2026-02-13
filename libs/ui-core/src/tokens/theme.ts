@@ -1,8 +1,9 @@
-import type { Tokens } from '../tokens';
+import type { ThemeName } from '@berrypjh/design-tokens';
+import { Theme } from './types';
 
-export type ThemeMode = 'light' | 'dark';
-
-export interface Theme<T extends Tokens = Tokens> {
-  mode: ThemeMode;
-  tokens: T;
-}
+export const createTheme = <T>(options: { mode: ThemeName; tokens: T }): Theme<T> => {
+  return {
+    mode: options.mode,
+    tokens: options.tokens,
+  };
+};

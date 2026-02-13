@@ -1,16 +1,38 @@
-export type { ThemeMode, Theme } from './theme';
-export type { Tokens } from './tokens';
-export type { ColorTokens } from './color';
-export type { SpacingTokens, RadiusTokens } from './layout';
-export type { BorderStyle, BorderWidthTokens, BorderTokens } from './border';
-export type { TypographyStyle, TypographyTokens } from './typography';
-export type { ShadowTokens, ElevationTokens } from './shadow';
-export type { ComponentTokens } from './component';
+export {
+  getColor,
+  getSpacing,
+  getRadius,
+  getBorderWidth,
+  getBorder,
+  getTypography,
+  getShadow,
+  getElevation,
+  getComponent,
+} from './getters';
+
 export type {
-  LeafDotPath,
+  WebTokens,
+  RNTokens,
+  ThemeName,
+  Theme,
   ColorToken,
+  ColorValue,
   SpacingToken,
+  SpacingValue,
   RadiusToken,
+  RadiusValue,
+  BorderWidthToken,
+  BorderWidthValue,
+  BorderToken,
+  BorderValue,
   TypographyToken,
-  PathValue,
-} from './paths';
+  TypographyValue,
+  ShadowToken,
+  ShadowValue,
+  ElevationToken,
+  ElevationValue,
+  ComponentToken,
+  ComponentValue,
+} from './types';
+
+export { createTheme } from './theme';
