@@ -1,2 +1,2 @@
 export { registerAll } from './register.js';
-export { makeSdConfig, type ThemeName } from './config.js';
+export { makeSdConfig } from './config.js';

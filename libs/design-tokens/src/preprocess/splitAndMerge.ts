@@ -2,8 +2,8 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 
 import { deepMergeTokens } from './deepMerge.js';
-import { isJsonObject } from '../types/json.js';
-import type { TokensStudioExport } from '../types/tokensStudio.js';
+import { isJsonObject } from '../types';
+import type { TokensStudioExport } from '../types';
 
 const isTokensStudioExport = (v: unknown): v is TokensStudioExport => {
   if (!isJsonObject(v)) return false;

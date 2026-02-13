@@ -1,7 +1,6 @@
 import path from 'node:path';
 import { expandTypesMap, getTransforms } from '@tokens-studio/sd-transforms';
-
-export type ThemeName = 'global' | 'dark';
+import type { ThemeName } from '../types';
 
 /**
  * 배열에서 특정 값 목록을 제외한 새 배열을 반환합니다.

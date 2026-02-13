@@ -1,4 +1,4 @@
-import type { JsonObject, JsonValue } from '../types/json.js';
+import type { JsonObject, JsonValue } from '../types';
 
 /**
  * "순수 객체(Plain Object)"인지 판별합니다.

@@ -1,5 +1,5 @@
-import { themes as webThemesInternal } from './.generated/web/tokens.js';
-import { themes as rnThemesInternal } from './.generated/rn/tokens.js';
+import { themes as webThemesInternal } from '../.generated/web/tokens.js';
+import { themes as rnThemesInternal } from '../.generated/rn/tokens.js';
 
 export const webThemes = webThemesInternal;
 export const rnThemes = rnThemesInternal;

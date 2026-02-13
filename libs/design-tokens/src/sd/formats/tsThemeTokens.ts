@@ -1,6 +1,6 @@
 import type { Format, TransformedToken } from 'style-dictionary/types';
 import { mapTokenPath } from '../utils';
-import type { ThemeName } from '../config.js';
+import type { ThemeName } from '../../types';
 
 type ThemeTokensOptions = { theme?: ThemeName };
 

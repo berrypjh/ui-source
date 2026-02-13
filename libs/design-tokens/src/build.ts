@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 import StyleDictionary from 'style-dictionary';
 
 import { splitAndMergeThemes } from './preprocess';
-import { registerAll, makeSdConfig, type ThemeName } from './sd';
+import { registerAll, makeSdConfig } from './sd';
+import { ThemeName } from './types';
 import {
   mergeCssThemes,
   mergeThemeTs,
