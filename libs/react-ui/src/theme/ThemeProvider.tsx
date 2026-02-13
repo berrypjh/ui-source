@@ -1,15 +1,16 @@
+import { CSSProperties, ReactNode } from 'react';
 import { cx } from '@berrypjh/ui-core';
-import type { ThemeMode } from '@berrypjh/ui-core';
+import type { ThemeName } from '@berrypjh/ui-core';
 
 export interface ThemeProviderProps {
-  mode?: ThemeMode;
+  mode?: ThemeName;
   className?: string;
-  style?: React.CSSProperties;
-  children: React.ReactNode;
+  style?: CSSProperties;
+  children: ReactNode;
 }
 
 export const ThemeProvider = ({
-  mode = 'light',
+  mode = 'global',
   className,
   style,
   children,
