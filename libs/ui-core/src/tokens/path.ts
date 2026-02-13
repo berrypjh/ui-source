@@ -1,21 +1,19 @@
-export type Primitive = string | number | boolean | null | undefined;
+type AnyFn = (...args: unknown[]) => unknown;
 
-export type IsLeaf<T> = T extends Primitive
-  ? true
-  : T extends readonly any[]
-    ? true
-    : T extends Record<string, any>
-      ? T[keyof T] extends Primitive
-        ? true
-        : false
-      : true;
+type IsPlainObject<T> = T extends object
+  ? T extends AnyFn
+    ? false
+    : T extends readonly unknown[]
+      ? false
+      : true
+  : false;
 
 export type LeafDotPath<T> =
-  IsLeaf<T> extends true
-    ? never
-    : {
-        [K in keyof T & string]: IsLeaf<T[K]> extends true ? K : `${K}.${LeafDotPath<T[K]>}`;
-      }[keyof T & string];
+  IsPlainObject<T> extends true
+    ? {
+        [K in keyof T & string]: IsPlainObject<T[K]> extends true ? `${K}.${LeafDotPath<T[K]>}` : K;
+      }[keyof T & string]
+    : never;
 
 export type PathValue<T, P extends string> = P extends `${infer K}.${infer Rest}`
   ? K extends keyof T

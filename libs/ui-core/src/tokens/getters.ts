@@ -1,7 +1,7 @@
 import { getToken } from './getToken';
 import type {
   Theme,
-  WebTokens,
+  RNTokens,
   ColorToken,
   SpacingToken,
   RadiusToken,
@@ -15,64 +15,64 @@ import type {
 import type { PathValue } from './path';
 
 export const getColor = <P extends ColorToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['color'], P> => {
+): PathValue<RNTokens['color'], P> => {
   return getToken(theme.tokens.color, key);
 };
 
 export const getSpacing = <P extends SpacingToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['spacing'], P> => {
+): PathValue<RNTokens['spacing'], P> => {
   return getToken(theme.tokens.spacing, key);
 };
 
 export const getRadius = <P extends RadiusToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['radius'], P> => {
+): PathValue<RNTokens['radius'], P> => {
   return getToken(theme.tokens.radius, key);
 };
 
 export const getBorderWidth = <P extends BorderWidthToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['borderWidth'], P> => {
+): PathValue<RNTokens['borderWidth'], P> => {
   return getToken(theme.tokens.borderWidth, key);
 };
 
 export const getBorder = <P extends BorderToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['border'], P> => {
+): PathValue<RNTokens['border'], P> => {
   return getToken(theme.tokens.border, key);
 };
 
 export const getTypography = <P extends TypographyToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['typography'], P> => {
+): PathValue<RNTokens['typography'], P> => {
   return getToken(theme.tokens.typography, key);
 };
 
 export const getShadow = <P extends ShadowToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['shadow'], P> => {
+): PathValue<RNTokens['shadow'], P> => {
   return getToken(theme.tokens.shadow, key);
 };
 
 export const getElevation = <P extends ElevationToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['elevation'], P> => {
+): PathValue<RNTokens['elevation'], P> => {
   return getToken(theme.tokens.elevation, key);
 };
 
 export const getComponent = <P extends ComponentToken>(
-  theme: Theme<WebTokens>,
+  theme: Theme<RNTokens>,
   key: P,
-): PathValue<WebTokens['component'], P> => {
+): PathValue<RNTokens['component'], P> => {
   return getToken(theme.tokens.component, key);
 };
