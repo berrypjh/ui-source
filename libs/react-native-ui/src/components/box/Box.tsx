@@ -1,12 +1,12 @@
 import { View } from 'react-native';
 import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
-import type { BoxProps, BoxRadiusValue, BoxSpacingValue, Tokens } from '@berrypjh/ui-core';
+import type { BoxProps, BoxRadiusValue, BoxSpacingValue, RNTokens } from '@berrypjh/ui-core';
 import { getColor } from '@berrypjh/ui-core';
 
-import { useTheme } from '../theme/useTheme.js';
+import { useTheme } from '../../theme';
 
 const spacingToNumber = (
-  themeTokens: Tokens,
+  themeTokens: RNTokens,
   v: BoxSpacingValue | undefined,
 ): number | undefined => {
   if (v === undefined) return undefined;
@@ -14,7 +14,10 @@ const spacingToNumber = (
   return themeTokens.spacing[v];
 };
 
-const radiusToNumber = (themeTokens: Tokens, v: BoxRadiusValue | undefined): number | undefined => {
+const radiusToNumber = (
+  themeTokens: RNTokens,
+  v: BoxRadiusValue | undefined,
+): number | undefined => {
   if (v === undefined) return undefined;
   if (typeof v === 'number') return v;
   return themeTokens.radius[v];
