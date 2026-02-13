@@ -745,7 +745,7 @@
           "type": "spacing"
         },
         "lg": {
-          "value": "{spacing.xxxsm} *10",
+          "value": "{spacing.xxxsm} * 10",
           "type": "spacing"
         },
         "xlg": {
@@ -773,11 +773,11 @@
           "type": "spacing"
         },
         "6xl": {
-          "value": "{spacing.xxxsm} *32",
+          "value": "{spacing.xxxsm} * 32",
           "type": "spacing"
         },
         "7xl": {
-          "value": "{spacing.xxxsm} *48",
+          "value": "{spacing.xxxsm} * 48",
           "type": "spacing"
         },
         "8xl": {
@@ -1254,8 +1254,8 @@
     }
   },
   "$metadata": {
-    "version": "2.10.9",
-    "updatedAt": "2026-01-28T01:49:14.186Z",
+    "version": "2.11.0",
+    "updatedAt": "2026-02-13T19:59:38.972Z",
     "tokenSetOrder": ["global", "dark"]
   },
   "$themes": []

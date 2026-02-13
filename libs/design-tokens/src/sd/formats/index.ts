@@ -1,3 +1,3 @@
-export { dsCssVariablesFormat } from './cssVariables.js';
-export { tsThemeTokensFormat } from './tsThemeTokens.js';
-export { jsonFlatTokensFormat } from './jsonFlatTokens.js';
+export { dsCssVariablesFormat } from './cssVariables';
+export { tsThemeTokensFormat } from './tsThemeTokens';
+export { jsonFlatTokensFormat } from './jsonFlatTokens';

@@ -1,2 +1,2 @@
-export { registerAll } from './register.js';
-export { makeSdConfig } from './config.js';
+export { registerAll } from './register';
+export { makeSdConfig } from './config';

@@ -1,2 +1,2 @@
-export * as Global from './.generated/rn/themes/global/tokens.js';
-export * as Dark from './.generated/rn/themes/dark/tokens.js';
+export * as Global from './.generated/rn/themes/global/tokens';
+export * as Dark from './.generated/rn/themes/dark/tokens';

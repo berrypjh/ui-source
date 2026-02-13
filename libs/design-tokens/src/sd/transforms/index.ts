@@ -1,2 +1,2 @@
-export { fontWeightNameToNumberTransform } from './fontWeightNameToNumber.js';
-export { reactNativeNumberTransform } from './reactNativeNumber.js';
+export { fontWeightNameToNumberTransform } from './fontWeightNameToNumber';
+export { reactNativeNumberTransform } from './reactNativeNumber';

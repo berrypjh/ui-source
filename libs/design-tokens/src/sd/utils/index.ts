@@ -1,3 +1,3 @@
-export { toKebabCase, makeCssVariableName } from './case.js';
-export { colorToRgbChannels } from './cssColor.js';
-export { mapTokenPath } from './mapTokenPath.js';
+export { toKebabCase, makeCssVariableName } from './case';
+export { colorToRgbChannels } from './cssColor';
+export { mapTokenPath } from './mapTokenPath';

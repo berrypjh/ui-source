@@ -1,1 +1,1 @@
-export { splitAndMergeThemes } from './splitAndMerge.js';
+export { splitAndMergeThemes } from './splitAndMerge';
