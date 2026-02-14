@@ -3,9 +3,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(() => ({
-  root: import.meta.dirname,
+  root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/demo-web',
   server: {
     port: 4200,
@@ -20,8 +24,13 @@ export default defineConfig(() => ({
   // worker: {
   //   plugins: () => [ nxViteTsPaths() ],
   // },
+  resolve: {
+    alias: {
+      '@berrypjh/react-ui': resolve(__dirname, '../../libs/react-ui/src/index.ts'),
+    },
+  },
   build: {
-    outDir: '../../dist/apps/demo-web',
+    outDir: './dist',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {
