@@ -25,5 +25,9 @@
   },
   "dependencies": {
     "@berrypjh/design-tokens": "^0.0.1"
+  },
+  "devDependencies": {
+    "rollup-plugin-postcss": "^4.0.2",
+    "sass": "^1.97.3"
   }
 }

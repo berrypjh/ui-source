@@ -1,9 +1,10 @@
-import type { FC } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 import type { ButtonProps } from '@berrypjh/ui-core';
 import { cx } from '@berrypjh/ui-core';
 
-type NativeButtonAttrs = React.ButtonHTMLAttributes<HTMLButtonElement>;
+import './button.scss';
 
+type NativeButtonAttrs = ButtonHTMLAttributes<HTMLButtonElement>;
 type AttrsWithoutCollisions = Omit<NativeButtonAttrs, keyof ButtonProps | 'color'>;
 
 export type ReactButtonProps = ButtonProps &
@@ -11,8 +12,8 @@ export type ReactButtonProps = ButtonProps &
     className?: string;
   };
 
-export const Button: FC<ReactButtonProps> = ({
-  variant = 'solid',
+export const Button = ({
+  variant = 'contained',
   size = 'md',
   color = 'primary',
   disabled = false,
@@ -21,7 +22,7 @@ export const Button: FC<ReactButtonProps> = ({
   type,
   children,
   ...rest
-}) => {
+}: ReactButtonProps) => {
   const resolvedType = type ?? 'button';
 
   return (

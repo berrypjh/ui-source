@@ -22,7 +22,7 @@
     "**/*.stories.*",
     ".storybook/**/*"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
   "references": [
     {
       "path": "../ui-core/tsconfig.lib.json"

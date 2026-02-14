@@ -2,6 +2,8 @@ import type { CSSProperties, HTMLAttributes } from 'react';
 import type { BoxProps, BoxRadiusValue, BoxSpacingValue, ColorToken } from '@berrypjh/ui-core';
 import { cx } from '@berrypjh/ui-core';
 
+import './box.scss';
+
 const spacingToCss = (v: BoxSpacingValue | undefined): string | undefined => {
   if (v === undefined) return undefined;
   if (typeof v === 'number') return `${v}px`;
@@ -16,7 +18,7 @@ const radiusToCss = (v: BoxRadiusValue | undefined): string | undefined => {
 
 const colorTokenToCssVar = (token: ColorToken | undefined): string | undefined => {
   if (!token) return undefined;
-  return `var(--ui-color-${token.replaceAll('.', '-')})`;
+  return `var(--ds-${token.replaceAll('.', '-')})`;
 };
 
 type HtmlDivProps = HTMLAttributes<HTMLDivElement>;
