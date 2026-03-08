@@ -21,7 +21,13 @@
         "compiler": "babel",
         "format": ["esm"],
         "outputFileName": "index",
-        "external": ["react", "react-dom", "react/jsx-runtime", "@berrypjh/ui-core"],
+        "external": [
+          "react",
+          "react-dom",
+          "react/jsx-runtime",
+          "@berrypjh/ui-core",
+          "@berrypjh/design-tokens"
+        ],
         "assets": [
           {
             "input": ".",

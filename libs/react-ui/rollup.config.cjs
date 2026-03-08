@@ -15,18 +15,11 @@ module.exports = (config) => {
       limit: 10000,
     }),
     postcss({
-      extract: true,
+      extract: 'index.css',
       sourceMap: true,
       minimize: false,
       extensions: ['.css', '.scss'],
-      use: [
-        [
-          'sass',
-          {
-            // includePaths: ['src'], // 필요하면 활성화
-          },
-        ],
-      ],
+      use: [['sass']],
     }),
   );
 

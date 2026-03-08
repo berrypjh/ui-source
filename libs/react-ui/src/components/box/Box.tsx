@@ -2,7 +2,7 @@ import type { CSSProperties, HTMLAttributes } from 'react';
 import type { BoxProps, BoxRadiusValue, BoxSpacingValue, ColorToken } from '@berrypjh/ui-core';
 import { cx } from '@berrypjh/ui-core';
 
-import './box.scss';
+// import './box.css';
 
 const spacingToCss = (v: BoxSpacingValue | undefined): string | undefined => {
   if (v === undefined) return undefined;

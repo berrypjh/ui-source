@@ -3,28 +3,29 @@
   "version": "0.0.1",
   "type": "module",
   "sideEffects": [
-    "*.css"
+    "**/*.css",
+    "**/*.scss"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "import": "./dist/index.esm.js",
+      "default": "./dist/index.esm.js"
     },
-    "./styles.css": "./src/styles.css"
+    "./styles.css": "./dist/index.css"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist",
-    "src/styles.css"
+    "dist"
   ],
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@berrypjh/design-tokens": "^0.0.1"
+    "@berrypjh/design-tokens": "^0.0.1",
+    "@berrypjh/ui-core": "^0.0.1"
   },
   "devDependencies": {
     "rollup-plugin-postcss": "^4.0.2",
