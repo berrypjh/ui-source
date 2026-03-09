@@ -2,7 +2,7 @@ import type { CSSProperties, HTMLAttributes } from 'react';
 import type { BoxProps, BoxRadiusValue, BoxSpacingValue, ColorToken } from '@berrypjh/ui-core';
 import { cx } from '@berrypjh/ui-core';
 
-// import './box.css';
+import './box.scss';
 
 const spacingToCss = (v: BoxSpacingValue | undefined): string | undefined => {
   if (v === undefined) return undefined;
@@ -48,6 +48,7 @@ export const Box = ({
   ml,
   bg,
   radius,
+  children,
   ...rest
 }: ReactBoxProps) => {
   const computed: CSSProperties = {};
@@ -86,5 +87,9 @@ export const Box = ({
     ...(style ?? {}),
   };
 
-  return <div {...rest} className={cx('ui-box', className)} style={mergedStyle} />;
+  return (
+    <div {...rest} className={cx('ui-box', className)} style={mergedStyle}>
+      {children}
+    </div>
+  );
 };

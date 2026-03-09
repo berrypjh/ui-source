@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 /* =========================
    Config
 ========================= */
@@ -48,7 +50,6 @@ $colors: (
     text-bg-hover: var(--ds-primary-pr100),
     text-focus: var(--ds-primary-btn-focus-ripple),
   ),
-
   secondary: (
     solid-bg: var(--ds-secondary-se500),
     solid-bg-hover: var(--ds-secondary-se700),
@@ -62,7 +63,6 @@ $colors: (
     text-bg-hover: var(--ds-secondary-se100),
     text-focus: var(--ds-stroke-secondary),
   ),
-
   error: (
     solid-bg: var(--ds-error-er600),
     solid-bg-hover: var(--ds-error-er700),
@@ -83,35 +83,35 @@ $colors: (
 ========================= */
 
 @mixin apply-size($size-key) {
-  $s: map-get($sizes, $size-key);
+  $s: map.get($sizes, $size-key);
 
-  --ui-btn-px: #{map-get($s, px)};
-  --ui-btn-py: #{map-get($s, py)};
-  --ui-btn-radius: #{map-get($s, radius)};
+  --ui-btn-px: #{map.get($s, px)};
+  --ui-btn-py: #{map.get($s, py)};
+  --ui-btn-radius: #{map.get($s, radius)};
 
-  --ui-btn-font-family: #{map-get($s, ff)};
-  --ui-btn-font-size: #{map-get($s, fs)};
-  --ui-btn-font-weight: #{map-get($s, fw)};
-  --ui-btn-letter-spacing: #{map-get($s, ls)};
-  --ui-btn-line-height: calc(#{map-get($s, lh)} * 1px);
+  --ui-btn-font-family: #{map.get($s, ff)};
+  --ui-btn-font-size: #{map.get($s, fs)};
+  --ui-btn-font-weight: #{map.get($s, fw)};
+  --ui-btn-letter-spacing: #{map.get($s, ls)};
+  --ui-btn-line-height: calc(#{map.get($s, lh)} * 1px);
 }
 
 @mixin define-color-palette($color-key) {
-  $c: map-get($colors, $color-key);
+  $c: map.get($colors, $color-key);
 
-  --ui-solid-bg: #{map-get($c, solid-bg)};
-  --ui-solid-bg-hover: #{map-get($c, solid-bg-hover)};
-  --ui-solid-bg-disabled: #{map-get($c, solid-bg-disabled)};
-  --ui-solid-fg: #{map-get($c, solid-fg)};
-  --ui-solid-focus: #{map-get($c, solid-focus)};
+  --ui-solid-bg: #{map.get($c, solid-bg)};
+  --ui-solid-bg-hover: #{map.get($c, solid-bg-hover)};
+  --ui-solid-bg-disabled: #{map.get($c, solid-bg-disabled)};
+  --ui-solid-fg: #{map.get($c, solid-fg)};
+  --ui-solid-focus: #{map.get($c, solid-focus)};
 
-  --ui-outline-border: #{map-get($c, outline-border)};
-  --ui-outline-bg-hover: #{map-get($c, outline-bg-hover)};
-  --ui-outline-focus: #{map-get($c, outline-focus)};
+  --ui-outline-border: #{map.get($c, outline-border)};
+  --ui-outline-bg-hover: #{map.get($c, outline-bg-hover)};
+  --ui-outline-focus: #{map.get($c, outline-focus)};
 
-  --ui-text-fg: #{map-get($c, text-fg)};
-  --ui-text-bg-hover: #{map-get($c, text-bg-hover)};
-  --ui-text-focus: #{map-get($c, text-focus)};
+  --ui-text-fg: #{map.get($c, text-fg)};
+  --ui-text-bg-hover: #{map.get($c, text-bg-hover)};
+  --ui-text-focus: #{map.get($c, text-focus)};
 }
 
 /* =========================

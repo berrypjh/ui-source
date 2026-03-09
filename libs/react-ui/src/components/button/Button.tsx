@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from 'react';
 import type { ButtonProps } from '@berrypjh/ui-core';
 import { cx } from '@berrypjh/ui-core';
 
-// import './button.scss';
+import './button.scss';
 
 type NativeButtonAttrs = ButtonHTMLAttributes<HTMLButtonElement>;
 type AttrsWithoutCollisions = Omit<NativeButtonAttrs, keyof ButtonProps | 'color'>;

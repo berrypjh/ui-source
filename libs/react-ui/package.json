@@ -8,14 +8,14 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/index.esm.js",
       "default": "./dist/index.esm.js"
     },
     "./styles.css": "./dist/index.css"
   },
   "main": "./dist/index.esm.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist"
   ],

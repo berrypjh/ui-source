@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.lib.json",
+  "compilerOptions": {
+    "outDir": "dist/types",
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/types/tsconfig.types.tsbuildinfo",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true
+  },
+  "references": [
+    {
+      "path": "../ui-core/tsconfig.lib.json"
+    }
+  ]
+}

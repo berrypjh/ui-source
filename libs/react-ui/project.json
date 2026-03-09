@@ -12,15 +12,28 @@
       }
     },
     "build-js": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "commands": [
+          "nx run @berrypjh/react-ui:bundle-js",
+          "find libs/react-ui/dist -type f \\( -name '*.d.ts' -o -name '*.d.ts.map' \\) -delete",
+          "rm -rf libs/react-ui/dist/src"
+        ],
+        "parallel": false
+      }
+    },
+    "bundle-js": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{projectRoot}/dist"],
       "options": {
         "main": "libs/react-ui/src/index.ts",
         "outputPath": "libs/react-ui/dist",
-        "tsConfig": "libs/react-ui/tsconfig.lib.json",
+        "tsConfig": "libs/react-ui/tsconfig.rollup.json",
         "compiler": "babel",
         "format": ["esm"],
         "outputFileName": "index",
+        "extractCss": "index.css",
         "external": [
           "react",
           "react-dom",
@@ -41,15 +54,15 @@
     },
     "build-types": {
       "executor": "nx:run-commands",
-      "outputs": ["{projectRoot}/dist"],
+      "outputs": ["{projectRoot}/dist/types"],
       "options": {
-        "command": "tsc -b libs/react-ui/tsconfig.lib.json"
+        "command": "tsc -p libs/react-ui/tsconfig.types.json"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsc -b libs/react-ui/tsconfig.lib.json --noEmit"
+        "command": "tsc -p libs/react-ui/tsconfig.types.json --noEmit"
       }
     },
     "test": {
