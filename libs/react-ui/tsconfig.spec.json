@@ -3,7 +3,14 @@
   "compilerOptions": {
     "outDir": "./out-tsc/vitest",
     "lib": ["es2022", "dom"],
-    "types": ["vitest/globals", "vitest/importMeta", "vite/client", "node", "vitest"],
+    "types": [
+      "vitest/globals",
+      "vitest/importMeta",
+      "vite/client",
+      "node",
+      "vitest",
+      "@testing-library/jest-dom"
+    ],
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler"
@@ -11,6 +18,9 @@
   "include": [
     "vite.config.*",
     "vitest.config.*",
+    "vitest.setup.ts",
+    "test/**/*.ts",
+    "test/**/*.tsx",
     "src/**/*.test.*",
     "src/**/*.spec.*",
     "src/**/*.d.ts"
