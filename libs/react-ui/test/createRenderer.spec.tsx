@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import * as React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import { createRenderer } from './createRenderer';
@@ -50,14 +50,14 @@ describe('createRenderer', () => {
   });
 
   it('wrapper를 적용할 수 있다', () => {
-    const Context = createContext('default');
+    const Context = React.createContext('default');
 
     const Wrapper = ({ children }: { children?: React.ReactNode }) => {
       return <Context.Provider value="wrapped">{children}</Context.Provider>;
     };
 
     const Component = () => {
-      return <div>{useContext(Context)}</div>;
+      return <div>{React.useContext(Context)}</div>;
     };
 
     const { render } = createRenderer({ wrapper: Wrapper });

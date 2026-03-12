@@ -21,6 +21,8 @@
     "vitest.setup.ts",
     "test/**/*.ts",
     "test/**/*.tsx",
+    "test-utils/**/*.ts",
+    "test-utils/**/*.tsx",
     "src/**/*.test.*",
     "src/**/*.spec.*",
     "src/**/*.d.ts"

@@ -1,4 +1,4 @@
-import { Fragment, StrictMode, cloneElement } from 'react';
+import * as React from 'react';
 import {
   render as rtlRender,
   act,
@@ -34,10 +34,10 @@ const mountUi = (
   strict: boolean,
   renderKey?: number,
 ) => {
-  const keyedUi = renderKey == null ? ui : <Fragment key={renderKey}>{ui}</Fragment>;
+  const keyedUi = renderKey == null ? ui : <React.Fragment key={renderKey}>{ui}</React.Fragment>;
   const wrapped = Wrapper ? <Wrapper>{keyedUi}</Wrapper> : keyedUi;
 
-  return strict ? <StrictMode>{wrapped}</StrictMode> : wrapped;
+  return strict ? <React.StrictMode>{wrapped}</React.StrictMode> : wrapped;
 };
 
 export const createRenderer = (globalOptions: CreateRendererOptions = {}) => {
@@ -66,13 +66,13 @@ export const createRenderer = (globalOptions: CreateRendererOptions = {}) => {
         },
 
         setProps: (props) => {
-          currentElement = cloneElement(currentElement, props);
+          currentElement = React.cloneElement(currentElement, props);
           result.rerender(mountUi(currentElement, wrapper, strict, renderKey));
         },
 
         setPropsAsync: async (props) => {
           await act(async () => {
-            currentElement = cloneElement(currentElement, props);
+            currentElement = React.cloneElement(currentElement, props);
             result.rerender(mountUi(currentElement, wrapper, strict, renderKey));
           });
         },
