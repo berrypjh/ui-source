@@ -2,6 +2,8 @@ import * as React from 'react';
 import { describe, it, expect } from 'vitest';
 import type { RenderResult } from '@testing-library/react';
 
+import { randomStringValue } from './randomStringValue';
+
 type Awaitable<T> = T | Promise<T>;
 
 type ElementProps = Record<string, unknown>;
@@ -37,8 +39,6 @@ type ConformanceTestFn = (
   element: ConformanceElement,
   getOptions: () => ConformanceOptions,
 ) => void;
-
-export const randomStringValue = (): string => `s${Math.random().toString(36).slice(2)}`;
 
 const getRootElement = (container: HTMLElement): HTMLElement => {
   const root = container.firstElementChild;

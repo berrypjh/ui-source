@@ -1,4 +1,4 @@
-import type { ComponentPropsWithRef, ElementType, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ComponentPropsWithRef, ElementType, ReactNode } from 'react';
 import { cx, type ButtonProps } from '@berrypjh/ui-core';
 
 export const buttonBaseClasses = {
@@ -8,13 +8,17 @@ export const buttonBaseClasses = {
 type ButtonOwnProps = ButtonProps & {
   className?: string;
   children?: ReactNode;
+  href?: string;
+  to?: string;
 };
 
 type PropsOf<C extends ElementType> = ComponentPropsWithRef<C>;
 
+type PropsToOmit = keyof ButtonOwnProps | 'component' | 'color';
+
 type ReactButtonProps<C extends ElementType = 'button'> = ButtonOwnProps & {
   component?: C;
-} & Omit<PropsOf<C>, keyof ButtonOwnProps | 'component' | 'color'>;
+} & Omit<PropsOf<C>, PropsToOmit>;
 
 export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonProps<C>) => {
   const {
@@ -27,10 +31,25 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     fullWidth = false,
     className,
     children,
+    href,
+    to,
+    role,
+    tabIndex,
+    type,
     ...rest
-  } = props;
+  } = props as ReactButtonProps<C> & {
+    role?: string;
+    tabIndex?: number;
+    type?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
+  };
 
-  const Component = (component ?? 'button') as ElementType;
+  const isLinkLike = href != null || to != null;
+
+  const Component =
+    component == null || component === 'button'
+      ? ((isLinkLike ? 'a' : 'button') as ElementType)
+      : (component as ElementType);
+
   const isNativeButton = Component === 'button';
 
   const classNames = cx(
@@ -45,16 +64,17 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
   if (isNativeButton) {
     const nativeButtonProps = rest as Omit<
       ComponentPropsWithRef<'button'>,
-      keyof ButtonOwnProps | 'component' | 'color'
+      PropsToOmit | 'type' | 'role' | 'tabIndex'
     >;
 
     return (
       <button
         {...nativeButtonProps}
         ref={ref as ComponentPropsWithRef<'button'>['ref']}
-        type={nativeButtonProps.type ?? 'button'}
+        type={type ?? 'button'}
+        role={role}
+        tabIndex={tabIndex}
         disabled={disabled}
-        aria-disabled={disabled || undefined}
         className={classNames}
       >
         {children}
@@ -62,12 +82,19 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     );
   }
 
-  const componentProps = rest as Omit<PropsOf<C>, keyof ButtonOwnProps | 'component' | 'color'>;
+  const componentProps = rest as Omit<PropsOf<C>, PropsToOmit | 'role' | 'tabIndex'>;
+
+  const resolvedRole = isLinkLike ? role : (role ?? 'button');
+  const resolvedTabIndex = disabled ? -1 : (tabIndex ?? (isLinkLike ? undefined : 0));
 
   return (
     <Component
       {...componentProps}
       ref={ref}
+      href={href}
+      to={to}
+      role={resolvedRole}
+      tabIndex={resolvedTabIndex}
       aria-disabled={disabled || undefined}
       className={classNames}
     >
