@@ -1,6 +1,10 @@
 import type { ComponentPropsWithRef, ElementType, ReactNode } from 'react';
 import { cx, type ButtonProps } from '@berrypjh/ui-core';
 
+export const buttonBaseClasses = {
+  root: 'ui-button',
+} as const;
+
 type ButtonOwnProps = ButtonProps & {
   className?: string;
   children?: ReactNode;
@@ -30,7 +34,7 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
   const isNativeButton = Component === 'button';
 
   const classNames = cx(
-    'ui-button',
+    buttonBaseClasses.root,
     `ui-button--variant-${variant}`,
     `ui-button--size-${size}`,
     `ui-button--color-${color}`,

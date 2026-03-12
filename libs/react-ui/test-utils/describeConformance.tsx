@@ -44,14 +44,14 @@ const getRootElement = (container: HTMLElement): HTMLElement => {
   const root = container.firstElementChild;
 
   if (!(root instanceof HTMLElement)) {
-    throw new Error('Root element was not rendered.');
+    throw new Error('Root element가 렌더링되지 않았습니다.');
   }
 
   return root;
 };
 
 const testClassName: ConformanceTestFn = (element, getOptions) => {
-  it('applies className to the root element', async () => {
+  it('className이 root element에 적용되어야 한다', async () => {
     const { render } = getOptions();
 
     const className = randomStringValue();
@@ -69,7 +69,7 @@ const testClassName: ConformanceTestFn = (element, getOptions) => {
 };
 
 const testPropsSpread: ConformanceTestFn = (element, getOptions) => {
-  it('spreads extra props to the root element', async () => {
+  it('추가 props가 root element에 전달되어야 한다', async () => {
     const { render } = getOptions();
 
     const testId = randomStringValue();
@@ -88,11 +88,11 @@ const testPropsSpread: ConformanceTestFn = (element, getOptions) => {
 };
 
 const testRefForwarding: ConformanceTestFn = (element, getOptions) => {
-  it('forwards ref to the expected instance', async () => {
+  it('ref가 기대한 인스턴스로 전달되어야 한다', async () => {
     const { render, refInstanceof } = getOptions();
 
     if (!refInstanceof) {
-      throw new Error('missing "refInstanceof" in conformance options');
+      throw new Error('conformance 옵션에 "refInstanceof"가 없습니다.');
     }
 
     const ref = React.createRef<unknown>();
@@ -104,11 +104,11 @@ const testRefForwarding: ConformanceTestFn = (element, getOptions) => {
 };
 
 const testRootClass: ConformanceTestFn = (element, getOptions) => {
-  it('keeps the built-in root class on the root element', async () => {
+  it('기본 root 클래스가 root element에 유지되어야 한다', async () => {
     const { render, classes } = getOptions();
 
     if (!classes?.root) {
-      throw new Error('missing "classes.root" in conformance options');
+      throw new Error('conformance 옵션에 "classes.root"가 없습니다.');
     }
 
     const customClassName = randomStringValue();
@@ -128,11 +128,11 @@ const testRootClass: ConformanceTestFn = (element, getOptions) => {
 
 const testPolymorphicProp: ConformanceTestFn = (element, getOptions) => {
   describe('polymorphic prop', () => {
-    it('renders a different root element when configured', async () => {
+    it('설정된 경우 다른 root element로 렌더링되어야 한다', async () => {
       const { render, polymorphicPropName, testPolymorphicPropWith = 'em' } = getOptions();
 
       if (!polymorphicPropName) {
-        throw new Error('missing "polymorphicPropName" in conformance options');
+        throw new Error('conformance 옵션에 "polymorphicPropName"이 없습니다.');
       }
 
       const testId = randomStringValue();

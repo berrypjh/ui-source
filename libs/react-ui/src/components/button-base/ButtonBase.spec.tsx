@@ -1,12 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 
-import { ButtonBase } from './ButtonBase';
+import { ButtonBase, buttonBaseClasses } from './ButtonBase';
 import { createRenderer, describeConformance } from '../../../test';
-
-const buttonBaseClasses = {
-  root: 'ui-button',
-} as const;
 
 describe('<ButtonBase />', () => {
   const { render } = createRenderer();
@@ -17,7 +13,6 @@ describe('<ButtonBase />', () => {
     refInstanceof: HTMLButtonElement,
     polymorphicPropName: 'component',
     testPolymorphicPropWith: 'a',
-    only: ['mergeClassName', 'propsSpread', 'refForwarding', 'rootClass', 'polymorphicProp'],
   }));
 
   it('기본 type은 button이다', () => {
