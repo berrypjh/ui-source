@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
@@ -30,19 +31,6 @@ describe('<ButtonBase />', () => {
   }));
 
   describe('root node', () => {
-    it('기본 type은 button이다', () => {
-      const { setProps } = render(<ButtonBase>hello</ButtonBase>);
-      expect(screen.getByText('hello')).toHaveAttribute('type', 'button');
-
-      setProps({ type: undefined });
-      expect(screen.getByText('hello')).toHaveAttribute('type', 'button');
-    });
-
-    it('button의 type을 변경할 수 있다', () => {
-      render(<ButtonBase type="submit">Hello</ButtonBase>);
-      expect(screen.getByText('Hello')).toHaveAttribute('type', 'submit');
-    });
-
     it('type이 "button"이면 role="button"을 적용하지 않는다', () => {
       render(<ButtonBase type="button">Hello</ButtonBase>);
       expect(screen.getByText('Hello')).not.toHaveAttribute('role');
@@ -72,6 +60,51 @@ describe('<ButtonBase />', () => {
       setProps({ disabled: true });
 
       expect(screen.getByRole('button')).toBeDisabled();
+    });
+  });
+
+  describe('prop: type', () => {
+    it('기본값은 button이다', () => {
+      render(<ButtonBase />);
+
+      expect(screen.getByRole('button')).toHaveProperty('type', 'button');
+    });
+
+    it('다른 button type으로 변경할 수 있다', () => {
+      render(<ButtonBase type="submit" />);
+
+      expect(screen.getByRole('button')).toHaveProperty('type', 'submit');
+    });
+
+    it('표준이 아닌 type 값도 허용한다', () => {
+      // @ts-expect-error @types/react는 표준 button type만 허용한다
+      render(<ButtonBase type="fictional-type" />);
+
+      const button = screen.getByRole('button');
+
+      expect(button).toHaveAttribute('type', 'fictional-type');
+      // HTML spec상 지원하지 않는 type은 button.type 프로퍼티에서 submit으로 해석된다.
+      expect(button).toHaveProperty('type', 'submit');
+    });
+
+    it('anchor component에도 type을 전달한다', () => {
+      render(<ButtonBase component="a" href="some-recording.ogg" download type="audio/ogg" />);
+
+      const link = screen.getByRole('link');
+
+      expect(link).toHaveAttribute('type', 'audio/ogg');
+      expect(link).toHaveProperty('type', 'audio/ogg');
+    });
+
+    it('custom component에도 type을 전달한다', () => {
+      const CustomButton = React.forwardRef<
+        HTMLButtonElement,
+        React.ButtonHTMLAttributes<HTMLButtonElement>
+      >((props, ref) => <button ref={ref} {...props} />);
+
+      render(<ButtonBase component={CustomButton} type="reset" />);
+
+      expect(screen.getByRole('button')).toHaveProperty('type', 'reset');
     });
   });
 
@@ -256,6 +289,39 @@ describe('<ButtonBase />', () => {
 
       expect(buttonClickSpy.callCount).toBe(1);
       expect(parentClickSpy.callCount).toBe(1);
+    });
+  });
+
+  describe('prop: component', () => {
+    it('forwardRef 기반의 link component를 사용할 수 있다', () => {
+      const Link = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+        (props, ref) => <div data-testid="link" ref={ref} {...props} />,
+      );
+
+      render(<ButtonBase component={Link}>Hello</ButtonBase>);
+
+      const link = screen.getByTestId('link');
+
+      expect(link).toHaveAttribute('role', 'button');
+      expect(link).toHaveAttribute('tabindex', '0');
+    });
+
+    it('custom component에서도 disabled 시 aria-disabled와 tabIndex가 적용된다', () => {
+      const Link = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+        (props, ref) => <div data-testid="link" ref={ref} {...props} />,
+      );
+
+      render(
+        <ButtonBase component={Link} disabled>
+          Hello
+        </ButtonBase>,
+      );
+
+      const link = screen.getByTestId('link');
+
+      expect(link).toHaveAttribute('role', 'button');
+      expect(link).toHaveAttribute('aria-disabled', 'true');
+      expect(link).toHaveAttribute('tabindex', '-1');
     });
   });
 });

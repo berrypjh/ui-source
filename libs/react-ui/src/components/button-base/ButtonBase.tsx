@@ -66,6 +66,8 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
   const isNativeButton = Component === 'button';
   const isNonNativeButton = !isNativeButton && !isLinkLike;
 
+  const shouldForwardType = type != null && (Component === 'a' || typeof Component !== 'string');
+
   const classNames = cx(
     buttonBaseClasses.root,
     `ui-button--variant-${variant}`,
@@ -147,7 +149,7 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     );
   }
 
-  const componentProps = rest as Omit<PropsOf<C>, PropsToOmit | 'role' | 'tabIndex'>;
+  const componentProps = rest as Omit<PropsOf<C>, PropsToOmit | 'role' | 'tabIndex' | 'type'>;
 
   const resolvedRole = isLinkLike ? role : (role ?? 'button');
   const resolvedTabIndex = disabled ? -1 : (tabIndex ?? (isLinkLike ? undefined : 0));
@@ -158,6 +160,7 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
       ref={ref}
       href={href}
       to={to}
+      type={shouldForwardType ? type : undefined}
       role={resolvedRole}
       tabIndex={resolvedTabIndex}
       aria-disabled={disabled || undefined}
