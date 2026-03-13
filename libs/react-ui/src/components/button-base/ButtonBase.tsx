@@ -1,4 +1,10 @@
-import type { ButtonHTMLAttributes, ComponentPropsWithRef, ElementType, ReactNode } from 'react';
+import type {
+  ButtonHTMLAttributes,
+  ComponentPropsWithRef,
+  ElementType,
+  KeyboardEventHandler,
+  ReactNode,
+} from 'react';
 import { cx, type ButtonProps } from '@berrypjh/ui-core';
 
 export const buttonBaseClasses = {
@@ -36,11 +42,15 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     role,
     tabIndex,
     type,
+    onKeyDown,
+    onKeyUp,
     ...rest
   } = props as ReactButtonProps<C> & {
     role?: string;
     tabIndex?: number;
     type?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
+    onKeyDown?: KeyboardEventHandler<HTMLElement>;
+    onKeyUp?: KeyboardEventHandler<HTMLElement>;
   };
 
   const isLinkLike = href != null || to != null;
@@ -51,6 +61,7 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
       : (component as ElementType);
 
   const isNativeButton = Component === 'button';
+  const isNonNativeButton = !isNativeButton && !isLinkLike;
 
   const classNames = cx(
     buttonBaseClasses.root,
@@ -60,6 +71,44 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     fullWidth && 'ui-button--fullWidth',
     className,
   );
+
+  const handleNonNativeKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
+    onKeyDown?.(event);
+
+    if (event.defaultPrevented || disabled || !isNonNativeButton) {
+      return;
+    }
+
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    if (event.key === ' ') {
+      event.preventDefault();
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.currentTarget.click();
+    }
+  };
+
+  const handleNonNativeKeyUp: KeyboardEventHandler<HTMLElement> = (event) => {
+    onKeyUp?.(event);
+
+    if (event.defaultPrevented || disabled || !isNonNativeButton) {
+      return;
+    }
+
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    if (event.key === ' ') {
+      event.preventDefault();
+      event.currentTarget.click();
+    }
+  };
 
   if (isNativeButton) {
     const nativeButtonProps = rest as Omit<
@@ -75,6 +124,8 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
         role={role}
         tabIndex={tabIndex}
         disabled={disabled}
+        onKeyDown={onKeyDown as ComponentPropsWithRef<'button'>['onKeyDown']}
+        onKeyUp={onKeyUp as ComponentPropsWithRef<'button'>['onKeyUp']}
         className={classNames}
       >
         {children}
@@ -96,6 +147,8 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
       role={resolvedRole}
       tabIndex={resolvedTabIndex}
       aria-disabled={disabled || undefined}
+      onKeyDown={handleNonNativeKeyDown}
+      onKeyUp={handleNonNativeKeyUp}
       className={classNames}
     >
       {children}
