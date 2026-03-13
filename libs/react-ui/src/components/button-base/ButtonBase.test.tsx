@@ -75,6 +75,64 @@ describe('<ButtonBase />', () => {
     });
   });
 
+  describe('prop: disabled', () => {
+    it('disabled면 negative tabIndex를 가진다', () => {
+      render(<ButtonBase disabled>Hello</ButtonBase>);
+      expect(screen.getByText('Hello')).toHaveProperty('tabIndex', -1);
+    });
+
+    it('native button에 disabled를 전달한다', () => {
+      render(<ButtonBase disabled>Hello</ButtonBase>);
+
+      expect(screen.getByText('Hello')).toHaveProperty('disabled', true);
+    });
+
+    it('button host에서는 aria-disabled를 사용하지 않는다', () => {
+      render(<ButtonBase disabled>Hello</ButtonBase>);
+      const button = screen.getByRole('button');
+
+      expect(button).toHaveAttribute('disabled');
+      expect(button).not.toHaveAttribute('aria-disabled');
+    });
+
+    it('non-native host에서는 aria-disabled를 사용한다', () => {
+      const { setProps } = render(
+        <ButtonBase component="div" disabled>
+          Hello
+        </ButtonBase>,
+      );
+
+      const button = screen.getByRole('button');
+
+      expect(button).not.toHaveAttribute('disabled');
+      expect(button).toHaveAttribute('aria-disabled', 'true');
+      expect(button).toHaveProperty('tabIndex', -1);
+
+      setProps({ disabled: false });
+
+      expect(button).not.toHaveAttribute('aria-disabled');
+      expect(button).toHaveProperty('tabIndex', 0);
+    });
+
+    it('disabled된 non-native host는 click를 막는다', async () => {
+      const parentClickSpy = spy();
+      const buttonClickSpy = spy();
+
+      const { user } = render(
+        <div onClick={parentClickSpy}>
+          <ButtonBase component="div" disabled onClick={buttonClickSpy}>
+            Hello
+          </ButtonBase>
+        </div>,
+      );
+
+      await user.click(screen.getByRole('button'));
+
+      expect(buttonClickSpy.callCount).toBe(0);
+      expect(parentClickSpy.callCount).toBe(0);
+    });
+  });
+
   describe('event callbacks', () => {
     it('이벤트 콜백들을 정상적으로 호출한다', async () => {
       const onClick = spy();
@@ -193,7 +251,6 @@ describe('<ButtonBase />', () => {
         </div>,
       );
 
-      // 탭으로 버튼에 포커스 이동
       await user.tab();
       await user.keyboard(' ');
 

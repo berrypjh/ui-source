@@ -3,6 +3,7 @@ import type {
   ComponentPropsWithRef,
   ElementType,
   KeyboardEventHandler,
+  MouseEventHandler,
   ReactNode,
 } from 'react';
 import { cx, type ButtonProps } from '@berrypjh/ui-core';
@@ -42,6 +43,7 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     role,
     tabIndex,
     type,
+    onClick,
     onKeyDown,
     onKeyUp,
     ...rest
@@ -49,6 +51,7 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     role?: string;
     tabIndex?: number;
     type?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
+    onClick?: MouseEventHandler<HTMLElement>;
     onKeyDown?: KeyboardEventHandler<HTMLElement>;
     onKeyUp?: KeyboardEventHandler<HTMLElement>;
   };
@@ -71,6 +74,16 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     fullWidth && 'ui-button--fullWidth',
     className,
   );
+
+  const handleNonNativeClick: MouseEventHandler<HTMLElement> = (event) => {
+    if (disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    onClick?.(event);
+  };
 
   const handleNonNativeKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
     onKeyDown?.(event);
@@ -122,8 +135,9 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
         ref={ref as ComponentPropsWithRef<'button'>['ref']}
         type={type ?? 'button'}
         role={role}
-        tabIndex={tabIndex}
+        tabIndex={disabled ? -1 : tabIndex}
         disabled={disabled}
+        onClick={onClick as ComponentPropsWithRef<'button'>['onClick']}
         onKeyDown={onKeyDown as ComponentPropsWithRef<'button'>['onKeyDown']}
         onKeyUp={onKeyUp as ComponentPropsWithRef<'button'>['onKeyUp']}
         className={classNames}
@@ -147,6 +161,7 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
       role={resolvedRole}
       tabIndex={resolvedTabIndex}
       aria-disabled={disabled || undefined}
+      onClick={handleNonNativeClick}
       onKeyDown={handleNonNativeKeyDown}
       onKeyUp={handleNonNativeKeyUp}
       className={classNames}
