@@ -77,7 +77,6 @@ describe('<ButtonBase />', () => {
     });
 
     it('표준이 아닌 type 값도 허용한다', () => {
-      // @ts-expect-error @types/react는 표준 button type만 허용한다
       render(<ButtonBase type="fictional-type" />);
 
       const button = screen.getByRole('button');

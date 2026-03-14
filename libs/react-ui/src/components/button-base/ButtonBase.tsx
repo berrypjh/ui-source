@@ -1,33 +1,54 @@
+'use client';
+
 import type {
+  AriaRole,
   ButtonHTMLAttributes,
   ComponentPropsWithRef,
   ElementType,
   KeyboardEventHandler,
   MouseEventHandler,
+  ReactElement,
   ReactNode,
 } from 'react';
-import { cx, type ButtonProps } from '@berrypjh/ui-core';
+import { cx, type ButtonProps as CoreButtonProps } from '@berrypjh/ui-core';
+
+import type { PolymorphicComponentPropsWithRef } from '../../types';
+import './button-base.scss';
 
 export const buttonBaseClasses = {
   root: 'ui-button',
 } as const;
 
-type ButtonOwnProps = ButtonProps & {
+export type ButtonBaseOwnProps = CoreButtonProps & {
   className?: string;
   children?: ReactNode;
-  href?: string;
-  to?: string;
 };
 
-type PropsOf<C extends ElementType> = ComponentPropsWithRef<C>;
+export type ButtonBaseProps<C extends ElementType = 'button'> = PolymorphicComponentPropsWithRef<
+  C,
+  ButtonBaseOwnProps
+>;
 
-type PropsToOmit = keyof ButtonOwnProps | 'component' | 'color';
+export type ButtonBaseAutoAnchorProps = Omit<ButtonBaseProps<'a'>, 'component'> & {
+  component?: never;
+  href: NonNullable<ComponentPropsWithRef<'a'>['href']>;
+};
 
-type ReactButtonProps<C extends ElementType = 'button'> = ButtonOwnProps & {
-  component?: C;
-} & Omit<PropsOf<C>, PropsToOmit>;
+type ButtonBaseRenderableProps = ButtonBaseAutoAnchorProps | ButtonBaseProps<ElementType>;
 
-export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonProps<C>) => {
+type ButtonBaseImplementationProps = ButtonBaseOwnProps & {
+  component?: ElementType;
+  ref?: unknown;
+  href?: ComponentPropsWithRef<'a'>['href'];
+  role?: AriaRole;
+  tabIndex?: number;
+  type?: unknown;
+  onClick?: MouseEventHandler<HTMLElement>;
+  onKeyDown?: KeyboardEventHandler<HTMLElement>;
+  onKeyUp?: KeyboardEventHandler<HTMLElement>;
+} & Record<string, unknown>;
+
+export const ButtonBase = (props: ButtonBaseRenderableProps): ReactElement | null => {
   const {
     component,
     ref,
@@ -39,7 +60,6 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     className,
     children,
     href,
-    to,
     role,
     tabIndex,
     type,
@@ -47,33 +67,22 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     onKeyDown,
     onKeyUp,
     ...rest
-  } = props as ReactButtonProps<C> & {
-    role?: string;
-    tabIndex?: number;
-    type?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
-    onClick?: MouseEventHandler<HTMLElement>;
-    onKeyDown?: KeyboardEventHandler<HTMLElement>;
-    onKeyUp?: KeyboardEventHandler<HTMLElement>;
-  };
+  } = props as ButtonBaseImplementationProps;
 
-  const isLinkLike = href != null || to != null;
+  const hasToProp = 'to' in rest && rest.to != null;
+  const isLinkLike = href != null || hasToProp;
 
-  const Component =
-    component == null || component === 'button'
-      ? ((isLinkLike ? 'a' : 'button') as ElementType)
-      : (component as ElementType);
+  const Component = component ?? (href != null ? 'a' : 'button');
 
   const isNativeButton = Component === 'button';
   const isNonNativeButton = !isNativeButton && !isLinkLike;
 
-  const shouldForwardType = type != null && (Component === 'a' || typeof Component !== 'string');
-
   const classNames = cx(
     buttonBaseClasses.root,
-    `ui-button--variant-${variant}`,
-    `ui-button--size-${size}`,
-    `ui-button--color-${color}`,
-    fullWidth && 'ui-button--fullWidth',
+    `${buttonBaseClasses.root}--variant-${variant}`,
+    `${buttonBaseClasses.root}--size-${size}`,
+    `${buttonBaseClasses.root}--color-${color}`,
+    fullWidth && `${buttonBaseClasses.root}--fullWidth`,
     className,
   );
 
@@ -128,14 +137,23 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
   if (isNativeButton) {
     const nativeButtonProps = rest as Omit<
       ComponentPropsWithRef<'button'>,
-      PropsToOmit | 'type' | 'role' | 'tabIndex'
+      | keyof ButtonBaseOwnProps
+      | 'component'
+      | 'ref'
+      | 'href'
+      | 'role'
+      | 'tabIndex'
+      | 'type'
+      | 'onClick'
+      | 'onKeyDown'
+      | 'onKeyUp'
     >;
 
     return (
       <button
         {...nativeButtonProps}
         ref={ref as ComponentPropsWithRef<'button'>['ref']}
-        type={type ?? 'button'}
+        type={(type as ButtonHTMLAttributes<HTMLButtonElement>['type']) ?? 'button'}
         role={role}
         tabIndex={disabled ? -1 : tabIndex}
         disabled={disabled}
@@ -149,18 +167,31 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
     );
   }
 
-  const componentProps = rest as Omit<PropsOf<C>, PropsToOmit | 'role' | 'tabIndex' | 'type'>;
+  const componentProps = rest as Omit<
+    ComponentPropsWithRef<ElementType>,
+    | keyof ButtonBaseOwnProps
+    | 'component'
+    | 'ref'
+    | 'href'
+    | 'role'
+    | 'tabIndex'
+    | 'type'
+    | 'onClick'
+    | 'onKeyDown'
+    | 'onKeyUp'
+  >;
 
   const resolvedRole = isLinkLike ? role : (role ?? 'button');
   const resolvedTabIndex = disabled ? -1 : (tabIndex ?? (isLinkLike ? undefined : 0));
 
+  const ComponentTag = Component as ElementType;
+
   return (
-    <Component
+    <ComponentTag
       {...componentProps}
-      ref={ref}
-      href={href}
-      to={to}
-      type={shouldForwardType ? type : undefined}
+      {...(href != null ? { href } : {})}
+      {...(type != null ? { type } : {})}
+      ref={ref as never}
       role={resolvedRole}
       tabIndex={resolvedTabIndex}
       aria-disabled={disabled || undefined}
@@ -170,6 +201,6 @@ export const ButtonBase = <C extends ElementType = 'button'>(props: ReactButtonP
       className={classNames}
     >
       {children}
-    </Component>
+    </ComponentTag>
   );
 };
