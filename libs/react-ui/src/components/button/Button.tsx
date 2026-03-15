@@ -1,76 +1,121 @@
-import type { ComponentPropsWithRef, ElementType, ReactNode } from 'react';
-import type { ButtonProps } from '@berrypjh/ui-core';
+'use client';
+
+import { useId } from 'react';
+import type { ElementType, ReactElement, ReactNode } from 'react';
 import { cx } from '@berrypjh/ui-core';
+
+import { ButtonBase, type ButtonBaseAutoAnchorProps, type ButtonBaseProps } from '../button-base';
 
 import './button.scss';
 
-type ButtonOwnProps = ButtonProps & {
-  className?: string;
-  children?: ReactNode;
+export const buttonClasses = {
+  root: 'ui-button-root',
+  label: 'ui-button__label',
+  icon: 'ui-button__icon',
+  startIcon: 'ui-button__start-icon',
+  endIcon: 'ui-button__end-icon',
+  loading: 'ui-button--loading',
+  loadingWrapper: 'ui-button__loading-wrapper',
+  loadingIndicator: 'ui-button__loading-indicator',
+  loadingIconPlaceholder: 'ui-button__loading-icon-placeholder',
+  spinner: 'ui-button__spinner',
+  loadingPositionStart: 'ui-button--loading-position-start',
+  loadingPositionCenter: 'ui-button--loading-position-center',
+  loadingPositionEnd: 'ui-button--loading-position-end',
+} as const;
+
+export type ButtonLoadingPosition = 'start' | 'center' | 'end';
+
+type ButtonExtraProps = {
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
+  loading?: boolean;
+  loadingIndicator?: ReactNode;
+  loadingPosition?: ButtonLoadingPosition;
 };
 
-type PropsOf<C extends ElementType> = ComponentPropsWithRef<C>;
+export type ButtonProps<C extends ElementType = 'button'> = ButtonBaseProps<C> & ButtonExtraProps;
+export type ButtonAutoAnchorProps = ButtonBaseAutoAnchorProps & ButtonExtraProps;
 
-type ReactButtonProps<C extends ElementType = 'button'> = ButtonOwnProps & {
-  component?: C;
-} & Omit<PropsOf<C>, keyof ButtonOwnProps | 'component' | 'color'>;
+type ButtonRenderableProps = ButtonAutoAnchorProps | ButtonProps<ElementType>;
 
-export const Button = <C extends ElementType = 'button'>(props: ReactButtonProps<C>) => {
+type ButtonComponent = {
+  <C extends ElementType = 'button'>(props: ButtonProps<C>): ReactElement | null;
+  (props: ButtonAutoAnchorProps): ReactElement | null;
+};
+
+export const Button: ButtonComponent = (props: ButtonRenderableProps) => {
   const {
     component,
-    ref,
-    variant = 'contained',
-    size = 'md',
-    color = 'primary',
-    disabled = false,
-    fullWidth = false,
     className,
     children,
+    startIcon: startIconProp,
+    endIcon: endIconProp,
+    loading = false,
+    loadingIndicator: loadingIndicatorProp,
+    loadingPosition = 'center',
+    disabled = false,
     ...rest
   } = props;
 
-  const Component = (component ?? 'button') as ElementType;
-  const isNativeButton = Component === 'button';
+  const labelId = useId();
 
   const classNames = cx(
-    'ui-button',
-    `ui-button--variant-${variant}`,
-    `ui-button--size-${size}`,
-    `ui-button--color-${color}`,
-    fullWidth && 'ui-button--fullWidth',
+    buttonClasses.root,
+    loading && buttonClasses.loading,
+    loading && loadingPosition === 'start' && buttonClasses.loadingPositionStart,
+    loading && loadingPosition === 'center' && buttonClasses.loadingPositionCenter,
+    loading && loadingPosition === 'end' && buttonClasses.loadingPositionEnd,
     className,
   );
 
-  if (isNativeButton) {
-    const nativeButtonProps = rest as Omit<
-      ComponentPropsWithRef<'button'>,
-      keyof ButtonOwnProps | 'component' | 'color'
-    >;
+  const startIcon =
+    startIconProp != null || (loading && loadingPosition === 'start') ? (
+      <span className={cx(buttonClasses.icon, buttonClasses.startIcon)} aria-hidden="true">
+        {startIconProp ?? <span className={buttonClasses.loadingIconPlaceholder} />}
+      </span>
+    ) : null;
 
-    return (
-      <button
-        {...nativeButtonProps}
-        ref={ref as ComponentPropsWithRef<'button'>['ref']}
-        type={nativeButtonProps.type ?? 'button'}
-        disabled={disabled}
-        aria-disabled={disabled || undefined}
-        className={classNames}
-      >
+  const endIcon =
+    endIconProp != null || (loading && loadingPosition === 'end') ? (
+      <span className={cx(buttonClasses.icon, buttonClasses.endIcon)} aria-hidden="true">
+        {endIconProp ?? <span className={buttonClasses.loadingIconPlaceholder} />}
+      </span>
+    ) : null;
+
+  const loadingIndicator = (
+    <span
+      className={buttonClasses.loadingIndicator}
+      role="progressbar"
+      aria-labelledby={children != null ? labelId : undefined}
+    >
+      {loadingIndicatorProp ?? <span className={buttonClasses.spinner} aria-hidden="true" />}
+    </span>
+  );
+
+  const loader = loading ? (
+    <span className={buttonClasses.loadingWrapper}>{loadingIndicator}</span>
+  ) : null;
+
+  const content =
+    children != null ? (
+      <span id={labelId} className={buttonClasses.label}>
         {children}
-      </button>
-    );
-  }
-
-  const componentProps = rest as Omit<PropsOf<C>, keyof ButtonOwnProps | 'component' | 'color'>;
+      </span>
+    ) : null;
 
   return (
-    <Component
-      {...componentProps}
-      ref={ref}
-      aria-disabled={disabled || undefined}
+    <ButtonBase
+      {...(rest as ButtonBaseAutoAnchorProps | ButtonBaseProps<ElementType>)}
+      {...(component != null ? { component } : {})}
       className={classNames}
+      disabled={disabled || loading}
     >
-      {children}
-    </Component>
+      {startIcon}
+      {loadingPosition !== 'end' ? loader : null}
+      {content}
+      {loadingPosition === 'end' ? loader : null}
+      {endIcon}
+    </ButtonBase>
   );
 };
