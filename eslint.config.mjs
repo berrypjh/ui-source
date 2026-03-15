@@ -1,15 +1,18 @@
 import nx from '@nx/eslint-plugin';
+import storybook from 'eslint-plugin-storybook';
 
 export default [
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
+  ...storybook.configs['flat/recommended'],
   {
     ignores: [
       '**/dist',
       '**/out-tsc',
       '**/vitest.config.*.timestamp*',
       '**/vite.config.*.timestamp*',
+      '!.storybook',
     ],
   },
   {
@@ -41,7 +44,6 @@ export default [
       '**/*.cjs',
       '**/*.mjs',
     ],
-    // Override or add rules here
     rules: {},
   },
 ];
