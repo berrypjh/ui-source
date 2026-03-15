@@ -1,22 +1,25 @@
-import { CSSProperties, ReactNode } from 'react';
+import type { ComponentPropsWithRef, ReactNode } from 'react';
 import { cx } from '@berrypjh/ui-core';
 import type { ThemeName } from '@berrypjh/ui-core';
 
-export interface ThemeProviderProps {
+export const themeProviderClasses = {
+  root: 'ui-theme-root',
+} as const;
+
+export interface ThemeProviderProps extends Omit<ComponentPropsWithRef<'div'>, 'children'> {
   mode?: ThemeName;
-  className?: string;
-  style?: CSSProperties;
   children: ReactNode;
 }
 
 export const ThemeProvider = ({
   mode = 'global',
   className,
-  style,
   children,
+  ref,
+  ...rest
 }: ThemeProviderProps) => {
   return (
-    <div data-theme={mode} className={cx('ui-theme-root', className)} style={style}>
+    <div {...rest} ref={ref} data-theme={mode} className={cx(themeProviderClasses.root, className)}>
       {children}
     </div>
   );
