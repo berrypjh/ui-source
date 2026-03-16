@@ -55,13 +55,11 @@ export const BubbleButton = (props: BubbleButtonRenderableProps): ReactElement |
     style?: CSSProperties;
   };
 
-  const rootStyle = {
-    ...style,
+  const wrapperStyle = {
     '--ui-bubble-delay': `${delay}s`,
   } as CSSProperties;
 
-  const classNames = cx(
-    bubbleButtonClasses.wrapper,
+  const rootClassNames = cx(
     bubbleButtonClasses.root,
     size === 'sm' && bubbleButtonClasses.sizeSm,
     size === 'md' && bubbleButtonClasses.sizeMd,
@@ -70,32 +68,38 @@ export const BubbleButton = (props: BubbleButtonRenderableProps): ReactElement |
   );
 
   return (
-    <ButtonBase
-      {...(rest as ButtonBaseAutoAnchorProps | ButtonBaseProps<ElementType>)}
-      {...(component != null ? { component } : {})}
-      className={classNames}
-      style={rootStyle}
-      disabled={disabled}
-      size={size}
-      variant="text"
+    <span
+      className={bubbleButtonClasses.wrapper}
+      style={wrapperStyle}
+      data-disabled={disabled ? 'true' : undefined}
     >
-      <span className={bubbleButtonClasses.glow} aria-hidden="true" />
-      <span className={bubbleButtonClasses.surface} aria-hidden="true">
-        <span className={bubbleButtonClasses.border} />
-        <span className={bubbleButtonClasses.highlight} />
-      </span>
-      <span className={bubbleButtonClasses.ring} aria-hidden="true" />
+      <ButtonBase
+        {...(rest as ButtonBaseAutoAnchorProps | ButtonBaseProps<ElementType>)}
+        {...(component != null ? { component } : {})}
+        className={rootClassNames}
+        style={style}
+        disabled={disabled}
+        size={size}
+        variant="text"
+      >
+        <span className={bubbleButtonClasses.glow} aria-hidden="true" />
+        <span className={bubbleButtonClasses.surface} aria-hidden="true">
+          <span className={bubbleButtonClasses.border} />
+          <span className={bubbleButtonClasses.highlight} />
+        </span>
+        <span className={bubbleButtonClasses.ring} aria-hidden="true" />
 
-      <span className={bubbleButtonClasses.content}>
-        {icon != null ? (
-          <span className={bubbleButtonClasses.icon} aria-hidden="true">
-            <span className={bubbleButtonClasses.iconGlow} />
-            {icon}
-          </span>
-        ) : null}
+        <span className={bubbleButtonClasses.content}>
+          {icon != null ? (
+            <span className={bubbleButtonClasses.icon} aria-hidden="true">
+              <span className={bubbleButtonClasses.iconGlow} />
+              {icon}
+            </span>
+          ) : null}
 
-        <span className={bubbleButtonClasses.label}>{label}</span>
-      </span>
-    </ButtonBase>
+          <span className={bubbleButtonClasses.label}>{label}</span>
+        </span>
+      </ButtonBase>
+    </span>
   );
 };

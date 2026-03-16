@@ -49,8 +49,18 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   animation: ui-bubble-float 4s ease-in-out infinite;
   animation-delay: var(--ui-bubble-delay, 0s);
+  will-change: transform;
+}
+
+.ui-bubble-button-wrapper[data-disabled='true'] {
+  animation: none;
+}
+
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover {
+  animation-play-state: paused;
 }
 
 .ui-bubble-button {
@@ -116,17 +126,21 @@
   --ui-bubble-icon-shadow-disabled: rgb(var(--ds-neutral-ne400-rgb) / 0.18);
 
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   inline-size: var(--ui-bubble-size);
   block-size: var(--ui-bubble-size);
   min-inline-size: var(--ui-bubble-size);
   min-block-size: var(--ui-bubble-size);
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   isolation: isolate;
   border-radius: var(--ds-radius-rounded);
   text-decoration: none;
   transform: translateZ(0);
   box-shadow: var(--ui-bubble-shadow);
+  will-change: transform, box-shadow, filter;
   transition:
     transform 180ms ease,
     box-shadow 220ms ease,
@@ -198,7 +212,7 @@
   --ui-bubble-icon-size: 3rem;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button {
   transform: scale(1.08) translateY(-2px);
   box-shadow: var(--ui-bubble-shadow-hover);
 }
@@ -220,11 +234,6 @@
   filter: saturate(0.7);
 }
 
-.ui-bubble-button:disabled.ui-bubble-button-wrapper,
-.ui-bubble-button[aria-disabled='true'].ui-bubble-button-wrapper {
-  animation: none;
-}
-
 .ui-bubble-button__glow,
 .ui-bubble-button__surface,
 .ui-bubble-button__ring {
@@ -235,6 +244,7 @@
 }
 
 .ui-bubble-button__glow {
+  z-index: 0;
   background: radial-gradient(circle, var(--ui-bubble-glow) 0%, transparent 70%);
   filter: blur(18px);
   opacity: 0.65;
@@ -246,7 +256,7 @@
     background 220ms ease;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__glow {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__glow {
   opacity: 1;
   transform: scale(1.34);
   background: radial-gradient(circle, var(--ui-bubble-glow-hover) 0%, transparent 72%);
@@ -254,6 +264,7 @@
 }
 
 .ui-bubble-button__surface {
+  z-index: 1;
   overflow: hidden;
   background: linear-gradient(
     135deg,
@@ -267,7 +278,7 @@
     opacity 220ms ease;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__surface {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__surface {
   background: linear-gradient(
     135deg,
     var(--ui-bubble-highlight-hover) 0%,
@@ -301,7 +312,7 @@
     filter 220ms ease;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__border {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__border {
   opacity: 1;
   filter: brightness(1.08);
   animation: ui-bubble-rotate-border 2.2s linear infinite;
@@ -317,7 +328,7 @@
     background 220ms ease;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__highlight {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__highlight {
   background: radial-gradient(
     circle at 28% 26%,
     var(--ui-bubble-highlight-hover) 0%,
@@ -326,17 +337,18 @@
 }
 
 .ui-bubble-button__ring {
+  z-index: 2;
   border: 1px solid rgb(var(--ds-neutral-ne100-rgb) / 0.24);
   opacity: 0;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__ring {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__ring {
   animation: ui-bubble-pulse-ring 1.4s ease-out infinite;
 }
 
 .ui-bubble-button__content {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -359,7 +371,7 @@
     filter 220ms ease;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__icon {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__icon {
   transform: scale(1.06);
 }
 
@@ -373,8 +385,8 @@
   transition: filter 220ms ease;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__icon > svg,
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__icon > img {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__icon > svg,
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__icon > img {
   filter: drop-shadow(0 4px 14px var(--ui-bubble-icon-shadow-hover));
 }
 
@@ -394,7 +406,7 @@
     background 220ms ease;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__icon-glow {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__icon-glow {
   background: radial-gradient(circle, var(--ui-bubble-glow-hover) 0%, transparent 72%);
   filter: blur(16px);
 }
@@ -415,7 +427,7 @@
     opacity 180ms ease;
 }
 
-.ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__label {
+.ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__label {
   color: var(--ui-bubble-label-strong);
   text-shadow: 0 0 12px var(--ui-bubble-icon-shadow-hover);
 }
@@ -491,8 +503,8 @@
 @media (prefers-reduced-motion: reduce) {
   .ui-bubble-button-wrapper,
   .ui-bubble-button__icon-glow,
-  .ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__ring,
-  .ui-bubble-button:not(:disabled):not([aria-disabled='true']):hover .ui-bubble-button__border {
+  .ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__ring,
+  .ui-bubble-button-wrapper:not([data-disabled='true']):hover .ui-bubble-button__border {
     animation: none;
   }
 
