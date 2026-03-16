@@ -39,12 +39,7 @@ export type ButtonAutoAnchorProps = ButtonBaseAutoAnchorProps & ButtonExtraProps
 
 type ButtonRenderableProps = ButtonAutoAnchorProps | ButtonProps<ElementType>;
 
-type ButtonComponent = {
-  <C extends ElementType = 'button'>(props: ButtonProps<C>): ReactElement | null;
-  (props: ButtonAutoAnchorProps): ReactElement | null;
-};
-
-export const Button: ButtonComponent = (props: ButtonRenderableProps) => {
+export const Button = (props: ButtonRenderableProps): ReactElement | null => {
   const {
     component,
     className,
