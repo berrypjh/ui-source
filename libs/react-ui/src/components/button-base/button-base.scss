@@ -42,39 +42,42 @@ $colors: (
     solid-bg-hover: var(--ds-primary-btn-hover),
     solid-bg-disabled: var(--ds-primary-btn-disabled),
     solid-fg: var(--ds-text-contrast-text),
-    solid-focus: var(--ds-primary-btn-focus-ripple),
+    solid-focus-halo: var(--ds-primary-btn-focus-ripple),
+    focus-ring: var(--ds-border-primary-color),
     outline-border: var(--ds-border-primary-color),
     outline-bg-hover: var(--ds-primary-btn-outlined-hover),
-    outline-focus: var(--ds-primary-btn-outlined-focus-ripple),
+    outline-focus-halo: var(--ds-primary-btn-focus-ripple),
     text-fg: var(--ds-text-primary),
     text-bg-hover: var(--ds-primary-pr100),
-    text-focus: var(--ds-primary-btn-focus-ripple),
+    text-focus-halo: var(--ds-primary-btn-focus-ripple),
   ),
   secondary: (
     solid-bg: var(--ds-secondary-se500),
     solid-bg-hover: var(--ds-secondary-se700),
     solid-bg-disabled: var(--ds-neutral-ne300),
     solid-fg: var(--ds-text-contrast-text),
-    solid-focus: var(--ds-stroke-secondary),
+    solid-focus-halo: var(--ds-secondary-se100),
+    focus-ring: var(--ds-stroke-secondary),
     outline-border: var(--ds-stroke-secondary),
     outline-bg-hover: var(--ds-secondary-se100),
-    outline-focus: var(--ds-stroke-secondary),
+    outline-focus-halo: var(--ds-secondary-se100),
     text-fg: var(--ds-text-secondary),
     text-bg-hover: var(--ds-secondary-se100),
-    text-focus: var(--ds-stroke-secondary),
+    text-focus-halo: var(--ds-secondary-se100),
   ),
   error: (
     solid-bg: var(--ds-error-er600),
     solid-bg-hover: var(--ds-error-er700),
     solid-bg-disabled: var(--ds-neutral-ne300),
     solid-fg: var(--ds-text-contrast-text),
-    solid-focus: var(--ds-stroke-error),
+    solid-focus-halo: var(--ds-error-er100),
+    focus-ring: var(--ds-stroke-error),
     outline-border: var(--ds-stroke-error),
     outline-bg-hover: var(--ds-error-er100),
-    outline-focus: var(--ds-stroke-error),
+    outline-focus-halo: var(--ds-error-er100),
     text-fg: var(--ds-text-error),
     text-bg-hover: var(--ds-error-er100),
-    text-focus: var(--ds-stroke-error),
+    text-focus-halo: var(--ds-error-er100),
   ),
 );
 
@@ -103,15 +106,17 @@ $colors: (
   --ui-solid-bg-hover: #{map.get($c, solid-bg-hover)};
   --ui-solid-bg-disabled: #{map.get($c, solid-bg-disabled)};
   --ui-solid-fg: #{map.get($c, solid-fg)};
-  --ui-solid-focus: #{map.get($c, solid-focus)};
+  --ui-solid-focus-halo: #{map.get($c, solid-focus-halo)};
 
   --ui-outline-border: #{map.get($c, outline-border)};
   --ui-outline-bg-hover: #{map.get($c, outline-bg-hover)};
-  --ui-outline-focus: #{map.get($c, outline-focus)};
+  --ui-outline-focus-halo: #{map.get($c, outline-focus-halo)};
 
   --ui-text-fg: #{map.get($c, text-fg)};
   --ui-text-bg-hover: #{map.get($c, text-bg-hover)};
-  --ui-text-focus: #{map.get($c, text-focus)};
+  --ui-text-focus-halo: #{map.get($c, text-focus-halo)};
+
+  --ui-focus-ring-color: #{map.get($c, focus-ring)};
 }
 
 /* =========================
@@ -132,7 +137,7 @@ $colors: (
   --ui-btn-letter-spacing: var(--ds-body-medium-strong-letter-spacing);
   --ui-btn-line-height: calc(var(--ds-body-medium-strong-line-height) * 1px);
 
-  /* interactive (resolved by variant + color) */
+  /* interactive */
   --ui-btn-bg: transparent;
   --ui-btn-bg-hover: transparent;
   --ui-btn-bg-disabled: transparent;
@@ -144,8 +149,12 @@ $colors: (
   --ui-btn-bc: transparent;
   --ui-btn-bc-disabled: var(--ds-border-disabled-color);
 
-  --ui-btn-focus-color: var(--ds-primary-btn-focus-ripple);
+  /* keyboard focus */
+  --ui-btn-focus-ring-color: var(--ds-border-primary-color);
+  --ui-btn-focus-halo-color: var(--ds-primary-btn-focus-ripple);
   --ui-btn-focus-width: var(--ds-semantic-border-focus);
+  --ui-btn-focus-outline-width: var(--ds-border-primary-width);
+  --ui-btn-focus-offset: var(--ds-spacing-xxsm);
 
   display: inline-flex;
   align-items: center;
@@ -170,12 +179,14 @@ $colors: (
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
 
   transition:
     background-color 140ms ease,
     color 140ms ease,
     border-color 140ms ease,
     box-shadow 140ms ease,
+    outline-color 140ms ease,
     transform 60ms ease;
 
   &:hover:not(:disabled):not([aria-disabled='true']) {
@@ -186,9 +197,14 @@ $colors: (
     transform: translateY(1px);
   }
 
-  &:focus-visible {
+  &:focus {
     outline: none;
-    box-shadow: 0 0 0 var(--ui-btn-focus-width) var(--ui-btn-focus-color);
+  }
+
+  &:focus-visible {
+    outline: var(--ui-btn-focus-outline-width) solid var(--ui-btn-focus-ring-color);
+    outline-offset: var(--ui-btn-focus-offset);
+    box-shadow: 0 0 0 var(--ui-btn-focus-width) var(--ui-btn-focus-halo-color);
   }
 
   &:disabled,
@@ -199,6 +215,7 @@ $colors: (
     border-color: var(--ui-btn-bc-disabled);
     transform: none;
     box-shadow: none;
+    outline: none;
   }
 }
 
@@ -238,8 +255,8 @@ $colors: (
   --ui-btn-bw: 0px;
   --ui-btn-bc: transparent;
 
-  --ui-btn-focus-color: var(--ui-solid-focus);
-  --ui-btn-focus-width: var(--ds-semantic-border-focus);
+  --ui-btn-focus-ring-color: var(--ui-focus-ring-color);
+  --ui-btn-focus-halo-color: var(--ui-solid-focus-halo);
 }
 
 .ui-button--variant-outlined {
@@ -252,11 +269,10 @@ $colors: (
 
   --ui-btn-bw: var(--ds-border-primary-width);
   --ui-btn-bc: var(--ui-outline-border);
-
   --ui-btn-bc-disabled: var(--ds-border-disabled-color);
 
-  --ui-btn-focus-color: var(--ui-outline-focus);
-  --ui-btn-focus-width: var(--ds-semantic-border-focus);
+  --ui-btn-focus-ring-color: var(--ui-focus-ring-color);
+  --ui-btn-focus-halo-color: var(--ui-outline-focus-halo);
 }
 
 .ui-button--variant-text {
@@ -270,6 +286,6 @@ $colors: (
   --ui-btn-bw: 0px;
   --ui-btn-bc: transparent;
 
-  --ui-btn-focus-color: var(--ui-text-focus);
-  --ui-btn-focus-width: var(--ds-semantic-border-focus);
+  --ui-btn-focus-ring-color: var(--ui-focus-ring-color);
+  --ui-btn-focus-halo-color: var(--ui-text-focus-halo);
 }
