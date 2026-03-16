@@ -5,7 +5,6 @@ import type { ElementType, ReactElement, ReactNode } from 'react';
 import { cx, type ButtonColor, type ButtonSize } from '@berrypjh/ui-core';
 
 import { ButtonBase, type ButtonBaseAutoAnchorProps, type ButtonBaseProps } from '../button-base';
-
 import './icon-button.scss';
 
 export const iconButtonClasses = {

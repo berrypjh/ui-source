@@ -1,0 +1,158 @@
+.ui-fab {
+  --ui-fab-size: var(--ds-font-size-7xl);
+  --ui-fab-padding-inline: 0;
+  --ui-fab-min-inline-size: var(--ui-fab-size);
+  --ui-fab-gap: var(--ds-spacing-xsm);
+  --ui-fab-icon-size: var(--ds-font-size-xl);
+
+  --ui-fab-shadow:
+    var(--ds-shadow-lg-1-offset-x) var(--ds-shadow-lg-1-offset-y) var(--ds-shadow-lg-1-blur)
+      var(--ds-shadow-lg-1-spread) var(--ds-shadow-lg-1-color),
+    var(--ds-shadow-lg-2-offset-x) var(--ds-shadow-lg-2-offset-y) var(--ds-shadow-lg-2-blur)
+      var(--ds-shadow-lg-2-spread) var(--ds-shadow-lg-2-color),
+    var(--ds-shadow-lg-3-offset-x) var(--ds-shadow-lg-3-offset-y) var(--ds-shadow-lg-3-blur)
+      var(--ds-shadow-lg-3-spread) var(--ds-shadow-lg-3-color);
+
+  --ui-fab-shadow-active:
+    var(--ds-shadow-xl-1-offset-x) var(--ds-shadow-xl-1-offset-y) var(--ds-shadow-xl-1-blur)
+      var(--ds-shadow-xl-1-spread) var(--ds-shadow-xl-1-color),
+    var(--ds-shadow-xl-2-offset-x) var(--ds-shadow-xl-2-offset-y) var(--ds-shadow-xl-2-blur)
+      var(--ds-shadow-xl-2-spread) var(--ds-shadow-xl-2-color),
+    var(--ds-shadow-xl-3-offset-x) var(--ds-shadow-xl-3-offset-y) var(--ds-shadow-xl-3-blur)
+      var(--ds-shadow-xl-3-spread) var(--ds-shadow-xl-3-color);
+
+  min-inline-size: var(--ui-fab-min-inline-size);
+  inline-size: var(--ui-fab-size);
+  block-size: var(--ui-fab-size);
+  min-block-size: var(--ui-fab-size);
+
+  padding-inline: var(--ui-fab-padding-inline);
+  padding-block: 0;
+  border-radius: var(--ds-radius-rounded);
+  text-decoration: none;
+  box-shadow: var(--ui-fab-shadow);
+
+  --ui-btn-px: 0;
+  --ui-btn-py: 0;
+  --ui-btn-radius: var(--ds-radius-rounded);
+  --ui-btn-bw: 0;
+  --ui-btn-bc: transparent;
+  --ui-btn-bc-disabled: transparent;
+}
+
+.ui-fab:hover:not(:disabled):not([aria-disabled='true']) {
+  text-decoration: none;
+}
+
+.ui-fab:active:not(:disabled):not([aria-disabled='true']) {
+  transform: none;
+  box-shadow: var(--ui-fab-shadow-active);
+}
+
+.ui-fab:disabled,
+.ui-fab[aria-disabled='true'] {
+  box-shadow: none;
+}
+
+.ui-fab__content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-fab-gap);
+  white-space: nowrap;
+}
+
+.ui-fab__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ui-fab-icon-size);
+  block-size: var(--ui-fab-icon-size);
+  flex: 0 0 var(--ui-fab-icon-size);
+  font-size: var(--ui-fab-icon-size);
+  line-height: 0;
+}
+
+.ui-fab__icon > svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.ui-fab__label {
+  display: inline-flex;
+  align-items: center;
+  line-height: inherit;
+}
+
+/* shape */
+.ui-fab--circular {
+  --ui-fab-padding-inline: 0;
+  --ui-fab-min-inline-size: var(--ui-fab-size);
+
+  inline-size: var(--ui-fab-size);
+}
+
+.ui-fab--extended {
+  --ui-fab-padding-inline: var(--ds-spacing-xlg);
+  --ui-fab-min-inline-size: var(--ds-spacing-5xl);
+
+  inline-size: auto;
+}
+
+.ui-fab--extended.ui-fab--size-sm {
+  --ui-fab-padding-inline: var(--ds-spacing-sm);
+  --ui-fab-min-inline-size: calc(
+    var(--ds-spacing-xxl) + var(--ds-spacing-xxsm) - var(--ds-primitive-border-sm)
+  );
+}
+
+.ui-fab--extended.ui-fab--size-md {
+  --ui-fab-padding-inline: var(--ds-spacing-xlg);
+  --ui-fab-min-inline-size: var(--ds-spacing-4xl);
+}
+
+.ui-fab--extended.ui-fab--size-lg {
+  --ui-fab-padding-inline: var(--ds-spacing-xlg);
+  --ui-fab-min-inline-size: var(--ds-spacing-5xl);
+}
+
+/* size */
+.ui-fab--size-sm {
+  --ui-fab-size: var(--ds-spacing-4xl);
+  --ui-fab-icon-size: var(--ds-font-size-md);
+}
+
+.ui-fab--size-md {
+  --ui-fab-size: var(--ds-spacing-5xl);
+  --ui-fab-icon-size: var(--ds-font-size-lg);
+}
+
+.ui-fab--size-lg {
+  --ui-fab-size: var(--ds-font-size-7xl);
+  --ui-fab-icon-size: var(--ds-font-size-xl);
+}
+
+/* color */
+.ui-fab--color-primary {
+  --ui-btn-bg: var(--ds-primary-btn-default);
+  --ui-btn-bg-hover: var(--ds-primary-btn-hover);
+  --ui-btn-bg-disabled: var(--ds-primary-btn-disabled);
+  --ui-btn-fg: var(--ds-text-contrast-text);
+  --ui-btn-fg-disabled: var(--ds-text-disable);
+  --ui-btn-focus-color: var(--ds-primary-btn-focus-ripple);
+}
+
+.ui-fab--color-secondary {
+  --ui-btn-bg: var(--ds-secondary-se500);
+  --ui-btn-bg-hover: var(--ds-secondary-se700);
+  --ui-btn-bg-disabled: var(--ds-neutral-ne300);
+  --ui-btn-fg: var(--ds-text-contrast-text);
+  --ui-btn-fg-disabled: var(--ds-text-disable);
+  --ui-btn-focus-color: var(--ds-stroke-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-fab {
+    transition: none;
+  }
+}
