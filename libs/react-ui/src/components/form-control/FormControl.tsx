@@ -1,6 +1,15 @@
 'use client';
 
-import * as React from 'react';
+import type { ElementType, ReactElement, ReactNode, Ref, FocusEventHandler } from 'react';
+import {
+  Children,
+  isValidElement,
+  useMemo,
+  useState,
+  useEffect,
+  useCallback,
+  createElement,
+} from 'react';
 import { cx } from '@berrypjh/ui-core';
 
 import type { CoreFormControlProps, PolymorphicComponentPropsWithRef } from '../../types';
@@ -29,19 +38,21 @@ export const formControlClasses = {
 } as const;
 
 type FormControlOwnProps = CoreFormControlProps & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
   focused?: boolean;
 };
 
-export type FormControlProps<C extends React.ElementType = 'div'> =
-  PolymorphicComponentPropsWithRef<C, FormControlOwnProps>;
+export type FormControlProps<C extends ElementType = 'div'> = PolymorphicComponentPropsWithRef<
+  C,
+  FormControlOwnProps
+>;
 
 type FormControlImplementationProps = FormControlOwnProps & {
-  component?: React.ElementType;
-  ref?: React.Ref<unknown>;
-  onFocus?: React.FocusEventHandler<Element>;
-  onBlur?: React.FocusEventHandler<Element>;
+  component?: ElementType;
+  ref?: Ref<unknown>;
+  onFocus?: FocusEventHandler<Element>;
+  onBlur?: FocusEventHandler<Element>;
 };
 
 type DerivedChildState = {
@@ -50,11 +61,11 @@ type DerivedChildState = {
 };
 
 type InspectableElementProps = {
-  children?: React.ReactNode;
-  input?: React.ReactNode;
+  children?: ReactNode;
+  input?: ReactNode;
   value?: unknown;
   defaultValue?: unknown;
-  startAdornment?: React.ReactNode;
+  startAdornment?: ReactNode;
   inputProps?: {
     value?: unknown;
     defaultValue?: unknown;
@@ -74,14 +85,14 @@ const mergeDerivedState = (a: DerivedChildState, b: DerivedChildState): DerivedC
   adornedStart: a.adornedStart || b.adornedStart,
 });
 
-const deriveStateFromChildren = (children: React.ReactNode): DerivedChildState => {
+const deriveStateFromChildren = (children: ReactNode): DerivedChildState => {
   let state: DerivedChildState = {
     filled: false,
     adornedStart: false,
   };
 
-  React.Children.forEach(children, (child) => {
-    if (!React.isValidElement(child)) {
+  Children.forEach(children, (child) => {
+    if (!isValidElement(child)) {
       return;
     }
 
@@ -110,7 +121,9 @@ const deriveStateFromChildren = (children: React.ReactNode): DerivedChildState =
   return state;
 };
 
-export const FormControl = <C extends React.ElementType = 'div'>(props: FormControlProps<C>) => {
+export const FormControl = <C extends ElementType = 'div'>(
+  props: FormControlProps<C>,
+): ReactElement | null => {
   const {
     children,
     className,
@@ -131,15 +144,15 @@ export const FormControl = <C extends React.ElementType = 'div'>(props: FormCont
     ...rest
   } = props as FormControlImplementationProps;
 
-  const Component = (component ?? 'div') as React.ElementType;
+  const Component = (component ?? 'div') as ElementType;
 
-  const derivedChildState = React.useMemo(() => deriveStateFromChildren(children), [children]);
+  const derivedChildState = useMemo(() => deriveStateFromChildren(children), [children]);
 
-  const [focusedState, setFocusedState] = React.useState(false);
-  const [filledState, setFilledState] = React.useState(false);
-  const [adornedStartState, setAdornedStartState] = React.useState(false);
+  const [focusedState, setFocusedState] = useState(false);
+  const [filledState, setFilledState] = useState(false);
+  const [adornedStartState, setAdornedStartState] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (disabled) {
       setFocusedState(false);
     }
@@ -149,7 +162,7 @@ export const FormControl = <C extends React.ElementType = 'div'>(props: FormCont
   const filled = derivedChildState.filled || filledState;
   const adornedStart = derivedChildState.adornedStart || adornedStartState;
 
-  const handleFocus = React.useCallback<React.FocusEventHandler<Element>>(
+  const handleFocus = useCallback<FocusEventHandler<Element>>(
     (event) => {
       onFocus?.(event);
 
@@ -160,7 +173,7 @@ export const FormControl = <C extends React.ElementType = 'div'>(props: FormCont
     [disabled, onFocus],
   );
 
-  const handleBlur = React.useCallback<React.FocusEventHandler<Element>>(
+  const handleBlur = useCallback<FocusEventHandler<Element>>(
     (event) => {
       onBlur?.(event);
 
@@ -175,25 +188,25 @@ export const FormControl = <C extends React.ElementType = 'div'>(props: FormCont
     [onBlur],
   );
 
-  const handleContextFocus = React.useCallback(() => {
+  const handleContextFocus = useCallback(() => {
     if (!disabled) {
       setFocusedState(true);
     }
   }, [disabled]);
 
-  const handleContextBlur = React.useCallback(() => {
+  const handleContextBlur = useCallback(() => {
     setFocusedState(false);
   }, []);
 
-  const handleFilled = React.useCallback(() => {
+  const handleFilled = useCallback(() => {
     setFilledState(true);
   }, []);
 
-  const handleEmpty = React.useCallback(() => {
+  const handleEmpty = useCallback(() => {
     setFilledState(false);
   }, []);
 
-  const contextValue = React.useMemo(
+  const contextValue = useMemo(
     () => ({
       adornedStart,
       color,
@@ -264,7 +277,7 @@ export const FormControl = <C extends React.ElementType = 'div'>(props: FormCont
 
   return (
     <FormControlContext.Provider value={contextValue}>
-      {React.createElement(Component, rootProps, children)}
+      {createElement(Component, rootProps, children)}
     </FormControlContext.Provider>
   );
 };

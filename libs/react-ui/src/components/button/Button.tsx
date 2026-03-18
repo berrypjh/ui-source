@@ -113,3 +113,5 @@ export const Button = (props: ButtonRenderableProps): ReactElement | null => {
     </ButtonBase>
   );
 };
+
+Button.displayName = 'Button';

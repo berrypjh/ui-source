@@ -116,3 +116,5 @@ export const IconButton = (props: IconButtonRenderableProps): ReactElement | nul
     </ButtonBase>
   );
 };
+
+IconButton.displayName = 'IconButton';

@@ -103,3 +103,5 @@ export const BubbleButton = (props: BubbleButtonRenderableProps): ReactElement |
     </span>
   );
 };
+
+BubbleButton.displayName = 'BubbleButton';

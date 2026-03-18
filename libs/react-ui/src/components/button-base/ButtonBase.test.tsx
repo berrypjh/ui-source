@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { ButtonHTMLAttributes, HTMLAttributes, Ref } from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
@@ -96,10 +96,13 @@ describe('<ButtonBase />', () => {
     });
 
     it('custom component에도 type을 전달한다', () => {
-      const CustomButton = React.forwardRef<
-        HTMLButtonElement,
-        React.ButtonHTMLAttributes<HTMLButtonElement>
-      >((props, ref) => <button ref={ref} {...props} />);
+      type CustomButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+        ref?: Ref<HTMLButtonElement>;
+      };
+
+      const CustomButton = ({ ref, ...props }: CustomButtonProps) => (
+        <button ref={ref} {...props} />
+      );
 
       render(<ButtonBase component={CustomButton} type="reset" />);
 
@@ -292,9 +295,13 @@ describe('<ButtonBase />', () => {
   });
 
   describe('prop: component', () => {
-    it('forwardRef 기반의 link component를 사용할 수 있다', () => {
-      const Link = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-        (props, ref) => <div data-testid="link" ref={ref} {...props} />,
+    it('ref prop을 받는 custom link component를 사용할 수 있다', () => {
+      type LinkProps = HTMLAttributes<HTMLDivElement> & {
+        ref?: Ref<HTMLDivElement>;
+      };
+
+      const Link = ({ ref, ...props }: LinkProps) => (
+        <div data-testid="link" ref={ref} {...props} />
       );
 
       render(<ButtonBase component={Link}>Hello</ButtonBase>);
@@ -306,8 +313,12 @@ describe('<ButtonBase />', () => {
     });
 
     it('custom component에서도 disabled 시 aria-disabled와 tabIndex가 적용된다', () => {
-      const Link = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-        (props, ref) => <div data-testid="link" ref={ref} {...props} />,
+      type LinkProps = HTMLAttributes<HTMLDivElement> & {
+        ref?: Ref<HTMLDivElement>;
+      };
+
+      const Link = ({ ref, ...props }: LinkProps) => (
+        <div data-testid="link" ref={ref} {...props} />
       );
 
       render(

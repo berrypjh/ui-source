@@ -204,3 +204,5 @@ export const ButtonBase = (props: ButtonBaseRenderableProps): ReactElement | nul
     </ComponentTag>
   );
 };
+
+ButtonBase.displayName = 'ButtonBase';

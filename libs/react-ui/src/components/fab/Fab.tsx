@@ -93,3 +93,5 @@ export const Fab = (props: FabRenderableProps): ReactElement | null => {
     </ButtonBase>
   );
 };
+
+Fab.displayName = 'Fab';
