@@ -14,6 +14,15 @@ describe('<BubbleButton />', () => {
     refInstanceof: HTMLButtonElement,
     polymorphicPropName: 'component',
     testPolymorphicPropWith: 'a',
+    getRootElement: (container) => {
+      const root = container.querySelector(`.${bubbleButtonClasses.root}`);
+
+      if (!(root instanceof HTMLElement)) {
+        throw new Error('BubbleButton root element를 찾을 수 없습니다.');
+      }
+
+      return root;
+    },
   }));
 
   describe('root', () => {

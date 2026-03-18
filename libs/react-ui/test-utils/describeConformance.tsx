@@ -33,6 +33,7 @@ export interface ConformanceOptions {
   testPolymorphicPropWith?: React.ElementType;
   only?: ConformanceTestKey[];
   skip?: ConformanceTestKey[];
+  getRootElement?: (container: HTMLElement) => HTMLElement;
 }
 
 type ConformanceTestFn = (
@@ -40,7 +41,7 @@ type ConformanceTestFn = (
   getOptions: () => ConformanceOptions,
 ) => void;
 
-const getRootElement = (container: HTMLElement): HTMLElement => {
+const getDefaultRootElement = (container: HTMLElement): HTMLElement => {
   const root = container.firstElementChild;
 
   if (!(root instanceof HTMLElement)) {
@@ -48,6 +49,19 @@ const getRootElement = (container: HTMLElement): HTMLElement => {
   }
 
   return root;
+};
+
+const resolveRootElement = (
+  container: HTMLElement,
+  getOptions: () => ConformanceOptions,
+): HTMLElement => {
+  const customGetRootElement = getOptions().getRootElement;
+
+  if (customGetRootElement) {
+    return customGetRootElement(container);
+  }
+
+  return getDefaultRootElement(container);
 };
 
 const testClassName: ConformanceTestFn = (element, getOptions) => {
@@ -119,7 +133,7 @@ const testRootClass: ConformanceTestFn = (element, getOptions) => {
       }),
     );
 
-    const root = getRootElement(result.container);
+    const root = resolveRootElement(result.container, getOptions);
 
     expect(root).toHaveClass(classes.root);
     expect(root).toHaveClass(customClassName);
