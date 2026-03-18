@@ -1,6 +1,2 @@
-export type {
-  PropsOf,
-  PolymorphicRef,
-  PolymorphicComponentProps,
-  PolymorphicComponentPropsWithRef,
-} from './polymorphic';
+export type * from './polymorphic';
+export type * from './field';

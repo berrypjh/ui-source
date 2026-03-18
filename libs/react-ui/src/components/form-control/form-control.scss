@@ -1,0 +1,24 @@
+.ui-form-control {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  vertical-align: top;
+}
+
+.ui-form-control--fullWidth {
+  width: 100%;
+}
+
+.ui-form-control--margin-dense {
+  margin-top: var(--ds-spacing-sm);
+  margin-bottom: var(--ds-spacing-xxsm);
+}
+
+.ui-form-control--margin-normal {
+  margin-top: var(--ds-spacing-mdl);
+  margin-bottom: var(--ds-spacing-sm);
+}
