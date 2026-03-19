@@ -1,14 +1,14 @@
 'use client';
 
-import type { ElementType, ReactElement, ReactNode, Ref, FocusEventHandler } from 'react';
+import type { ElementType, FocusEventHandler, ReactElement, ReactNode, Ref } from 'react';
 import {
   Children,
+  createElement,
   isValidElement,
+  useCallback,
+  useEffect,
   useMemo,
   useState,
-  useEffect,
-  useCallback,
-  createElement,
 } from 'react';
 import { cx } from '@berrypjh/ui-core';
 
@@ -19,22 +19,15 @@ import './form-control.scss';
 export const formControlClasses = {
   root: 'ui-form-control',
   fullWidth: 'ui-form-control--fullWidth',
-  marginNone: 'ui-form-control--margin-none',
   marginDense: 'ui-form-control--margin-dense',
   marginNormal: 'ui-form-control--margin-normal',
   hiddenLabel: 'ui-form-control--hidden-label',
   disabled: 'ui-form-control--disabled',
   error: 'ui-form-control--error',
   focused: 'ui-form-control--focused',
-  filled: 'ui-form-control--filled',
-  required: 'ui-form-control--required',
-  sizeSm: 'ui-form-control--size-sm',
-  sizeMd: 'ui-form-control--size-md',
-  variantStandard: 'ui-form-control--variant-standard',
+  variantPlain: 'ui-form-control--variant-plain',
   variantFilled: 'ui-form-control--variant-filled',
-  variantOutlined: 'ui-form-control--variant-outlined',
-  colorPrimary: 'ui-form-control--color-primary',
-  colorSecondary: 'ui-form-control--color-secondary',
+  variantBoxed: 'ui-form-control--variant-boxed',
 } as const;
 
 type FormControlOwnProps = CoreFormControlProps & {
@@ -137,7 +130,7 @@ export const FormControl = <C extends ElementType = 'div'>(
     margin = 'none',
     required = false,
     size = 'md',
-    variant = 'outlined',
+    variant = 'boxed',
     ref,
     onFocus,
     onBlur,
@@ -145,7 +138,6 @@ export const FormControl = <C extends ElementType = 'div'>(
   } = props as FormControlImplementationProps;
 
   const Component = (component ?? 'div') as ElementType;
-
   const derivedChildState = useMemo(() => deriveStateFromChildren(children), [children]);
 
   const [focusedState, setFocusedState] = useState(false);
@@ -253,17 +245,11 @@ export const FormControl = <C extends ElementType = 'div'>(
     disabled && formControlClasses.disabled,
     error && formControlClasses.error,
     focused && formControlClasses.focused,
-    filled && formControlClasses.filled,
-    required && formControlClasses.required,
-    size === 'sm' && formControlClasses.sizeSm,
-    size === 'md' && formControlClasses.sizeMd,
-    variant === 'standard' && formControlClasses.variantStandard,
-    variant === 'filled' && formControlClasses.variantFilled,
-    variant === 'outlined' && formControlClasses.variantOutlined,
-    color === 'primary' && formControlClasses.colorPrimary,
-    color === 'secondary' && formControlClasses.colorSecondary,
     margin === 'dense' && formControlClasses.marginDense,
     margin === 'normal' && formControlClasses.marginNormal,
+    variant === 'plain' && formControlClasses.variantPlain,
+    variant === 'filled' && formControlClasses.variantFilled,
+    variant === 'boxed' && formControlClasses.variantBoxed,
     className,
   );
 
