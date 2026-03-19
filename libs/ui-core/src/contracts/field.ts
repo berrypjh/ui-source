@@ -1,4 +1,4 @@
-export type FieldVariant = 'standard' | 'filled' | 'outlined';
+export type FieldVariant = 'plain' | 'filled' | 'boxed';
 export type FieldSize = 'sm' | 'md';
 export type FieldMargin = 'none' | 'dense' | 'normal';
 export type FieldColor = 'primary' | 'secondary';
