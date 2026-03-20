@@ -1,0 +1,27 @@
+.ui-form-helper-text {
+  margin: var(--ds-spacing-xxsm) 0 0;
+  color: var(--ds-text-light);
+  text-align: left;
+
+  font-family: var(--ds-caption-small-font-family);
+  font-size: var(--ds-caption-small-font-size);
+  font-weight: var(--ds-caption-small-font-weight);
+  letter-spacing: var(--ds-caption-small-letter-spacing);
+  line-height: calc(var(--ds-caption-small-line-height) * 1px);
+}
+
+.ui-form-helper-text--size-sm {
+  margin-top: var(--ds-spacing-xxsm);
+}
+
+.ui-form-helper-text--size-md {
+  margin-top: var(--ds-spacing-xxsm);
+}
+
+.ui-form-helper-text--disabled {
+  color: var(--ds-text-disable);
+}
+
+.ui-form-helper-text--error {
+  color: var(--ds-text-error);
+}
