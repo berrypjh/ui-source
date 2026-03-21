@@ -1,14 +1,7 @@
 'use client';
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  type ComponentPropsWithRef,
-  type MouseEventHandler,
-  type ReactElement,
-  type ReactNode,
-} from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { ComponentPropsWithRef, MouseEventHandler, ReactElement, ReactNode } from 'react';
 import { cx } from '@berrypjh/ui-core';
 
 import type {
@@ -43,6 +36,24 @@ export const inputBaseClasses = {
   endAdornment: 'ui-input-base__end-adornment',
 } as const;
 
+type NativeInputProps = Omit<
+  ComponentPropsWithRef<'input'>,
+  'size' | 'children' | 'defaultValue' | 'value'
+>;
+
+type NativeTextareaProps = Omit<
+  ComponentPropsWithRef<'textarea'>,
+  'children' | 'defaultValue' | 'value'
+>;
+
+type NativeInputFocusHandler = NonNullable<ComponentPropsWithRef<'input'>['onFocus']>;
+type NativeInputBlurHandler = NonNullable<ComponentPropsWithRef<'input'>['onBlur']>;
+type NativeInputChangeHandler = NonNullable<ComponentPropsWithRef<'input'>['onChange']>;
+
+type NativeTextareaFocusHandler = NonNullable<ComponentPropsWithRef<'textarea'>['onFocus']>;
+type NativeTextareaBlurHandler = NonNullable<ComponentPropsWithRef<'textarea'>['onBlur']>;
+type NativeTextareaChangeHandler = NonNullable<ComponentPropsWithRef<'textarea'>['onChange']>;
+
 export interface InputBaseProps
   extends Omit<
     ComponentPropsWithRef<'div'>,
@@ -60,6 +71,8 @@ export interface InputBaseProps
   fullWidth?: boolean;
   id?: string;
   inputClassName?: string;
+  inputProps?: NativeInputProps;
+  textareaProps?: NativeTextareaProps;
   inputRef?: unknown;
   multiline?: boolean;
   name?: string;
@@ -109,6 +122,8 @@ export const InputBase = ({
   fullWidth,
   id,
   inputClassName,
+  inputProps,
+  textareaProps,
   inputRef,
   multiline = false,
   name,
@@ -219,6 +234,50 @@ export const InputBase = ({
     }
   };
 
+  const handleNativeElementRef = (instance: unknown, externalRef?: unknown) => {
+    inputElementRef.current = instance as InputLikeElement | null;
+    assignRef(inputRef, instance);
+    assignRef(externalRef, instance);
+  };
+
+  const handleInputRef = (instance: unknown) => {
+    handleNativeElementRef(instance, inputProps?.ref);
+  };
+
+  const handleTextareaRef = (instance: unknown) => {
+    handleNativeElementRef(instance, textareaProps?.ref);
+  };
+
+  const handleInputFocus: NativeInputFocusHandler = (event) => {
+    inputProps?.onFocus?.(event);
+    handleFocus(event);
+  };
+
+  const handleInputBlur: NativeInputBlurHandler = (event) => {
+    inputProps?.onBlur?.(event);
+    handleBlur(event);
+  };
+
+  const handleInputChange: NativeInputChangeHandler = (event) => {
+    inputProps?.onChange?.(event);
+    handleChange(event);
+  };
+
+  const handleTextareaFocus: NativeTextareaFocusHandler = (event) => {
+    textareaProps?.onFocus?.(event);
+    handleFocus(event);
+  };
+
+  const handleTextareaBlur: NativeTextareaBlurHandler = (event) => {
+    textareaProps?.onBlur?.(event);
+    handleBlur(event);
+  };
+
+  const handleTextareaChange: NativeTextareaChangeHandler = (event) => {
+    textareaProps?.onChange?.(event);
+    handleChange(event);
+  };
+
   const rootClassNames = cx(
     inputBaseClasses.root,
     formControl && inputBaseClasses.formControl,
@@ -237,12 +296,15 @@ export const InputBase = ({
     className,
   );
 
-  const inputClassNames = cx(
+  const baseInputClassNames = cx(
     inputBaseClasses.input,
     resolvedSize === 'sm' && inputBaseClasses.inputSizeSm,
     hiddenLabel && inputBaseClasses.inputHiddenLabel,
     inputClassName,
   );
+
+  const inputElementClassNames = cx(baseInputClassNames, inputProps?.className);
+  const textareaElementClassNames = cx(baseInputClassNames, textareaProps?.className);
 
   const commonInputProps = {
     id,
@@ -254,14 +316,6 @@ export const InputBase = ({
     autoComplete,
     autoFocus,
     'aria-describedby': ariaDescribedby,
-    onFocus: handleFocus,
-    onBlur: handleBlur,
-    onChange: handleChange,
-    className: inputClassNames,
-    ref: (instance: unknown) => {
-      inputElementRef.current = instance as InputLikeElement | null;
-      assignRef(inputRef, instance);
-    },
   };
 
   const resolvedValue = Array.isArray(value)
@@ -285,17 +339,29 @@ export const InputBase = ({
 
       {multiline ? (
         <textarea
+          {...textareaProps}
           {...commonInputProps}
-          rows={rows}
+          rows={textareaProps?.rows ?? rows}
           defaultValue={resolvedDefaultValue}
           value={resolvedValue}
+          className={textareaElementClassNames}
+          onFocus={handleTextareaFocus}
+          onBlur={handleTextareaBlur}
+          onChange={handleTextareaChange}
+          ref={handleTextareaRef}
         />
       ) : (
         <input
+          {...inputProps}
           {...commonInputProps}
-          type={type}
+          type={inputProps?.type ?? type}
           defaultValue={resolvedDefaultValue}
           value={resolvedValue}
+          className={inputElementClassNames}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          onChange={handleInputChange}
+          ref={handleInputRef}
         />
       )}
 

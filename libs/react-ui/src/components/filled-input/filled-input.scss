@@ -1,0 +1,40 @@
+.ui-filled-input {
+  --ui-filled-input-bg: var(--ds-neutral-ne200);
+  --ui-filled-input-bg-hover: var(--ds-neutral-ne200);
+  --ui-filled-input-border: var(--ds-neutral-ne300);
+  --ui-filled-input-border-hover: var(--ds-neutral-ne500);
+
+  border: var(--ds-border-primary-width) solid var(--ui-filled-input-border);
+  border-radius: var(--ui-input-radius);
+  background-color: var(--ui-filled-input-bg);
+  box-shadow: none;
+}
+
+.ui-filled-input:hover:not(.ui-input-base--disabled):not(.ui-input-base--focused):not(
+    .ui-input-base--error
+  ) {
+  background-color: var(--ui-filled-input-bg-hover);
+  border-color: var(--ui-filled-input-border-hover);
+}
+
+.ui-filled-input.ui-input-base--focused {
+  border-color: var(--ui-input-active-color);
+  box-shadow: 0 0 0 2px var(--ui-input-focus-halo);
+}
+
+.ui-filled-input.ui-input-base--error {
+  border-color: var(--ds-stroke-error);
+}
+
+.ui-filled-input.ui-input-base--error.ui-input-base--focused {
+  box-shadow: 0 0 0 2px var(--ds-error-er100);
+}
+
+.ui-filled-input.ui-input-base--disabled {
+  border-color: var(--ds-border-disabled-color);
+  background-color: var(--ds-neutral-ne200);
+}
+
+.ui-filled-input__input {
+  min-height: calc(var(--ui-input-min-height) - (var(--ds-border-primary-width) * 2));
+}
