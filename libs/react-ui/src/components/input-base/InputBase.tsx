@@ -36,15 +36,21 @@ export const inputBaseClasses = {
   endAdornment: 'ui-input-base__end-adornment',
 } as const;
 
+type DataAttributes = {
+  [K in `data-${string}`]?: string | number | boolean | undefined;
+};
+
 type NativeInputProps = Omit<
   ComponentPropsWithRef<'input'>,
   'size' | 'children' | 'defaultValue' | 'value'
->;
+> &
+  DataAttributes;
 
 type NativeTextareaProps = Omit<
   ComponentPropsWithRef<'textarea'>,
   'children' | 'defaultValue' | 'value'
->;
+> &
+  DataAttributes;
 
 type NativeInputFocusHandler = NonNullable<ComponentPropsWithRef<'input'>['onFocus']>;
 type NativeInputBlurHandler = NonNullable<ComponentPropsWithRef<'input'>['onBlur']>;
@@ -160,13 +166,19 @@ export const InputBase = ({
     formControl?.setAdornedStart(Boolean(startAdornment));
   }, [formControl, startAdornment]);
 
+  const formControlOnFilled = formControl?.onFilled;
+  const formControlOnEmpty = formControl?.onEmpty;
   useEffect(() => {
-    if (hasValue(value ?? defaultValue)) {
-      formControl?.onFilled();
-    } else {
-      formControl?.onEmpty();
+    if (!formControlOnFilled || !formControlOnEmpty) {
+      return;
     }
-  }, [defaultValue, formControl, value]);
+
+    if (hasValue(value ?? defaultValue)) {
+      formControlOnFilled();
+    } else {
+      formControlOnEmpty();
+    }
+  }, [defaultValue, value, formControlOnFilled, formControlOnEmpty]);
 
   useEffect(() => {
     if (!resolvedDisabled) {
