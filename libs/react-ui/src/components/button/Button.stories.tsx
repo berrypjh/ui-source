@@ -20,9 +20,6 @@ const meta = {
     loadingPosition: 'center',
   },
   argTypes: {
-    children: {
-      control: 'text',
-    },
     variant: {
       control: 'select',
       options: ['contained', 'outlined', 'text'],
@@ -39,33 +36,16 @@ const meta = {
       control: 'select',
       options: ['start', 'center', 'end'],
     },
-    disabled: {
-      control: 'boolean',
-    },
-    fullWidth: {
-      control: 'boolean',
-    },
-    loading: {
-      control: 'boolean',
-    },
-    startIcon: {
-      control: false,
-    },
-    endIcon: {
-      control: false,
-    },
-    loadingIndicator: {
-      control: false,
-    },
-    component: {
-      control: false,
-    },
-    href: {
-      control: false,
-    },
-    ref: {
-      control: false,
-    },
+    disabled: { control: 'boolean' },
+    fullWidth: { control: 'boolean' },
+    loading: { control: 'boolean' },
+    onClick: { action: 'clicked' },
+    startIcon: { control: false },
+    endIcon: { control: false },
+    loadingIndicator: { control: false },
+    className: { control: false },
+    style: { control: false },
+    component: { control: false },
   },
 } satisfies Meta<typeof Button>;
 
@@ -83,106 +63,48 @@ const rowStyle = {
 const columnStyle = {
   display: 'grid',
   gap: '16px',
-  minWidth: '720px',
+  minWidth: '320px',
 };
+
+const ChevronRightIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M5 20H19V18H5M19 9H15V3H9V9H5L12 16L19 9Z" />
+  </svg>
+);
+
+const PlusIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+  </svg>
+);
 
 export const Playground: Story = {
   render: (args) => <Button {...args} />,
 };
 
-export const WithIcons: Story = {
+export const Default: Story = {
+  args: {
+    children: 'Save Changes',
+  },
+};
+
+export const AllVariants: Story = {
   render: () => (
     <div style={rowStyle}>
-      <Button startIcon={<span aria-hidden="true">←</span>}>Back</Button>
-      <Button endIcon={<span aria-hidden="true">→</span>}>Next</Button>
-      <Button
-        variant="outlined"
-        startIcon={<span aria-hidden="true">⭐</span>}
-        endIcon={<span aria-hidden="true">↗</span>}
-      >
-        Action
-      </Button>
+      <Button variant="contained">Contained</Button>
+      <Button variant="outlined">Outlined</Button>
+      <Button variant="text">Text</Button>
     </div>
   ),
 };
 
-export const LoadingStates: Story = {
-  render: () => (
-    <div style={rowStyle}>
-      <Button loading loadingPosition="start" startIcon={<span aria-hidden="true">⬇</span>}>
-        Start Loading
-      </Button>
-      <Button loading loadingPosition="center">
-        Center Loading
-      </Button>
-      <Button loading loadingPosition="end" endIcon={<span aria-hidden="true">→</span>}>
-        End Loading
-      </Button>
-    </div>
-  ),
-};
-
-export const CustomLoadingIndicator: Story = {
-  render: () => (
-    <Button
-      loading
-      loadingPosition="center"
-      loadingIndicator={
-        <span
-          aria-hidden="true"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '1em',
-            height: '1em',
-            fontSize: '14px',
-            lineHeight: 1,
-          }}
-        >
-          ⏳
-        </span>
-      }
-    >
-      Uploading
-    </Button>
-  ),
-};
-
-export const VariantsAndColors: Story = {
-  render: () => (
-    <div style={{ display: 'grid', gap: '16px' }}>
-      <div style={rowStyle}>
-        <Button variant="contained" color="primary">
-          Primary Contained
-        </Button>
-        <Button variant="contained" color="secondary">
-          Secondary Contained
-        </Button>
-      </div>
-
-      <div style={rowStyle}>
-        <Button variant="outlined" color="primary">
-          Primary Outlined
-        </Button>
-        <Button variant="outlined" color="secondary">
-          Secondary Outlined
-        </Button>
-      </div>
-
-      <div style={rowStyle}>
-        <Button variant="text" color="primary">
-          Primary Text
-        </Button>
-        <Button variant="text" color="secondary">
-          Secondary Text
-        </Button>
-      </div>
-    </div>
-  ),
-};
-
-export const Sizes: Story = {
+export const AllSizes: Story = {
   render: () => (
     <div style={rowStyle}>
       <Button size="sm">Small</Button>
@@ -192,29 +114,75 @@ export const Sizes: Story = {
   ),
 };
 
+export const AllColors: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <div style={rowStyle}>
+        <Button variant="contained" color="primary">
+          Primary
+        </Button>
+        <Button variant="contained" color="secondary">
+          Secondary
+        </Button>
+      </div>
+      <div style={rowStyle}>
+        <Button variant="outlined" color="primary">
+          Primary
+        </Button>
+        <Button variant="outlined" color="secondary">
+          Secondary
+        </Button>
+      </div>
+      <div style={rowStyle}>
+        <Button variant="text" color="primary">
+          Primary
+        </Button>
+        <Button variant="text" color="secondary">
+          Secondary
+        </Button>
+      </div>
+    </div>
+  ),
+};
+
 export const Disabled: Story = {
   render: () => (
     <div style={rowStyle}>
-      <Button disabled>Contained</Button>
-      <Button disabled variant="outlined">
+      <Button variant="contained" disabled>
+        Contained
+      </Button>
+      <Button variant="outlined" disabled>
         Outlined
       </Button>
-      <Button disabled variant="text">
+      <Button variant="text" disabled>
         Text
       </Button>
     </div>
   ),
 };
 
-export const AsLink: Story = {
+export const Loading: Story = {
   render: () => (
-    <div style={rowStyle}>
-      <Button href="/" target="_blank" rel="noreferrer">
-        Default Link
-      </Button>
-      <Button href="/" variant="outlined" target="_blank" rel="noreferrer">
-        Outlined Link
-      </Button>
+    <div style={columnStyle}>
+      <div style={rowStyle}>
+        <Button loading loadingPosition="start">
+          Loading Start
+        </Button>
+        <Button loading loadingPosition="center">
+          Loading Center
+        </Button>
+        <Button loading loadingPosition="end">
+          Loading End
+        </Button>
+      </div>
+      <div style={rowStyle}>
+        <Button variant="outlined" loading>
+          Outlined
+        </Button>
+        <Button variant="text" loading>
+          Text
+        </Button>
+      </div>
     </div>
   ),
 };
@@ -224,16 +192,79 @@ export const FullWidth: Story = {
     layout: 'padded',
   },
   render: () => (
-    <div style={columnStyle}>
-      <Button fullWidth startIcon={<span aria-hidden="true">📦</span>}>
-        Full Width Button
+    <div style={{ display: 'grid', gap: '12px', width: '400px' }}>
+      <Button fullWidth variant="contained">
+        Create Account
       </Button>
-      <Button fullWidth variant="outlined" endIcon={<span aria-hidden="true">→</span>}>
-        Continue
-      </Button>
-      <Button fullWidth variant="text">
-        Text Action
+      <Button fullWidth variant="outlined">
+        Sign In
       </Button>
     </div>
   ),
+};
+
+export const WithIcons: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <div style={rowStyle}>
+        <Button startIcon={<PlusIcon />}>New Project</Button>
+        <Button endIcon={<ChevronRightIcon />}>Continue</Button>
+        <Button startIcon={<DownloadIcon />} endIcon={<ChevronRightIcon />}>
+          Download
+        </Button>
+      </div>
+      <div style={rowStyle}>
+        <Button variant="outlined" startIcon={<PlusIcon />}>
+          Add Item
+        </Button>
+        <Button variant="text" endIcon={<ChevronRightIcon />}>
+          Learn More
+        </Button>
+      </div>
+      <div style={rowStyle}>
+        <Button startIcon={<DownloadIcon />} loading loadingPosition="start">
+          Downloading
+        </Button>
+        <Button endIcon={<ChevronRightIcon />} loading loadingPosition="end">
+          Processing
+        </Button>
+      </div>
+    </div>
+  ),
+};
+
+export const WithLongText: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <Button>Subscribe to the weekly newsletter</Button>
+      <Button variant="outlined" startIcon={<DownloadIcon />}>
+        Download the complete annual report
+      </Button>
+      <Button variant="text">View all available integrations and plugins</Button>
+    </div>
+  ),
+};
+
+export const A11y: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <Button aria-label="Save all pending changes">Save</Button>
+      <Button
+        variant="outlined"
+        aria-label="Delete selected item"
+        aria-describedby="delete-warning"
+      >
+        Delete
+      </Button>
+      <Button loading aria-busy="true" aria-label="Submitting form, please wait">
+        Submit
+      </Button>
+      <Button disabled aria-disabled="true">
+        Unavailable Action
+      </Button>
+    </div>
+  ),
+  parameters: {
+    a11y: { disable: false },
+  },
 };

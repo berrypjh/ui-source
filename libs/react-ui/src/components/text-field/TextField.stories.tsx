@@ -12,25 +12,22 @@ const meta = {
   },
   args: {
     label: 'Label',
-    placeholder: 'Placeholder',
+    placeholder: 'Enter value',
     variant: 'boxed',
     size: 'md',
     color: 'primary',
+    margin: 'none',
     disabled: false,
     error: false,
     required: false,
     fullWidth: false,
     multiline: false,
     select: false,
-    margin: 'none',
   },
   argTypes: {
-    label: { control: 'text' },
-    placeholder: { control: 'text' },
-    helperText: { control: 'text' },
     variant: {
       control: 'select',
-      options: ['boxed', 'filled', 'plain'],
+      options: ['plain', 'filled', 'boxed'],
     },
     size: {
       control: 'select',
@@ -54,10 +51,16 @@ const meta = {
     fullWidth: { control: 'boolean' },
     multiline: { control: 'boolean' },
     select: { control: 'boolean' },
-    rows: { control: 'number' },
+    onChange: { action: 'changed' },
+    onFocus: { action: 'focused' },
+    onBlur: { action: 'blurred' },
+    label: { control: 'text' },
+    helperText: { control: 'text' },
     children: { control: false },
     inputRef: { control: false },
     component: { control: false },
+    className: { control: false },
+    style: { control: false },
     ref: { control: false },
   },
 } satisfies Meta<typeof TextField>;
@@ -66,78 +69,98 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const rowStyle = {
-  display: 'flex',
-  flexWrap: 'wrap' as const,
-  gap: '12px',
-  alignItems: 'flex-start',
-};
-
 const columnStyle = {
   display: 'grid',
   gap: '16px',
   minWidth: '320px',
 };
 
+const rowStyle = {
+  display: 'flex',
+  flexWrap: 'wrap' as const,
+  gap: '24px',
+  alignItems: 'flex-start',
+};
+
 export const Playground: Story = {
   render: (args) => <TextField {...args} />,
 };
 
-export const Variants: Story = {
+export const Default: Story = {
+  args: {
+    label: 'Email address',
+    placeholder: 'you@example.com',
+    type: 'email',
+  },
+};
+
+export const AllVariants: Story = {
   render: () => (
-    <div style={columnStyle}>
-      <TextField variant="boxed" label="Boxed" placeholder="Boxed variant" />
-      <TextField variant="filled" label="Filled" placeholder="Filled variant" />
-      <TextField variant="plain" label="Plain" placeholder="Plain variant" />
+    <div style={rowStyle}>
+      <TextField variant="plain" label="Plain" placeholder="Enter value" />
+      <TextField variant="filled" label="Filled" placeholder="Enter value" />
+      <TextField variant="boxed" label="Boxed" placeholder="Enter value" />
     </div>
   ),
 };
 
-export const Sizes: Story = {
+export const AllSizes: Story = {
   render: () => (
     <div style={columnStyle}>
-      <TextField size="sm" label="Small" placeholder="Small size" />
-      <TextField size="md" label="Medium" placeholder="Medium size" />
+      <TextField size="sm" label="Small (sm)" placeholder="Small input" />
+      <TextField size="md" label="Medium (md)" placeholder="Medium input" />
     </div>
   ),
 };
 
-export const States: Story = {
+export const AllColors: Story = {
   render: () => (
     <div style={columnStyle}>
-      <TextField label="Default" placeholder="Default" />
-      <TextField label="Disabled" placeholder="Disabled" disabled />
-      <TextField label="Error" placeholder="Error" error />
-      <TextField label="Required" placeholder="Required" required />
+      <TextField color="primary" label="Primary" placeholder="Primary color" />
+      <TextField color="secondary" label="Secondary" placeholder="Secondary color" />
     </div>
   ),
 };
 
-export const WithHelperText: Story = {
+export const Disabled: Story = {
   render: () => (
     <div style={columnStyle}>
-      <TextField label="With helper" placeholder="Type something" helperText="Helper text below" />
+      <TextField label="Username" value="john.doe" disabled helperText="This field cannot be edited." />
+      <TextField variant="filled" label="Email" value="john@example.com" disabled />
+    </div>
+  ),
+};
+
+export const Error: Story = {
+  render: () => (
+    <div style={columnStyle}>
       <TextField
-        label="Error with helper"
-        placeholder="Invalid value"
+        label="Email address"
+        value="not-an-email"
         error
-        helperText="This field has an error"
+        helperText="Please enter a valid email address."
       />
       <TextField
-        label="Required with helper"
-        placeholder="Required"
-        required
-        helperText="This field is required"
+        label="Password"
+        type="password"
+        error
+        helperText="Password must be at least 8 characters."
       />
     </div>
   ),
 };
 
-export const NoLabel: Story = {
+export const Required: Story = {
   render: () => (
     <div style={columnStyle}>
-      <TextField placeholder="No label" />
-      <TextField placeholder="No label, error" error helperText="Error message" />
+      <TextField label="Full name" required placeholder="Jane Smith" />
+      <TextField
+        label="Email address"
+        required
+        error
+        helperText="This field is required."
+        type="email"
+      />
     </div>
   ),
 };
@@ -145,31 +168,14 @@ export const NoLabel: Story = {
 export const Multiline: Story = {
   render: () => (
     <div style={columnStyle}>
-      <TextField label="Multiline" placeholder="Multiline input" multiline rows={3} />
+      <TextField label="Bio" multiline rows={3} placeholder="Tell us about yourself..." />
       <TextField
-        label="Multiline with helper"
-        placeholder="Multiline input"
+        label="Message"
         multiline
         rows={5}
-        helperText="Enter your message"
+        placeholder="Write your message here..."
+        helperText="Maximum 500 characters."
       />
-    </div>
-  ),
-};
-
-export const AsSelect: Story = {
-  render: () => (
-    <div style={columnStyle}>
-      <TextField label="Select" select placeholder="Choose one">
-        <MenuItem value="apple">Apple</MenuItem>
-        <MenuItem value="banana">Banana</MenuItem>
-        <MenuItem value="cherry">Cherry</MenuItem>
-      </TextField>
-      <TextField label="Select error" select placeholder="Choose one" error helperText="Required">
-        <MenuItem value="apple">Apple</MenuItem>
-        <MenuItem value="banana">Banana</MenuItem>
-        <MenuItem value="cherry">Cherry</MenuItem>
-      </TextField>
     </div>
   ),
 };
@@ -179,16 +185,138 @@ export const FullWidth: Story = {
     layout: 'padded',
   },
   render: () => (
-    <div style={columnStyle}>
-      <TextField fullWidth label="Full width" placeholder="Full width input" />
-      <TextField
-        fullWidth
-        label="Full width error"
-        placeholder="Invalid"
-        error
-        helperText="Error message"
-      />
-      <TextField fullWidth label="Full width multiline" multiline rows={3} />
+    <div style={{ display: 'grid', gap: '16px', width: '480px' }}>
+      <TextField fullWidth label="Full name" placeholder="Jane Smith" />
+      <TextField fullWidth label="Email address" type="email" placeholder="you@example.com" helperText="We will never share your email." />
+      <TextField fullWidth size="sm" label="Company" placeholder="Acme Corp" />
     </div>
   ),
+};
+
+export const WithSelect: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <TextField label="Notification frequency" select defaultValue="weekly">
+        <MenuItem value="daily">Daily</MenuItem>
+        <MenuItem value="weekly">Weekly</MenuItem>
+        <MenuItem value="monthly">Monthly</MenuItem>
+      </TextField>
+      <TextField
+        label="User role"
+        select
+        required
+        helperText="Admins have full access to all settings."
+        defaultValue="viewer"
+      >
+        <MenuItem value="admin">Admin</MenuItem>
+        <MenuItem value="editor">Editor</MenuItem>
+        <MenuItem value="viewer">Viewer</MenuItem>
+      </TextField>
+    </div>
+  ),
+};
+
+export const WithHelperText: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <TextField
+        label="Username"
+        placeholder="john_doe"
+        helperText="Must be 3–20 characters. Letters, numbers, and underscores only."
+      />
+      <TextField
+        label="Password"
+        type="password"
+        helperText="Use a mix of uppercase, lowercase, numbers, and symbols."
+      />
+      <TextField
+        label="Email address"
+        type="email"
+        error
+        helperText="This email is already in use."
+      />
+      <TextField
+        label="Disabled field"
+        disabled
+        value="cannot-edit"
+        helperText="Contact your admin to change this value."
+      />
+    </div>
+  ),
+};
+
+export const WithMargin: Story = {
+  render: () => (
+    <div style={{ display: 'grid', minWidth: '320px', border: '1px dashed #ccc', padding: '8px' }}>
+      <TextField margin="none" label="No margin" placeholder="margin: none" />
+      <TextField margin="dense" label="Dense margin" placeholder="margin: dense" />
+      <TextField margin="normal" label="Normal margin" placeholder="margin: normal" />
+    </div>
+  ),
+};
+
+export const WithLongText: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <TextField
+        label="Billing address line 1 (street and building number)"
+        value="123 Long Street Name, Apartment 4B, Building Complex Name"
+        helperText="Enter the full street address including apartment or suite number if applicable."
+      />
+      <TextField
+        label="Project description"
+        multiline
+        rows={3}
+        value="This is a multiline text field with a longer block of text that wraps across multiple lines and tests the layout behavior of the component."
+      />
+    </div>
+  ),
+};
+
+export const A11y: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      {/* label과 input 자동 연결 (htmlFor → id) */}
+      <TextField
+        id="a11y-email"
+        label="Email address"
+        type="email"
+        placeholder="you@example.com"
+        required
+        helperText="Enter the email you used to sign up."
+      />
+      {/* error + helperText aria-describedby 자동 연결 */}
+      <TextField
+        id="a11y-password"
+        label="Password"
+        type="password"
+        error
+        helperText="Password must be at least 8 characters."
+      />
+      {/* disabled */}
+      <TextField
+        id="a11y-account-id"
+        label="Account ID"
+        value="USR-00142"
+        disabled
+        helperText="This value cannot be changed."
+      />
+      {/* select */}
+      <TextField
+        id="a11y-role"
+        label="User role"
+        select
+        required
+        defaultValue="viewer"
+        helperText="Select the appropriate access level."
+      >
+        <MenuItem value="admin">Admin</MenuItem>
+        <MenuItem value="editor">Editor</MenuItem>
+        <MenuItem value="viewer">Viewer</MenuItem>
+      </TextField>
+    </div>
+  ),
+  parameters: {
+    a11y: { disable: false },
+  },
 };

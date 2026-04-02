@@ -10,7 +10,7 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    children: 'ButtonBase',
+    children: 'Button',
     variant: 'contained',
     size: 'md',
     color: 'primary',
@@ -18,9 +18,6 @@ const meta = {
     fullWidth: false,
   },
   argTypes: {
-    children: {
-      control: 'text',
-    },
     variant: {
       control: 'select',
       options: ['contained', 'outlined', 'text'],
@@ -33,24 +30,15 @@ const meta = {
       control: 'select',
       options: ['primary', 'secondary'],
     },
-    disabled: {
-      control: 'boolean',
-    },
-    fullWidth: {
-      control: 'boolean',
-    },
-    className: {
-      control: false,
-    },
-    component: {
-      control: false,
-    },
-    href: {
-      control: false,
-    },
-    ref: {
-      control: false,
-    },
+    disabled: { control: 'boolean' },
+    fullWidth: { control: 'boolean' },
+    onClick: { action: 'clicked' },
+    onKeyDown: { action: 'keyDown' },
+    onKeyUp: { action: 'keyUp' },
+    className: { control: false },
+    style: { control: false },
+    component: { control: false },
+    children: { control: 'text' },
   },
 } satisfies Meta<typeof ButtonBase>;
 
@@ -68,14 +56,20 @@ const rowStyle = {
 const columnStyle = {
   display: 'grid',
   gap: '16px',
-  minWidth: '720px',
+  minWidth: '320px',
 };
 
 export const Playground: Story = {
   render: (args) => <ButtonBase {...args} />,
 };
 
-export const Variants: Story = {
+export const Default: Story = {
+  args: {
+    children: 'Save Changes',
+  },
+};
+
+export const AllVariants: Story = {
   render: () => (
     <div style={rowStyle}>
       <ButtonBase variant="contained">Contained</ButtonBase>
@@ -85,7 +79,7 @@ export const Variants: Story = {
   ),
 };
 
-export const Sizes: Story = {
+export const AllSizes: Story = {
   render: () => (
     <div style={rowStyle}>
       <ButtonBase size="sm">Small</ButtonBase>
@@ -95,17 +89,33 @@ export const Sizes: Story = {
   ),
 };
 
-export const Colors: Story = {
+export const AllColors: Story = {
   render: () => (
-    <div style={rowStyle}>
-      <ButtonBase color="primary">Primary</ButtonBase>
-      <ButtonBase color="secondary">Secondary</ButtonBase>
-      <ButtonBase variant="outlined" color="primary">
-        Primary Outlined
-      </ButtonBase>
-      <ButtonBase variant="outlined" color="secondary">
-        Secondary Outlined
-      </ButtonBase>
+    <div style={columnStyle}>
+      <div style={rowStyle}>
+        <ButtonBase variant="contained" color="primary">
+          Primary
+        </ButtonBase>
+        <ButtonBase variant="contained" color="secondary">
+          Secondary
+        </ButtonBase>
+      </div>
+      <div style={rowStyle}>
+        <ButtonBase variant="outlined" color="primary">
+          Primary
+        </ButtonBase>
+        <ButtonBase variant="outlined" color="secondary">
+          Secondary
+        </ButtonBase>
+      </div>
+      <div style={rowStyle}>
+        <ButtonBase variant="text" color="primary">
+          Primary
+        </ButtonBase>
+        <ButtonBase variant="text" color="secondary">
+          Secondary
+        </ButtonBase>
+      </div>
     </div>
   ),
 };
@@ -113,36 +123,14 @@ export const Colors: Story = {
 export const Disabled: Story = {
   render: () => (
     <div style={rowStyle}>
-      <ButtonBase disabled>Contained</ButtonBase>
-      <ButtonBase disabled variant="outlined">
+      <ButtonBase variant="contained" disabled>
+        Contained
+      </ButtonBase>
+      <ButtonBase variant="outlined" disabled>
         Outlined
       </ButtonBase>
-      <ButtonBase disabled variant="text">
+      <ButtonBase variant="text" disabled>
         Text
-      </ButtonBase>
-    </div>
-  ),
-};
-
-export const PolymorphicAsDiv: Story = {
-  render: () => (
-    <div style={rowStyle}>
-      <ButtonBase component="div">Div Button</ButtonBase>
-      <ButtonBase component="div" variant="outlined">
-        Div Outlined
-      </ButtonBase>
-    </div>
-  ),
-};
-
-export const AsLink: Story = {
-  render: () => (
-    <div style={rowStyle}>
-      <ButtonBase href="/" target="_blank" rel="noreferrer">
-        Anchor Button
-      </ButtonBase>
-      <ButtonBase href="/" variant="outlined" target="_blank" rel="noreferrer">
-        Outlined Link
       </ButtonBase>
     </div>
   ),
@@ -153,14 +141,81 @@ export const FullWidth: Story = {
     layout: 'padded',
   },
   render: () => (
-    <div style={columnStyle}>
-      <ButtonBase fullWidth>Full Width Contained</ButtonBase>
-      <ButtonBase fullWidth variant="outlined">
-        Full Width Outlined
+    <div style={{ display: 'grid', gap: '12px', width: '400px' }}>
+      <ButtonBase fullWidth variant="contained">
+        Create Account
       </ButtonBase>
-      <ButtonBase fullWidth variant="text">
-        Full Width Text
+      <ButtonBase fullWidth variant="outlined">
+        Sign In
       </ButtonBase>
     </div>
   ),
+};
+
+export const AsLink: Story = {
+  render: () => (
+    <div style={rowStyle}>
+      <ButtonBase href="https://example.com" variant="contained">
+        Visit Site
+      </ButtonBase>
+      <ButtonBase href="https://example.com" variant="outlined">
+        Documentation
+      </ButtonBase>
+      <ButtonBase href="https://example.com" variant="text">
+        Learn More
+      </ButtonBase>
+    </div>
+  ),
+};
+
+export const AsCustomComponent: Story = {
+  render: () => (
+    <div style={rowStyle}>
+      <ButtonBase component="div" variant="contained">
+        div element
+      </ButtonBase>
+      <ButtonBase component="span" variant="outlined">
+        span element
+      </ButtonBase>
+    </div>
+  ),
+};
+
+export const WithLongText: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <ButtonBase variant="contained">Subscribe to the weekly newsletter</ButtonBase>
+      <ButtonBase variant="outlined">Download the complete annual report</ButtonBase>
+      <ButtonBase variant="text">View all available integrations and plugins</ButtonBase>
+    </div>
+  ),
+};
+
+export const A11y: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <ButtonBase aria-label="Save all pending changes">Save</ButtonBase>
+      <ButtonBase
+        variant="outlined"
+        aria-label="Delete selected item"
+        aria-describedby="delete-warning"
+      >
+        Delete
+      </ButtonBase>
+      <ButtonBase
+        component="div"
+        variant="text"
+        role="button"
+        aria-label="Custom interactive element"
+      >
+        Custom Element
+      </ButtonBase>
+      <ButtonBase disabled aria-disabled="true">
+        Unavailable
+      </ButtonBase>
+    </div>
+  ),
+  parameters: {
+    a11y: { disable: false },
+  },
 };

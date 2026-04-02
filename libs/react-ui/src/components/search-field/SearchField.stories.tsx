@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { SearchField } from './SearchField';
+import { SearchField, type SearchFieldSuggestion } from './SearchField';
 
 const meta = {
   title: 'Components/SearchField',
@@ -14,15 +14,16 @@ const meta = {
     variant: 'boxed',
     size: 'md',
     color: 'primary',
+    clearable: true,
     disabled: false,
     error: false,
+    readOnly: false,
     fullWidth: false,
-    clearable: true,
   },
   argTypes: {
     variant: {
       control: 'select',
-      options: ['boxed', 'filled', 'plain'],
+      options: ['plain', 'filled', 'boxed'],
     },
     size: {
       control: 'select',
@@ -32,17 +33,23 @@ const meta = {
       control: 'select',
       options: ['primary', 'secondary'],
     },
-    placeholder: { control: 'text' },
     disabled: { control: 'boolean' },
     error: { control: 'boolean' },
+    readOnly: { control: 'boolean' },
     fullWidth: { control: 'boolean' },
     clearable: { control: 'boolean' },
+    onChange: { action: 'changed' },
+    onFocus: { action: 'focused' },
+    onBlur: { action: 'blurred' },
+    onClear: { action: 'cleared' },
+    onValueChange: { action: 'valueChanged' },
+    onSuggestionSelect: { action: 'suggestionSelected' },
     suggestions: { control: false },
+    noSuggestionsText: { control: false },
     inputProps: { control: false },
     inputRef: { control: false },
-    onClear: { control: false },
-    onValueChange: { control: false },
-    onSuggestionSelect: { control: false },
+    className: { control: false },
+    style: { control: false },
     ref: { control: false },
   },
 } satisfies Meta<typeof SearchField>;
@@ -57,65 +64,148 @@ const columnStyle = {
   minWidth: '320px',
 };
 
-const suggestions = [
-  { id: '1', label: 'Apple' },
-  { id: '2', label: 'Banana', description: 'Yellow fruit' },
-  { id: '3', label: 'Cherry', description: 'Small red fruit' },
-  { id: '4', label: 'Disabled option', disabled: true },
+const projectSuggestions: SearchFieldSuggestion[] = [
+  { id: '1', label: 'Dashboard', description: 'Main overview page' },
+  { id: '2', label: 'Analytics', description: 'Usage metrics and reports' },
+  { id: '3', label: 'Settings', description: 'Account and workspace settings' },
+  { id: '4', label: 'Team members', description: 'Manage users and permissions' },
+];
+
+const simpleSuggestions: SearchFieldSuggestion[] = [
+  { id: '1', label: 'React' },
+  { id: '2', label: 'TypeScript' },
+  { id: '3', label: 'Storybook' },
+  { id: '4', label: 'Vite' },
+];
+
+const suggestionsWithDisabled: SearchFieldSuggestion[] = [
+  { id: '1', label: 'Active project' },
+  { id: '2', label: 'Archived project', disabled: true },
+  { id: '3', label: 'Another active project' },
+  { id: '4', label: 'Locked project', disabled: true },
 ];
 
 export const Playground: Story = {
-  render: (args) => <SearchField {...args} />,
-};
-
-export const Variants: Story = {
-  render: () => (
-    <div style={columnStyle}>
-      <SearchField variant="boxed" placeholder="Boxed" />
-      <SearchField variant="filled" placeholder="Filled" />
-      <SearchField variant="plain" placeholder="Plain" />
+  render: (args) => (
+    <div style={{ minWidth: '320px' }}>
+      <SearchField {...args} />
     </div>
   ),
 };
 
-export const Sizes: Story = {
+export const Default: Story = {
   render: () => (
-    <div style={columnStyle}>
-      <SearchField size="sm" placeholder="Small" />
-      <SearchField size="md" placeholder="Medium" />
+    <div style={{ minWidth: '320px' }}>
+      <SearchField placeholder="Search projects..." />
     </div>
   ),
 };
 
-export const States: Story = {
+export const AllVariants: Story = {
   render: () => (
     <div style={columnStyle}>
-      <SearchField placeholder="Default" />
-      <SearchField placeholder="Disabled" disabled />
-      <SearchField placeholder="Error" error />
+      <SearchField variant="plain" placeholder="Plain variant" />
+      <SearchField variant="filled" placeholder="Filled variant" />
+      <SearchField variant="boxed" placeholder="Boxed variant" />
+    </div>
+  ),
+};
+
+export const AllSizes: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <SearchField size="sm" placeholder="Small (sm)" />
+      <SearchField size="md" placeholder="Medium (md)" />
+    </div>
+  ),
+};
+
+export const AllColors: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <SearchField color="primary" placeholder="Primary color" />
+      <SearchField color="secondary" placeholder="Secondary color" />
+    </div>
+  ),
+};
+
+export const Disabled: Story = {
+  render: () => (
+    <div style={{ minWidth: '320px' }}>
+      <SearchField disabled placeholder="Search is disabled" />
+    </div>
+  ),
+};
+
+export const Error: Story = {
+  render: () => (
+    <div style={{ minWidth: '320px' }}>
+      <SearchField error defaultValue="invalid??query" placeholder="Search" />
+    </div>
+  ),
+};
+
+export const ReadOnly: Story = {
+  render: () => (
+    <div style={{ minWidth: '320px' }}>
+      <SearchField readOnly value="TypeScript" />
     </div>
   ),
 };
 
 export const WithSuggestions: Story = {
   render: () => (
-    <div style={{ ...columnStyle, minWidth: '320px' }}>
+    <div style={{ minWidth: '320px' }}>
+      <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px', marginTop: 0 }}>
+        Click or focus the input to see suggestions.
+      </p>
       <SearchField
-        defaultValue="a"
-        suggestions={suggestions}
+        placeholder="Search pages..."
+        suggestions={simpleSuggestions}
         onSuggestionSelect={(s) => console.log('selected', s)}
       />
     </div>
   ),
 };
 
-export const NoSuggestionsText: Story = {
+export const WithDescriptions: Story = {
   render: () => (
-    <SearchField
-      defaultValue="xyz"
-      suggestions={[]}
-      noSuggestionsText="No results found"
-    />
+    <div style={{ minWidth: '320px' }}>
+      <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px', marginTop: 0 }}>
+        Click or focus the input to see suggestions with descriptions.
+      </p>
+      <SearchField
+        placeholder="Search features..."
+        suggestions={projectSuggestions}
+        onSuggestionSelect={(s) => console.log('selected', s)}
+      />
+    </div>
+  ),
+};
+
+export const WithDisabledSuggestion: Story = {
+  render: () => (
+    <div style={{ minWidth: '320px' }}>
+      <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px', marginTop: 0 }}>
+        Some suggestions are disabled and cannot be selected.
+      </p>
+      <SearchField
+        placeholder="Search projects..."
+        suggestions={suggestionsWithDisabled}
+        onSuggestionSelect={(s) => console.log('selected', s)}
+      />
+    </div>
+  ),
+};
+
+export const WithNoSuggestionsText: Story = {
+  render: () => (
+    <div style={{ minWidth: '320px' }}>
+      <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px', marginTop: 0 }}>
+        Focus the input to see the empty state message.
+      </p>
+      <SearchField placeholder="Search..." suggestions={[]} noSuggestionsText="No results found" />
+    </div>
   ),
 };
 
@@ -124,9 +214,61 @@ export const FullWidth: Story = {
     layout: 'padded',
   },
   render: () => (
-    <div style={columnStyle}>
+    <div style={{ display: 'grid', gap: '12px', width: '480px' }}>
       <SearchField fullWidth placeholder="Full width search" />
-      <SearchField fullWidth placeholder="Full width with suggestions" suggestions={suggestions} />
+      <SearchField
+        fullWidth
+        size="sm"
+        placeholder="Full width small"
+        suggestions={simpleSuggestions}
+      />
     </div>
   ),
+};
+
+export const WithLongText: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      <SearchField
+        defaultValue="This is a very long search query that tests overflow handling in single line mode"
+        placeholder="Search..."
+      />
+      <SearchField
+        placeholder="Search across all projects, workspaces, and team members..."
+        suggestions={projectSuggestions}
+      />
+    </div>
+  ),
+};
+
+export const A11y: Story = {
+  render: () => (
+    <div style={columnStyle}>
+      {/* combobox role은 자동으로 inputProps에 설정됨 */}
+      <SearchField
+        id="a11y-search-main"
+        aria-label="Search across all pages"
+        placeholder="Search..."
+        suggestions={simpleSuggestions}
+      />
+      {/* aria-describedby로 힌트 연결 */}
+      <SearchField
+        id="a11y-search-hints"
+        aria-label="Search projects"
+        aria-describedby="a11y-search-hint"
+        placeholder="Search projects..."
+        suggestions={projectSuggestions}
+        noSuggestionsText="No matching projects"
+      />
+      <SearchField
+        aria-label="Search (disabled)"
+        disabled
+        aria-disabled="true"
+        placeholder="Search unavailable"
+      />
+    </div>
+  ),
+  parameters: {
+    a11y: { disable: false },
+  },
 };
