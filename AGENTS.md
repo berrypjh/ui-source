@@ -16,6 +16,8 @@ Agents must optimize for:
 - small, verifiable changes
 - preserving public API stability unless the task explicitly allows breaking changes
 
+---
+
 ## Workspace Overview
 
 ### Main directories
@@ -29,6 +31,8 @@ Agents must optimize for:
 - `libs/react-native-ui`: React Native UI component library
 - `tools/scripts/release`: local release and publishing scripts
 - `.github/workflows`: CI/CD automation
+
+---
 
 ## How To Work In This Repository
 
@@ -46,6 +50,8 @@ Agents must optimize for:
 - If still unclear, state the exact uncertainty.
 - Do not silently make large architectural assumptions.
 
+---
+
 ## Package Management and Task Execution
 
 ### Tooling
@@ -58,6 +64,8 @@ Agents must optimize for:
 - Prefer existing dependencies already used in the workspace.
 - Add new dependencies only when clearly justified.
 
+---
+
 ## Coding Rules
 
 ### General
@@ -68,6 +76,8 @@ Agents must optimize for:
 - Keep comments sparse and useful.
 - Prefer docstrings or API-facing documentation over noisy inline comments.
 - Prefer arrow functions for JavaScript and TypeScript functions unless a regular function is clearly better for the use case.
+
+---
 
 ## Validation Rules
 
@@ -88,6 +98,8 @@ Every meaningful behavior change should be validated.
 - if export/build behavior changed: run build
 - if UI behavior changed: inspect story/demo coverage when practical
 - if token outputs changed: validate downstream consumers that rely on them
+
+---
 
 ## Things To Avoid
 
