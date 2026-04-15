@@ -1,56 +1,123 @@
 'use client';
 
-import type {
-  AriaRole,
-  ButtonHTMLAttributes,
-  ComponentPropsWithRef,
-  ElementType,
-  KeyboardEventHandler,
-  MouseEventHandler,
-  ReactElement,
-  ReactNode,
-} from 'react';
-import { cx, type ButtonProps as CoreButtonProps } from '@berrypjh/ui-core';
+import { createElement } from 'react';
 
-import type { PolymorphicComponentPropsWithRef } from '../../types';
+import type { ButtonBaseRenderableProps } from './ButtonBase.types';
+import {
+  createNonNativeClickHandler,
+  createNonNativeKeyDownHandler,
+  createNonNativeKeyUpHandler,
+  getButtonBaseClassNames,
+  isAutoAnchorProps,
+  isNativeButtonProps,
+} from './ButtonBase.utils';
 import './button-base.scss';
 
 export const buttonBaseClasses = {
   root: 'ui-button',
 } as const;
 
-export type ButtonBaseOwnProps = CoreButtonProps & {
-  className?: string;
-  children?: ReactNode;
-};
+export const ButtonBase = (props: ButtonBaseRenderableProps) => {
+  if (isNativeButtonProps(props)) {
+    const {
+      component: _component,
+      ref,
+      variant = 'contained',
+      size = 'md',
+      color = 'primary',
+      disabled = false,
+      fullWidth = false,
+      className,
+      children,
+      role,
+      tabIndex,
+      type = 'button',
+      ...rest
+    } = props;
 
-export type ButtonBaseProps<C extends ElementType = 'button'> = PolymorphicComponentPropsWithRef<
-  C,
-  ButtonBaseOwnProps
->;
+    const classNames = getButtonBaseClassNames({
+      variant,
+      size,
+      color,
+      fullWidth,
+      className,
+    });
 
-export type ButtonBaseAutoAnchorProps = Omit<ButtonBaseProps<'a'>, 'component'> & {
-  component?: never;
-  href: NonNullable<ComponentPropsWithRef<'a'>['href']>;
-};
+    return (
+      <button
+        {...rest}
+        ref={ref}
+        type={type}
+        role={role}
+        tabIndex={disabled ? -1 : tabIndex}
+        disabled={disabled}
+        className={classNames}
+      >
+        {children}
+      </button>
+    );
+  }
 
-type ButtonBaseRenderableProps = ButtonBaseAutoAnchorProps | ButtonBaseProps<ElementType>;
+  if (isAutoAnchorProps(props)) {
+    const {
+      ref,
+      variant = 'contained',
+      size = 'md',
+      color = 'primary',
+      disabled = false,
+      fullWidth = false,
+      className,
+      children,
+      href,
+      role,
+      tabIndex,
+      type,
+      onClick,
+      onKeyDown,
+      onKeyUp,
+      ...rest
+    } = props;
 
-type ButtonBaseImplementationProps = ButtonBaseOwnProps & {
-  component?: ElementType;
-  ref?: unknown;
-  href?: ComponentPropsWithRef<'a'>['href'];
-  role?: AriaRole;
-  tabIndex?: number;
-  type?: unknown;
-  onClick?: MouseEventHandler<HTMLElement>;
-  onKeyDown?: KeyboardEventHandler<HTMLElement>;
-  onKeyUp?: KeyboardEventHandler<HTMLElement>;
-} & Record<string, unknown>;
+    const classNames = getButtonBaseClassNames({
+      variant,
+      size,
+      color,
+      fullWidth,
+      className,
+    });
 
-export const ButtonBase = (props: ButtonBaseRenderableProps): ReactElement | null => {
+    return (
+      <a
+        {...rest}
+        href={href}
+        {...(type != null ? { type } : {})}
+        ref={ref}
+        role={role}
+        tabIndex={disabled ? -1 : tabIndex}
+        aria-disabled={disabled || undefined}
+        onClick={createNonNativeClickHandler({
+          disabled,
+          onClick,
+        })}
+        onKeyDown={createNonNativeKeyDownHandler({
+          disabled,
+          activateWithKeyboard: false,
+          onKeyDown,
+        })}
+        onKeyUp={createNonNativeKeyUpHandler({
+          disabled,
+          activateWithKeyboard: false,
+          onKeyUp,
+        })}
+        className={classNames}
+      >
+        {children}
+      </a>
+    );
+  }
+
   const {
-    component,
+    component: Component,
     ref,
     variant = 'contained',
     size = 'md',
@@ -60,6 +127,7 @@ export const ButtonBase = (props: ButtonBaseRenderableProps): ReactElement | nul
     className,
     children,
     href,
+    to,
     role,
     tabIndex,
     type,
@@ -67,141 +135,48 @@ export const ButtonBase = (props: ButtonBaseRenderableProps): ReactElement | nul
     onKeyDown,
     onKeyUp,
     ...rest
-  } = props as ButtonBaseImplementationProps;
+  } = props;
 
-  const hasToProp = 'to' in rest && rest.to != null;
-  const isLinkLike = href != null || hasToProp;
-
-  const Component = component ?? (href != null ? 'a' : 'button');
-
-  const isNativeButton = Component === 'button';
-  const isNonNativeButton = !isNativeButton && !isLinkLike;
-
-  const classNames = cx(
-    buttonBaseClasses.root,
-    `${buttonBaseClasses.root}--variant-${variant}`,
-    `${buttonBaseClasses.root}--size-${size}`,
-    `${buttonBaseClasses.root}--color-${color}`,
-    fullWidth && `${buttonBaseClasses.root}--fullWidth`,
+  const classNames = getButtonBaseClassNames({
+    variant,
+    size,
+    color,
+    fullWidth,
     className,
-  );
+  });
 
-  const handleNonNativeClick: MouseEventHandler<HTMLElement> = (event) => {
-    if (disabled) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
-    }
-
-    onClick?.(event);
-  };
-
-  const handleNonNativeKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
-    onKeyDown?.(event);
-
-    if (event.defaultPrevented || disabled || !isNonNativeButton) {
-      return;
-    }
-
-    if (event.target !== event.currentTarget) {
-      return;
-    }
-
-    if (event.key === ' ') {
-      event.preventDefault();
-    }
-
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      event.currentTarget.click();
-    }
-  };
-
-  const handleNonNativeKeyUp: KeyboardEventHandler<HTMLElement> = (event) => {
-    onKeyUp?.(event);
-
-    if (event.defaultPrevented || disabled || !isNonNativeButton) {
-      return;
-    }
-
-    if (event.target !== event.currentTarget) {
-      return;
-    }
-
-    if (event.key === ' ') {
-      event.preventDefault();
-      event.currentTarget.click();
-    }
-  };
-
-  if (isNativeButton) {
-    const nativeButtonProps = rest as Omit<
-      ComponentPropsWithRef<'button'>,
-      | keyof ButtonBaseOwnProps
-      | 'component'
-      | 'ref'
-      | 'href'
-      | 'role'
-      | 'tabIndex'
-      | 'type'
-      | 'onClick'
-      | 'onKeyDown'
-      | 'onKeyUp'
-    >;
-
-    return (
-      <button
-        {...nativeButtonProps}
-        ref={ref as ComponentPropsWithRef<'button'>['ref']}
-        type={(type as ButtonHTMLAttributes<HTMLButtonElement>['type']) ?? 'button'}
-        role={role}
-        tabIndex={disabled ? -1 : tabIndex}
-        disabled={disabled}
-        onClick={onClick as ComponentPropsWithRef<'button'>['onClick']}
-        onKeyDown={onKeyDown as ComponentPropsWithRef<'button'>['onKeyDown']}
-        onKeyUp={onKeyUp as ComponentPropsWithRef<'button'>['onKeyUp']}
-        className={classNames}
-      >
-        {children}
-      </button>
-    );
-  }
-
-  const componentProps = rest as Omit<
-    ComponentPropsWithRef<ElementType>,
-    | keyof ButtonBaseOwnProps
-    | 'component'
-    | 'ref'
-    | 'href'
-    | 'role'
-    | 'tabIndex'
-    | 'type'
-    | 'onClick'
-    | 'onKeyDown'
-    | 'onKeyUp'
-  >;
-
+  const isLinkLike = href != null || to != null;
   const resolvedRole = isLinkLike ? role : (role ?? 'button');
   const resolvedTabIndex = disabled ? -1 : (tabIndex ?? (isLinkLike ? undefined : 0));
 
-  const ComponentTag = Component as ElementType;
-
-  return (
-    <ComponentTag
-      {...componentProps}
-      {...(href != null ? { href } : {})}
-      {...(type != null ? { type } : {})}
-      ref={ref as never}
-      role={resolvedRole}
-      tabIndex={resolvedTabIndex}
-      aria-disabled={disabled || undefined}
-      onClick={handleNonNativeClick}
-      onKeyDown={handleNonNativeKeyDown}
-      onKeyUp={handleNonNativeKeyUp}
-      className={classNames}
-    >
-      {children}
-    </ComponentTag>
+  return createElement(
+    Component,
+    {
+      ...rest,
+      ...(href != null ? { href } : {}),
+      ...(to != null ? { to } : {}),
+      ...(type != null ? { type } : {}),
+      ref,
+      role: resolvedRole,
+      tabIndex: resolvedTabIndex,
+      'aria-disabled': disabled || undefined,
+      onClick: createNonNativeClickHandler({
+        disabled,
+        onClick,
+      }),
+      onKeyDown: createNonNativeKeyDownHandler({
+        disabled,
+        activateWithKeyboard: !isLinkLike,
+        onKeyDown,
+      }),
+      onKeyUp: createNonNativeKeyUpHandler({
+        disabled,
+        activateWithKeyboard: !isLinkLike,
+        onKeyUp,
+      }),
+      className: classNames,
+    },
+    children,
   );
 };
 

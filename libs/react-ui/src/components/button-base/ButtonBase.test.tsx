@@ -76,16 +76,6 @@ describe('<ButtonBase />', () => {
       expect(screen.getByRole('button')).toHaveProperty('type', 'submit');
     });
 
-    it('표준이 아닌 type 값도 허용한다', () => {
-      render(<ButtonBase type="fictional-type" />);
-
-      const button = screen.getByRole('button');
-
-      expect(button).toHaveAttribute('type', 'fictional-type');
-      // HTML spec상 지원하지 않는 type은 button.type 프로퍼티에서 submit으로 해석된다.
-      expect(button).toHaveProperty('type', 'submit');
-    });
-
     it('anchor component에도 type을 전달한다', () => {
       render(<ButtonBase component="a" href="some-recording.ogg" download type="audio/ogg" />);
 

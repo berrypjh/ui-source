@@ -1,9 +1,10 @@
-import type { ComponentPropsWithoutRef, ComponentPropsWithRef, ElementType } from 'react';
-
-export type PropsOf<C extends ElementType> = ComponentPropsWithoutRef<C>;
-export type PolymorphicRef<C extends ElementType> = ComponentPropsWithRef<C>['ref'];
+import type { ComponentPropsWithRef, ElementType } from 'react';
 
 type MergeProps<BaseProps, OverrideProps> = Omit<BaseProps, keyof OverrideProps> & OverrideProps;
+
+export type PropsOf<C extends ElementType> = ComponentPropsWithRef<C>;
+
+export type PolymorphicRef<C extends ElementType> = PropsOf<C>['ref'];
 
 export type PolymorphicComponentProps<
   C extends ElementType,
@@ -18,6 +19,4 @@ export type PolymorphicComponentProps<
 export type PolymorphicComponentPropsWithRef<
   C extends ElementType,
   OwnProps extends object = Record<string, never>,
-> = PolymorphicComponentProps<C, OwnProps> & {
-  ref?: PolymorphicRef<C>;
-};
+> = PolymorphicComponentProps<C, OwnProps>;
