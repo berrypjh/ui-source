@@ -7,7 +7,7 @@ import type {
   ButtonBaseNativeButtonProps,
   ButtonBaseRenderableProps,
 } from './ButtonBase.types';
-import { buttonBaseClasses } from './ButtonBase';
+import { buttonBaseClasses } from './ButtonBase.constants';
 
 /**
  * Props가 auto-anchor 분기인지 판별합니다.

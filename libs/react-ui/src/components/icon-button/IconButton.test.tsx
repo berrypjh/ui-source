@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { screen, within } from '@testing-library/react';
 
-import { IconButton, iconButtonClasses } from './IconButton';
+import { IconButton } from './IconButton';
+import { iconButtonClasses } from './IconButton.constants';
 import { createRenderer, describeConformance } from '../../../test';
 
 describe('<IconButton />', () => {

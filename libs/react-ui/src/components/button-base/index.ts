@@ -1,2 +1,7 @@
-export { ButtonBase, buttonBaseClasses } from './ButtonBase';
-export type { ButtonBaseOwnProps, ButtonBaseProps, ButtonBaseAutoAnchorProps } from './ButtonBase';
+export { ButtonBase } from './ButtonBase';
+
+export type {
+  ButtonBaseAutoAnchorProps,
+  ButtonBaseOwnProps,
+  ButtonBaseProps,
+} from './ButtonBase.types';

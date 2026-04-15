@@ -1,0 +1,15 @@
+export const buttonClasses = {
+  root: 'ui-button-root',
+  label: 'ui-button__label',
+  icon: 'ui-button__icon',
+  startIcon: 'ui-button__start-icon',
+  endIcon: 'ui-button__end-icon',
+  loading: 'ui-button--loading',
+  loadingWrapper: 'ui-button__loading-wrapper',
+  loadingIndicator: 'ui-button__loading-indicator',
+  loadingIconPlaceholder: 'ui-button__loading-icon-placeholder',
+  spinner: 'ui-button__spinner',
+  loadingPositionStart: 'ui-button--loading-position-start',
+  loadingPositionCenter: 'ui-button--loading-position-center',
+  loadingPositionEnd: 'ui-button--loading-position-end',
+} as const;

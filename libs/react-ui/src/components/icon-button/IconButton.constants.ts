@@ -1,0 +1,15 @@
+export const iconButtonClasses = {
+  root: 'ui-icon-button',
+  disabled: 'ui-icon-button--disabled',
+  loading: 'ui-icon-button--loading',
+  edgeStart: 'ui-icon-button--edge-start',
+  edgeEnd: 'ui-icon-button--edge-end',
+  colorPrimary: 'ui-icon-button--color-primary',
+  colorSecondary: 'ui-icon-button--color-secondary',
+  sizeSm: 'ui-icon-button--size-sm',
+  sizeMd: 'ui-icon-button--size-md',
+  sizeLg: 'ui-icon-button--size-lg',
+  loadingWrapper: 'ui-icon-button__loading-wrapper',
+  loadingIndicator: 'ui-icon-button__loading-indicator',
+  spinner: 'ui-icon-button__spinner',
+} as const;

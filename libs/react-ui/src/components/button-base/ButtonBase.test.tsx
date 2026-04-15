@@ -3,7 +3,8 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
 
-import { ButtonBase, buttonBaseClasses } from './ButtonBase';
+import { ButtonBase } from './ButtonBase';
+import { buttonBaseClasses } from './ButtonBase.constants';
 import { createRenderer, describeConformance } from '../../../test';
 
 describe('<ButtonBase />', () => {

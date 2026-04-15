@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { screen, within } from '@testing-library/react';
 
-import { Button, buttonClasses } from './Button';
+import { Button } from './Button';
+import { buttonClasses } from './Button.constants';
 import { createRenderer, describeConformance } from '../../../test';
 
 describe('<Button />', () => {
