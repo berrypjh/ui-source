@@ -1,0 +1,16 @@
+export const bubbleButtonClasses = {
+  wrapper: 'ui-bubble-button-wrapper',
+  root: 'ui-bubble-button',
+  sizeSm: 'ui-bubble-button--size-sm',
+  sizeMd: 'ui-bubble-button--size-md',
+  sizeLg: 'ui-bubble-button--size-lg',
+  glow: 'ui-bubble-button__glow',
+  surface: 'ui-bubble-button__surface',
+  border: 'ui-bubble-button__border',
+  highlight: 'ui-bubble-button__highlight',
+  ring: 'ui-bubble-button__ring',
+  content: 'ui-bubble-button__content',
+  icon: 'ui-bubble-button__icon',
+  iconGlow: 'ui-bubble-button__icon-glow',
+  label: 'ui-bubble-button__label',
+} as const;

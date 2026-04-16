@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 
-import { Fab, fabClasses } from './Fab';
+import { Fab } from './Fab';
+import { fabClasses } from './Fab.constants';
 import { createRenderer, describeConformance } from '../../../test';
 
 describe('<Fab />', () => {

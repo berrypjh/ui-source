@@ -2,7 +2,8 @@ import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
 
-import { BubbleButton, bubbleButtonClasses } from './BubbleButton';
+import { BubbleButton } from './BubbleButton';
+import { bubbleButtonClasses } from './BubbleButton.constants';
 import { createRenderer, describeConformance } from '../../../test';
 
 describe('<BubbleButton />', () => {
