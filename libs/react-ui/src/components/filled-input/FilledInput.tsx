@@ -1,19 +1,13 @@
 'use client';
 
-import type { ReactElement } from 'react';
 import { cx } from '@berrypjh/ui-core';
 
-import { InputBase, type InputBaseProps } from '../input-base';
+import { InputBase } from '../input-base';
+import { filledInputClasses } from './FilledInput.constants';
+import type { FilledInputProps } from './FilledInput.types';
 import './filled-input.scss';
 
-export const filledInputClasses = {
-  root: 'ui-filled-input',
-  input: 'ui-filled-input__input',
-} as const;
-
-export type FilledInputProps = InputBaseProps;
-
-export const FilledInput = ({ className, ref, ...rest }: FilledInputProps): ReactElement | null => {
+export const FilledInput = ({ className, ref, ...rest }: FilledInputProps) => {
   return (
     <InputBase
       {...rest}

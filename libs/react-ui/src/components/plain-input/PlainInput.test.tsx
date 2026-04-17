@@ -2,7 +2,8 @@ import type { ComponentProps } from 'react';
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { PlainInput, plainInputClasses } from './PlainInput';
+import { PlainInput } from './PlainInput';
+import { plainInputClasses } from './PlainInput.constants';
 import { FormControl } from '../form-control';
 import { inputBaseClasses } from '../input-base';
 import { createRenderer, describeConformance } from '../../../test';

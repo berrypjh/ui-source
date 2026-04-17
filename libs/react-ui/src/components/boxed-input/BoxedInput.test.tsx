@@ -2,7 +2,8 @@ import type { ComponentProps } from 'react';
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { BoxedInput, boxedInputClasses } from './BoxedInput';
+import { BoxedInput } from './BoxedInput';
+import { boxedInputClasses } from './BoxedInput.constants';
 import { FormControl } from '../form-control';
 import { inputBaseClasses } from '../input-base';
 import { createRenderer, describeConformance } from '../../../test';

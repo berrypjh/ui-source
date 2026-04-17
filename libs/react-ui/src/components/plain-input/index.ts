@@ -1,1 +1,2 @@
-export * from './PlainInput';
+export { PlainInput } from './PlainInput';
+export { plainInputClasses } from './PlainInput.constants';

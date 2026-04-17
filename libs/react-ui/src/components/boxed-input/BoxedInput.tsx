@@ -1,19 +1,13 @@
 'use client';
 
-import type { ReactElement } from 'react';
 import { cx } from '@berrypjh/ui-core';
 
-import { InputBase, type InputBaseProps } from '../input-base';
+import { InputBase } from '../input-base';
+import { boxedInputClasses } from './BoxedInput.constants';
+import type { BoxedInputProps } from './BoxedInput.types';
 import './boxed-input.scss';
 
-export const boxedInputClasses = {
-  root: 'ui-boxed-input',
-  input: 'ui-boxed-input__input',
-} as const;
-
-export type BoxedInputProps = InputBaseProps;
-
-export const BoxedInput = ({ className, ref, ...rest }: BoxedInputProps): ReactElement | null => {
+export const BoxedInput = ({ className, ref, ...rest }: BoxedInputProps) => {
   return (
     <InputBase
       {...rest}
