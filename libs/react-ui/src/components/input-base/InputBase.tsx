@@ -1,118 +1,30 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { ComponentPropsWithRef, MouseEventHandler, ReactElement, ReactNode } from 'react';
 import { cx } from '@berrypjh/ui-core';
 
-import type {
-  FieldColor,
-  FieldSize,
-  InputLikeChangeEventHandler,
-  InputLikeElement,
-  InputLikeFocusEventHandler,
-} from '../../types';
 import { useFormControl } from '../form-control';
+import {
+  createHandleNativeElementRef,
+  getCommonInputProps,
+  getInputBaseInputClassNames,
+  getInputBaseRootClassNames,
+  getResolvedDefaultValue,
+  getResolvedInputValue,
+  syncFilledState,
+} from './InputBase.utils';
+import { inputBaseClasses } from './InputBase.constants';
+import type {
+  InputBaseProps,
+  NativeInputBlurHandler,
+  NativeInputChangeHandler,
+  NativeInputFocusHandler,
+  NativeTextareaBlurHandler,
+  NativeTextareaChangeHandler,
+  NativeTextareaFocusHandler,
+} from './InputBase.types';
+import { hasFormValue } from '../../utils';
 import './input-base.scss';
-
-export const inputBaseClasses = {
-  root: 'ui-input-base',
-  formControl: 'ui-input-base--form-control',
-  input: 'ui-input-base__input',
-  focused: 'ui-input-base--focused',
-  disabled: 'ui-input-base--disabled',
-  error: 'ui-input-base--error',
-  fullWidth: 'ui-input-base--fullWidth',
-  multiline: 'ui-input-base--multiline',
-  adornedStart: 'ui-input-base--adorned-start',
-  adornedEnd: 'ui-input-base--adorned-end',
-  readOnly: 'ui-input-base--read-only',
-  sizeSm: 'ui-input-base--size-sm',
-  sizeMd: 'ui-input-base--size-md',
-  inputSizeSm: 'ui-input-base__input--size-sm',
-  inputHiddenLabel: 'ui-input-base__input--hidden-label',
-  colorPrimary: 'ui-input-base--color-primary',
-  colorSecondary: 'ui-input-base--color-secondary',
-  startAdornment: 'ui-input-base__start-adornment',
-  endAdornment: 'ui-input-base__end-adornment',
-} as const;
-
-type DataAttributes = {
-  [K in `data-${string}`]?: string | number | boolean | undefined;
-};
-
-type NativeInputProps = Omit<
-  ComponentPropsWithRef<'input'>,
-  'size' | 'children' | 'defaultValue' | 'value'
-> &
-  DataAttributes;
-
-type NativeTextareaProps = Omit<
-  ComponentPropsWithRef<'textarea'>,
-  'children' | 'defaultValue' | 'value'
-> &
-  DataAttributes;
-
-type NativeInputFocusHandler = NonNullable<ComponentPropsWithRef<'input'>['onFocus']>;
-type NativeInputBlurHandler = NonNullable<ComponentPropsWithRef<'input'>['onBlur']>;
-type NativeInputChangeHandler = NonNullable<ComponentPropsWithRef<'input'>['onChange']>;
-
-type NativeTextareaFocusHandler = NonNullable<ComponentPropsWithRef<'textarea'>['onFocus']>;
-type NativeTextareaBlurHandler = NonNullable<ComponentPropsWithRef<'textarea'>['onBlur']>;
-type NativeTextareaChangeHandler = NonNullable<ComponentPropsWithRef<'textarea'>['onChange']>;
-
-export interface InputBaseProps
-  extends Omit<
-    ComponentPropsWithRef<'div'>,
-    'children' | 'onChange' | 'onFocus' | 'onBlur' | 'defaultValue' | 'value'
-  > {
-  'aria-describedby'?: string;
-  autoComplete?: string;
-  autoFocus?: boolean;
-  children?: ReactNode;
-  color?: FieldColor;
-  defaultValue?: unknown;
-  disabled?: boolean;
-  endAdornment?: ReactNode;
-  error?: boolean;
-  fullWidth?: boolean;
-  id?: string;
-  inputClassName?: string;
-  inputProps?: NativeInputProps;
-  textareaProps?: NativeTextareaProps;
-  inputRef?: unknown;
-  multiline?: boolean;
-  name?: string;
-  onBlur?: InputLikeFocusEventHandler;
-  onChange?: InputLikeChangeEventHandler;
-  onFocus?: InputLikeFocusEventHandler;
-  placeholder?: string;
-  readOnly?: boolean;
-  required?: boolean;
-  rows?: number;
-  size?: FieldSize;
-  startAdornment?: ReactNode;
-  type?: string;
-  value?: unknown;
-}
-
-const assignRef = (ref: unknown, value: unknown) => {
-  if (typeof ref === 'function') {
-    ref(value);
-    return;
-  }
-
-  if (ref && typeof ref === 'object' && 'current' in ref) {
-    (ref as { current: unknown }).current = value;
-  }
-};
-
-const hasValue = (value: unknown): boolean => {
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  return value != null && `${value}` !== '';
-};
 
 export const InputBase = ({
   'aria-describedby': ariaDescribedby,
@@ -147,10 +59,10 @@ export const InputBase = ({
   value,
   ref,
   ...rest
-}: InputBaseProps): ReactElement | null => {
+}: InputBaseProps) => {
   const formControl = useFormControl();
   const [focusedState, setFocusedState] = useState(false);
-  const inputElementRef = useRef<InputLikeElement | null>(null);
+  const inputElementRef = useRef<import('../../types').InputLikeElement | null>(null);
 
   const hiddenLabel = Boolean(formControl?.hiddenLabel);
 
@@ -168,16 +80,14 @@ export const InputBase = ({
 
   const formControlOnFilled = formControl?.onFilled;
   const formControlOnEmpty = formControl?.onEmpty;
-  useEffect(() => {
-    if (!formControlOnFilled || !formControlOnEmpty) {
-      return;
-    }
 
-    if (hasValue(value ?? defaultValue)) {
-      formControlOnFilled();
-    } else {
-      formControlOnEmpty();
-    }
+  useEffect(() => {
+    syncFilledState({
+      defaultValue,
+      onEmpty: formControlOnEmpty,
+      onFilled: formControlOnFilled,
+      value,
+    });
   }, [defaultValue, value, formControlOnFilled, formControlOnEmpty]);
 
   useEffect(() => {
@@ -196,30 +106,32 @@ export const InputBase = ({
     }
   }, [formControl, resolvedDisabled]);
 
-  const handleFocus: InputLikeFocusEventHandler = (event) => {
+  const handleFocus = (event: Parameters<NonNullable<typeof onFocus>>[0]) => {
     onFocus?.(event);
 
     if (formControl) {
       formControl.onFocus();
-    } else {
-      setFocusedState(true);
+      return;
     }
+
+    setFocusedState(true);
   };
 
-  const handleBlur: InputLikeFocusEventHandler = (event) => {
+  const handleBlur = (event: Parameters<NonNullable<typeof onBlur>>[0]) => {
     onBlur?.(event);
 
     if (formControl) {
       formControl.onBlur();
-    } else {
-      setFocusedState(false);
+      return;
     }
+
+    setFocusedState(false);
   };
 
-  const handleChange: InputLikeChangeEventHandler = (event) => {
+  const handleChange = (event: Parameters<NonNullable<typeof onChange>>[0]) => {
     const nextValue = event.target.value;
 
-    if (hasValue(nextValue)) {
+    if (hasFormValue(nextValue)) {
       formControl?.onFilled();
     } else {
       formControl?.onEmpty();
@@ -228,7 +140,7 @@ export const InputBase = ({
     onChange?.(event);
   };
 
-  const handleRootClick: MouseEventHandler<HTMLDivElement> = (event) => {
+  const handleRootClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     onClick?.(event);
 
     if (resolvedDisabled) {
@@ -246,17 +158,16 @@ export const InputBase = ({
     }
   };
 
-  const handleNativeElementRef = (instance: unknown, externalRef?: unknown) => {
-    inputElementRef.current = instance as InputLikeElement | null;
-    assignRef(inputRef, instance);
-    assignRef(externalRef, instance);
-  };
+  const handleNativeElementRef = createHandleNativeElementRef({
+    inputElementRef,
+    inputRef,
+  });
 
-  const handleInputRef = (instance: unknown) => {
+  const handleInputRef = (instance: HTMLInputElement | null) => {
     handleNativeElementRef(instance, inputProps?.ref);
   };
 
-  const handleTextareaRef = (instance: unknown) => {
+  const handleTextareaRef = (instance: HTMLTextAreaElement | null) => {
     handleNativeElementRef(instance, textareaProps?.ref);
   };
 
@@ -290,61 +201,47 @@ export const InputBase = ({
     handleChange(event);
   };
 
-  const rootClassNames = cx(
-    inputBaseClasses.root,
-    formControl && inputBaseClasses.formControl,
-    resolvedFocused && inputBaseClasses.focused,
-    resolvedDisabled && inputBaseClasses.disabled,
-    resolvedError && inputBaseClasses.error,
-    resolvedFullWidth && inputBaseClasses.fullWidth,
-    multiline && inputBaseClasses.multiline,
-    readOnly && inputBaseClasses.readOnly,
-    Boolean(startAdornment) && inputBaseClasses.adornedStart,
-    Boolean(endAdornment) && inputBaseClasses.adornedEnd,
-    resolvedSize === 'sm' && inputBaseClasses.sizeSm,
-    resolvedSize === 'md' && inputBaseClasses.sizeMd,
-    resolvedColor === 'primary' && inputBaseClasses.colorPrimary,
-    resolvedColor === 'secondary' && inputBaseClasses.colorSecondary,
+  const rootClassNames = getInputBaseRootClassNames({
     className,
-  );
+    color: resolvedColor,
+    disabled: resolvedDisabled,
+    endAdornment,
+    error: resolvedError,
+    focused: resolvedFocused,
+    formControl,
+    fullWidth: resolvedFullWidth,
+    multiline,
+    readOnly,
+    size: resolvedSize,
+    startAdornment,
+  });
 
-  const baseInputClassNames = cx(
-    inputBaseClasses.input,
-    resolvedSize === 'sm' && inputBaseClasses.inputSizeSm,
-    hiddenLabel && inputBaseClasses.inputHiddenLabel,
+  const baseInputClassNames = getInputBaseInputClassNames({
+    hiddenLabel,
     inputClassName,
-  );
+    size: resolvedSize,
+  });
 
   const inputElementClassNames = cx(baseInputClassNames, inputProps?.className);
   const textareaElementClassNames = cx(baseInputClassNames, textareaProps?.className);
 
-  const commonInputProps = {
-    id,
-    name,
-    disabled: resolvedDisabled,
-    readOnly,
-    required: resolvedRequired,
-    placeholder,
+  const commonInputProps = getCommonInputProps({
+    ariaDescribedby,
     autoComplete,
     autoFocus,
-    'aria-describedby': ariaDescribedby,
-  };
+    disabled: resolvedDisabled,
+    id,
+    name,
+    placeholder,
+    readOnly,
+    required: resolvedRequired,
+  });
 
-  const resolvedValue = Array.isArray(value)
-    ? ''
-    : (value as string | number | readonly string[] | undefined);
-
-  const resolvedDefaultValue = Array.isArray(defaultValue)
-    ? ''
-    : (defaultValue as string | number | readonly string[] | undefined);
+  const resolvedValue = getResolvedInputValue(value);
+  const resolvedDefaultValue = getResolvedDefaultValue(defaultValue);
 
   return (
-    <div
-      {...rest}
-      ref={ref as ComponentPropsWithRef<'div'>['ref']}
-      className={rootClassNames}
-      onClick={handleRootClick}
-    >
+    <div {...rest} ref={ref} className={rootClassNames} onClick={handleRootClick}>
       {startAdornment ? (
         <span className={inputBaseClasses.startAdornment}>{startAdornment}</span>
       ) : null}

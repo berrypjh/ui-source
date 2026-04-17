@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 import { FormControl } from '../form-control';
 import { PlainInput } from '../plain-input';
-import { InputLabel, inputLabelClasses } from './InputLabel';
+import { InputLabel } from './InputLabel';
+import { inputLabelClasses } from './InputLabel.constants';
 import { createRenderer, describeConformance } from '../../../test';
 
 describe('<InputLabel />', () => {

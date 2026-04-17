@@ -1,35 +1,10 @@
 'use client';
 
-import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react';
-import { cx } from '@berrypjh/ui-core';
-
-import type { FieldColor, FieldSize } from '../../types';
 import { useFormControl } from '../form-control';
+import { inputLabelClasses } from './InputLabel.constants';
+import type { InputLabelProps } from './InputLabel.types';
+import { getInputLabelClassNames } from './InputLabel.utils';
 import './input-label.scss';
-
-export const inputLabelClasses = {
-  root: 'ui-input-label',
-  formControl: 'ui-input-label--form-control',
-  focused: 'ui-input-label--focused',
-  disabled: 'ui-input-label--disabled',
-  error: 'ui-input-label--error',
-  required: 'ui-input-label--required',
-  sizeSm: 'ui-input-label--size-sm',
-  sizeMd: 'ui-input-label--size-md',
-  colorPrimary: 'ui-input-label--color-primary',
-  colorSecondary: 'ui-input-label--color-secondary',
-  asterisk: 'ui-input-label__asterisk',
-} as const;
-
-export interface InputLabelProps extends Omit<ComponentPropsWithRef<'label'>, 'children'> {
-  children?: ReactNode;
-  color?: FieldColor;
-  disabled?: boolean;
-  error?: boolean;
-  focused?: boolean;
-  required?: boolean;
-  size?: FieldSize;
-}
 
 export const InputLabel = ({
   children,
@@ -42,7 +17,7 @@ export const InputLabel = ({
   size,
   ref,
   ...rest
-}: InputLabelProps): ReactElement | null => {
+}: InputLabelProps) => {
   const formControl = useFormControl();
 
   const resolvedColor = color ?? formControl?.color ?? 'primary';
@@ -52,19 +27,16 @@ export const InputLabel = ({
   const resolvedRequired = required ?? formControl?.required ?? false;
   const resolvedSize = size ?? formControl?.size ?? 'md';
 
-  const classNames = cx(
-    inputLabelClasses.root,
-    formControl && inputLabelClasses.formControl,
-    resolvedFocused && inputLabelClasses.focused,
-    resolvedDisabled && inputLabelClasses.disabled,
-    resolvedError && inputLabelClasses.error,
-    resolvedRequired && inputLabelClasses.required,
-    resolvedSize === 'sm' && inputLabelClasses.sizeSm,
-    resolvedSize === 'md' && inputLabelClasses.sizeMd,
-    resolvedColor === 'primary' && inputLabelClasses.colorPrimary,
-    resolvedColor === 'secondary' && inputLabelClasses.colorSecondary,
+  const classNames = getInputLabelClassNames({
     className,
-  );
+    color: resolvedColor,
+    disabled: resolvedDisabled,
+    error: resolvedError,
+    focused: resolvedFocused,
+    formControl,
+    required: resolvedRequired,
+    size: resolvedSize,
+  });
 
   return (
     <label {...rest} ref={ref} className={classNames}>

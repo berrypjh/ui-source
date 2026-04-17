@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
 
 import { FormControl, useFormControl } from '../form-control';
-import { InputBase, inputBaseClasses } from './InputBase';
+import { InputBase } from './InputBase';
+import { inputBaseClasses } from './InputBase.constants';
 import { createRenderer, describeConformance } from '../../../test';
 
 type FormControlContextValue = NonNullable<ReturnType<typeof useFormControl>>;
