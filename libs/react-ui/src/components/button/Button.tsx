@@ -1,10 +1,9 @@
 'use client';
 
-import type { ElementType } from 'react';
 import { useId } from 'react';
 
 import { ButtonBase } from '../button-base';
-import type { ButtonAutoAnchorProps, ButtonProps, ButtonRenderableProps } from './Button.types';
+import type { ButtonAutoAnchorProps, ButtonRenderableProps } from './Button.types';
 import {
   getButtonClassNames,
   getContent,
@@ -83,8 +82,38 @@ export const Button = (props: ButtonRenderableProps) => {
     );
   }
 
+  if (props.component != null) {
+    const {
+      component,
+      className: _className,
+      children: _children,
+      startIcon: _startIcon,
+      endIcon: _endIcon,
+      loading: _loading,
+      loadingIndicator: _loadingIndicator,
+      loadingPosition: _loadingPosition,
+      disabled: _disabled,
+      ...rest
+    } = props;
+
+    return (
+      <ButtonBase
+        {...rest}
+        component={component}
+        className={classNames}
+        disabled={disabled || loading}
+      >
+        {startAdornment}
+        {loadingPosition !== 'end' ? loader : null}
+        {content}
+        {loadingPosition === 'end' ? loader : null}
+        {endAdornment}
+      </ButtonBase>
+    );
+  }
+
   const {
-    component,
+    component: _component,
     className: _className,
     children: _children,
     startIcon: _startIcon,
@@ -94,15 +123,10 @@ export const Button = (props: ButtonRenderableProps) => {
     loadingPosition: _loadingPosition,
     disabled: _disabled,
     ...rest
-  }: ButtonProps<ElementType> = props;
+  } = props;
 
   return (
-    <ButtonBase
-      {...rest}
-      {...(component != null ? { component } : {})}
-      className={classNames}
-      disabled={disabled || loading}
-    >
+    <ButtonBase {...rest} className={classNames} disabled={disabled || loading}>
       {startAdornment}
       {loadingPosition !== 'end' ? loader : null}
       {content}
