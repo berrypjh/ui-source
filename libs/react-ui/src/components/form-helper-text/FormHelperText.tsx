@@ -1,26 +1,9 @@
 'use client';
 
-import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react';
-import { cx } from '@berrypjh/ui-core';
-
-import type { FieldSize } from '../../types';
 import { useFormControl } from '../form-control';
+import type { FormHelperTextProps } from './FormHelperText.types';
+import { getFormHelperTextClassNames, getFormHelperTextContent } from './FormHelperText.utils';
 import './form-helper-text.scss';
-
-export const formHelperTextClasses = {
-  root: 'ui-form-helper-text',
-  disabled: 'ui-form-helper-text--disabled',
-  error: 'ui-form-helper-text--error',
-  sizeSm: 'ui-form-helper-text--size-sm',
-  sizeMd: 'ui-form-helper-text--size-md',
-} as const;
-
-export interface FormHelperTextProps extends Omit<ComponentPropsWithRef<'p'>, 'children'> {
-  children?: ReactNode;
-  disabled?: boolean;
-  error?: boolean;
-  size?: FieldSize;
-}
 
 export const FormHelperText = ({
   children,
@@ -30,25 +13,27 @@ export const FormHelperText = ({
   size,
   ref,
   ...rest
-}: FormHelperTextProps): ReactElement | null => {
+}: FormHelperTextProps) => {
   const formControl = useFormControl();
 
   const resolvedDisabled = disabled ?? formControl?.disabled ?? false;
   const resolvedError = error ?? formControl?.error ?? false;
   const resolvedSize = size ?? formControl?.size ?? 'md';
 
-  const classNames = cx(
-    formHelperTextClasses.root,
-    resolvedDisabled && formHelperTextClasses.disabled,
-    resolvedError && formHelperTextClasses.error,
-    resolvedSize === 'sm' && formHelperTextClasses.sizeSm,
-    resolvedSize === 'md' && formHelperTextClasses.sizeMd,
+  const classNames = getFormHelperTextClassNames({
     className,
-  );
+    disabled: resolvedDisabled,
+    error: resolvedError,
+    size: resolvedSize,
+  });
+
+  const content = getFormHelperTextContent({
+    children,
+  });
 
   return (
     <p {...rest} ref={ref} className={classNames}>
-      {children === ' ' ? <span aria-hidden="true">{'\u200B'}</span> : children}
+      {content}
     </p>
   );
 };

@@ -3,7 +3,8 @@ import { act, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { spy, type SinonSpy } from 'sinon';
 
-import { FormControl, formControlClasses } from './FormControl';
+import { FormControl } from './FormControl';
+import { formControlClasses } from './FormControl.constants';
 import { useFormControl } from './useFormControl';
 import { createRenderer, describeConformance } from '../../../test';
 

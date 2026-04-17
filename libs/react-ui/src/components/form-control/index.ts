@@ -1,3 +1,3 @@
-export * from './FormControl';
-export * from './FormControlContext';
-export * from './useFormControl';
+export { FormControl } from './FormControl';
+export { useFormControl } from './useFormControl';
+export { formControlClasses } from './FormControl.constants';
