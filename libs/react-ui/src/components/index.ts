@@ -11,3 +11,4 @@ export * from './icon-button';
 export * from './input-base';
 export * from './input-label';
 export * from './plain-input';
+export * from './text-field';

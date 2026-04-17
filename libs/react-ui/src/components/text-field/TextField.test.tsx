@@ -3,7 +3,8 @@ import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
 
-import { TextField, textFieldClasses } from './TextField';
+import { TextField } from './TextField';
+import { textFieldClasses } from './TextField.constants';
 import { inputBaseClasses } from '../input-base';
 import { formControlClasses } from '../form-control';
 import { plainInputClasses } from '../plain-input';
