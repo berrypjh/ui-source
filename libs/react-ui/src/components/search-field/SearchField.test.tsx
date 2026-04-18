@@ -2,7 +2,9 @@ import type { ComponentProps } from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { SearchField, searchFieldClasses, type SearchFieldSuggestion } from './SearchField';
+import { SearchField } from './SearchField';
+import { searchFieldClasses } from './SearchField.constants';
+import type { SearchFieldSuggestion } from './SearchField.types';
 import { FormControl } from '../form-control';
 import { inputBaseClasses } from '../input-base';
 import { plainInputClasses } from '../plain-input';

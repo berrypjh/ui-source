@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useMemo, useRef, useState } from 'react';
-import type { FocusEventHandler, KeyboardEvent, ReactElement, ReactNode } from 'react';
+import type { FocusEventHandler } from 'react';
 import { cx } from '@berrypjh/ui-core';
 
 import type {
@@ -9,74 +9,16 @@ import type {
   InputLikeElement,
   InputLikeFocusEventHandler,
 } from '../../types';
-import { PlainInput, type PlainInputProps } from '../plain-input';
-import { FilledInput, type FilledInputProps } from '../filled-input';
-import { BoxedInput, type BoxedInputProps } from '../boxed-input';
-import { assignRef } from '../../utils';
+import { assignRef, getTextFieldInputComponent, toInputString } from '../../utils';
+import { searchFieldClasses } from './SearchField.constants';
+import type {
+  SearchFieldInputKeyDownHandler,
+  SearchFieldProps,
+  SearchFieldSuggestion,
+  SearchFieldSuggestionKeyDownHandler,
+} from './SearchField.types';
+import { getMergedInputProps, getSuggestionValue, isSuggestionSelected } from './SearchField.utils';
 import './search-field.scss';
-
-export const searchFieldClasses = {
-  root: 'ui-search-field',
-  input: 'ui-search-field__input',
-  icon: 'ui-search-field__icon',
-  clear: 'ui-search-field__clear',
-  suggestions: 'ui-search-field__suggestions',
-  suggestionsOpen: 'ui-search-field__suggestions--open',
-  suggestion: 'ui-search-field__suggestion',
-  suggestionButton: 'ui-search-field__suggestion-button',
-  suggestionIcon: 'ui-search-field__suggestion-icon',
-  suggestionContent: 'ui-search-field__suggestion-content',
-  suggestionLabel: 'ui-search-field__suggestion-label',
-  suggestionDescription: 'ui-search-field__suggestion-description',
-  suggestionDisabled: 'ui-search-field__suggestion--disabled',
-  empty: 'ui-search-field__empty',
-} as const;
-
-export type SearchFieldVariant = 'plain' | 'filled' | 'boxed';
-
-export interface SearchFieldSuggestion {
-  id: string;
-  label: string;
-  value?: string;
-  description?: ReactNode;
-  disabled?: boolean;
-}
-
-type SearchFieldBaseProps = Omit<
-  PlainInputProps,
-  'children' | 'startAdornment' | 'endAdornment' | 'type'
->;
-
-export interface SearchFieldProps extends SearchFieldBaseProps {
-  variant?: SearchFieldVariant;
-  suggestions?: SearchFieldSuggestion[];
-  clearable?: boolean;
-  noSuggestionsText?: ReactNode;
-  onClear?: () => void;
-  onValueChange?: (value: string) => void;
-  onSuggestionSelect?: (suggestion: SearchFieldSuggestion) => void;
-}
-
-const variantComponent = {
-  plain: PlainInput,
-  filled: FilledInput,
-  boxed: BoxedInput,
-} as const satisfies Record<
-  SearchFieldVariant,
-  (props: PlainInputProps | FilledInputProps | BoxedInputProps) => ReactElement | null
->;
-
-const toInputString = (value: unknown): string => {
-  if (Array.isArray(value)) {
-    return '';
-  }
-
-  if (value == null) {
-    return '';
-  }
-
-  return String(value);
-};
 
 export const SearchField = ({
   className,
@@ -96,7 +38,7 @@ export const SearchField = ({
   onValueChange,
   onSuggestionSelect,
   ...rest
-}: SearchFieldProps): ReactElement | null => {
+}: SearchFieldProps) => {
   const listboxId = useId();
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const inputElementRef = useRef<InputLikeElement | null>(null);
@@ -104,7 +46,7 @@ export const SearchField = ({
   const [open, setOpen] = useState(false);
   const [uncontrolledValue, setUncontrolledValue] = useState(() => toInputString(defaultValue));
 
-  const InputComponent = variantComponent[variant];
+  const InputComponent = getTextFieldInputComponent(variant);
   const isControlled = value !== undefined;
   const currentValue = isControlled ? toInputString(value) : uncontrolledValue;
 
@@ -122,8 +64,8 @@ export const SearchField = ({
     onValueChange?.(nextValue);
   };
 
-  const handleInputRef = (instance: unknown) => {
-    inputElementRef.current = instance as InputLikeElement | null;
+  const handleInputRef = (instance: InputLikeElement | null) => {
+    inputElementRef.current = instance;
     assignRef(inputRef, instance);
   };
 
@@ -165,7 +107,7 @@ export const SearchField = ({
       return;
     }
 
-    const nextValue = suggestion.value ?? suggestion.label;
+    const nextValue = getSuggestionValue(suggestion);
 
     handleValueChange(nextValue);
     onSuggestionSelect?.(suggestion);
@@ -173,9 +115,7 @@ export const SearchField = ({
     inputElementRef.current?.focus();
   };
 
-  const handleInputKeyDown: NonNullable<NonNullable<PlainInputProps['inputProps']>['onKeyDown']> = (
-    event,
-  ) => {
+  const handleInputKeyDown: SearchFieldInputKeyDownHandler = (event) => {
     inputProps?.onKeyDown?.(event);
 
     if (event.defaultPrevented) {
@@ -190,16 +130,17 @@ export const SearchField = ({
     if (event.key === 'ArrowDown' && hasSuggestions) {
       event.preventDefault();
       setOpen(true);
+
       window.requestAnimationFrame(() => {
         suggestionRefs.current[0]?.focus();
       });
     }
   };
 
-  const handleSuggestionKeyDown = (
-    event: KeyboardEvent<HTMLButtonElement>,
-    suggestion: SearchFieldSuggestion,
-    index: number,
+  const handleSuggestionKeyDown: SearchFieldSuggestionKeyDownHandler = (
+    event,
+    suggestion,
+    index,
   ) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
@@ -209,11 +150,13 @@ export const SearchField = ({
 
     if (event.key === 'ArrowUp') {
       event.preventDefault();
+
       if (index === 0) {
         inputElementRef.current?.focus();
       } else {
         suggestionRefs.current[index - 1]?.focus();
       }
+
       return;
     }
 
@@ -230,16 +173,13 @@ export const SearchField = ({
     }
   };
 
-  const mergedInputProps = {
-    ...inputProps,
-    role: 'combobox',
-    'aria-expanded': expanded,
-    'aria-controls': expanded || showEmptyState ? listboxId : undefined,
-    'aria-autocomplete': 'list' as const,
-    enterKeyHint: inputProps?.enterKeyHint ?? 'search',
-    inputMode: inputProps?.inputMode ?? 'search',
+  const mergedInputProps = getMergedInputProps({
+    expanded,
+    inputProps,
+    listboxId,
     onKeyDown: handleInputKeyDown,
-  };
+    showEmptyState,
+  });
 
   return (
     <div
@@ -250,7 +190,6 @@ export const SearchField = ({
     >
       <InputComponent
         {...rest}
-        ref={undefined}
         value={currentValue}
         className={cx(searchFieldClasses.input, className)}
         type="search"
@@ -277,8 +216,10 @@ export const SearchField = ({
           )}
         >
           {visibleSuggestions.map((suggestion, index) => {
-            const suggestionValue = suggestion.value ?? suggestion.label;
-            const isSelected = currentValue === suggestionValue;
+            const isSelected = isSuggestionSelected({
+              currentValue,
+              suggestion,
+            });
 
             return (
               <li

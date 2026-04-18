@@ -1,0 +1,16 @@
+export const searchFieldClasses = {
+  root: 'ui-search-field',
+  input: 'ui-search-field__input',
+  icon: 'ui-search-field__icon',
+  clear: 'ui-search-field__clear',
+  suggestions: 'ui-search-field__suggestions',
+  suggestionsOpen: 'ui-search-field__suggestions--open',
+  suggestion: 'ui-search-field__suggestion',
+  suggestionButton: 'ui-search-field__suggestion-button',
+  suggestionIcon: 'ui-search-field__suggestion-icon',
+  suggestionContent: 'ui-search-field__suggestion-content',
+  suggestionLabel: 'ui-search-field__suggestion-label',
+  suggestionDescription: 'ui-search-field__suggestion-description',
+  suggestionDisabled: 'ui-search-field__suggestion--disabled',
+  empty: 'ui-search-field__empty',
+} as const;

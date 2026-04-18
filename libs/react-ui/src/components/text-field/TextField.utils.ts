@@ -1,25 +1,4 @@
 import type { ReactNode } from 'react';
-import type { FieldVariant } from '../../types';
-
-import { BoxedInput } from '../boxed-input';
-import { FilledInput } from '../filled-input';
-import { PlainInput } from '../plain-input';
-
-const variantComponent = {
-  plain: PlainInput,
-  filled: FilledInput,
-  boxed: BoxedInput,
-} as const;
-
-/**
- * TextField variant에 대응하는 입력 컴포넌트를 반환합니다.
- *
- * @param variant 입력 필드 variant
- * @returns variant에 대응하는 입력 컴포넌트
- */
-export const getTextFieldInputComponent = (variant: FieldVariant) => {
-  return variantComponent[variant];
-};
 
 /**
  * label 또는 helperText처럼 표시 여부를 판단할 ReactNode가
