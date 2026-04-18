@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ButtonBase } from './ButtonBase';
+import type { ButtonBaseNativeButtonProps } from './ButtonBase.types';
 
 const meta = {
   title: 'Components/ButtonBase',
@@ -40,11 +41,11 @@ const meta = {
     component: { control: false },
     children: { control: 'text' },
   },
-} satisfies Meta<typeof ButtonBase>;
+} satisfies Meta<ButtonBaseNativeButtonProps>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<ButtonBaseNativeButtonProps>;
 
 const rowStyle = {
   display: 'flex',
