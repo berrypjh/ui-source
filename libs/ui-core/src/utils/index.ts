@@ -1,1 +1,2 @@
-export { cx } from './cx';
+export * from './cx';
+export * from './object';
