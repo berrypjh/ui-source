@@ -3,7 +3,8 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
 
-import { Select, selectClasses } from './Select';
+import { Select } from './Select';
+import { selectClasses } from './Select.constants';
 import { MenuItem } from '../menu-item';
 import { FormControl } from '../form-control';
 import { InputLabel } from '../input-label';

@@ -1,256 +1,32 @@
 'use client';
 
-import {
-  Children,
-  Fragment,
-  isValidElement,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import type {
-  ComponentPropsWithRef,
-  FocusEventHandler,
-  KeyboardEvent,
-  MouseEvent,
-  ReactElement,
-  ReactNode,
-  Ref,
-} from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { cx } from '@berrypjh/ui-core';
 
-import type { FieldColor, FieldSize, FieldVariant } from '../../types';
 import { useFormControl } from '../form-control';
+import {
+  assignRef,
+  hasDisplayValue,
+  isOptionSelected,
+  isValueEqual,
+  stringifyValue,
+  getFirstEnabledIndex,
+  getLastEnabledIndex,
+  getNextEnabledIndex,
+  getInitialHighlightedIndex,
+} from '../../utils';
+import { selectClasses } from './Select.constants';
+import type { SelectOpenCloseEvent, SelectOptionElement, SelectProps } from './Select.types';
+import {
+  isOptionDisabled,
+  createSyntheticChangeEvent,
+  flattenOptionChildren,
+  getDefaultSelectValue,
+  getDisplayValue,
+  getHiddenValues,
+  getSelectRootClassNames,
+} from './Select.utils';
 import './select.scss';
-
-export const selectClasses = {
-  root: 'ui-select',
-  trigger: 'ui-select__trigger',
-  value: 'ui-select__value',
-  placeholder: 'ui-select__placeholder',
-  icon: 'ui-select__icon',
-  hiddenInput: 'ui-select__native-input',
-  listbox: 'ui-select__listbox',
-  option: 'ui-select__option',
-  optionSelected: 'ui-select__option--selected',
-  optionHighlighted: 'ui-select__option--highlighted',
-  open: 'ui-select--open',
-  focused: 'ui-select--focused',
-  disabled: 'ui-select--disabled',
-  error: 'ui-select--error',
-  multiple: 'ui-select--multiple',
-  fullWidth: 'ui-select--fullWidth',
-  sizeSm: 'ui-select--size-sm',
-  sizeMd: 'ui-select--size-md',
-  variantPlain: 'ui-select--variant-plain',
-  variantFilled: 'ui-select--variant-filled',
-  variantBoxed: 'ui-select--variant-boxed',
-  colorPrimary: 'ui-select--color-primary',
-  colorSecondary: 'ui-select--color-secondary',
-} as const;
-
-export type SelectChangeEvent<Value = unknown> = {
-  target: {
-    name?: string;
-    value: Value;
-  };
-};
-
-type SelectLikeChildProps = {
-  value?: unknown;
-  disabled?: boolean;
-  children?: ReactNode;
-};
-
-export interface SelectProps
-  extends Omit<
-    ComponentPropsWithRef<'div'>,
-    'children' | 'defaultValue' | 'value' | 'onChange' | 'onBlur' | 'onFocus'
-  > {
-  'aria-describedby'?: string;
-  autoFocus?: boolean;
-  children?: ReactNode;
-  color?: FieldColor;
-  defaultOpen?: boolean;
-  defaultValue?: unknown;
-  disabled?: boolean;
-  displayEmpty?: boolean;
-  error?: boolean;
-  fullWidth?: boolean;
-  id?: string;
-  labelId?: string;
-  multiple?: boolean;
-  name?: string;
-  onBlur?: FocusEventHandler<HTMLElement>;
-  onChange?: (event: SelectChangeEvent, child?: ReactElement | null) => void;
-  onClose?: (event?: Event | MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void;
-  onFocus?: FocusEventHandler<HTMLElement>;
-  onOpen?: (event?: Event | MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void;
-  open?: boolean;
-  placeholder?: ReactNode;
-  renderValue?: (value: unknown) => ReactNode;
-  required?: boolean;
-  size?: FieldSize;
-  value?: unknown;
-  variant?: FieldVariant;
-  ref?: Ref<HTMLDivElement>;
-}
-
-const assignRef = <T,>(ref: unknown, value: T) => {
-  if (typeof ref === 'function') {
-    ref(value);
-    return;
-  }
-
-  if (ref && typeof ref === 'object' && 'current' in ref) {
-    (ref as { current: T }).current = value;
-  }
-};
-
-const isObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null;
-
-const stringifyValue = (value: unknown): string => {
-  if (value == null) {
-    return '';
-  }
-
-  if (typeof value === 'string') {
-    return value;
-  }
-
-  if (typeof value === 'number' || typeof value === 'boolean') {
-    return String(value);
-  }
-
-  if (Array.isArray(value)) {
-    return value.map((item) => stringifyValue(item)).join(',');
-  }
-
-  return String(value);
-};
-
-const hasDisplayValue = (value: unknown, multiple: boolean): boolean => {
-  if (multiple) {
-    return Array.isArray(value) && value.length > 0;
-  }
-
-  return value !== '' && value != null;
-};
-
-const isValueEqual = (optionValue: unknown, currentValue: unknown): boolean => {
-  if (isObject(optionValue) || isObject(currentValue)) {
-    return optionValue === currentValue;
-  }
-
-  return stringifyValue(optionValue) === stringifyValue(currentValue);
-};
-
-const isOptionSelected = (
-  optionValue: unknown,
-  currentValue: unknown,
-  multiple: boolean,
-): boolean => {
-  if (multiple) {
-    if (!Array.isArray(currentValue)) {
-      return false;
-    }
-
-    return currentValue.some((item) => isValueEqual(optionValue, item));
-  }
-
-  return isValueEqual(optionValue, currentValue);
-};
-
-const getNodeText = (node: ReactNode): string => {
-  if (node == null || typeof node === 'boolean') {
-    return '';
-  }
-
-  if (typeof node === 'string' || typeof node === 'number') {
-    return String(node);
-  }
-
-  if (Array.isArray(node)) {
-    return node.map((item) => getNodeText(item)).join('');
-  }
-
-  if (isValidElement<{ children?: ReactNode }>(node)) {
-    return getNodeText(node.props.children);
-  }
-
-  return '';
-};
-
-const flattenOptionChildren = (children: ReactNode): ReactElement<SelectLikeChildProps>[] => {
-  const result: ReactElement<SelectLikeChildProps>[] = [];
-
-  Children.forEach(children, (child) => {
-    if (child == null || typeof child === 'boolean') {
-      return;
-    }
-
-    if (!isValidElement(child)) {
-      return;
-    }
-
-    if (child.type === Fragment) {
-      result.push(...flattenOptionChildren((child.props as { children?: ReactNode }).children));
-      return;
-    }
-
-    const props = child.props as SelectLikeChildProps;
-
-    if (!('value' in props)) {
-      return;
-    }
-
-    result.push(child as ReactElement<SelectLikeChildProps>);
-  });
-
-  return result;
-};
-
-const getDefaultSelectValue = (multiple: boolean, defaultValue: unknown): unknown => {
-  if (defaultValue !== undefined) {
-    return defaultValue;
-  }
-
-  return multiple ? [] : '';
-};
-
-const getFirstEnabledIndex = (options: ReactElement<SelectLikeChildProps>[]): number =>
-  options.findIndex((option) => !option.props.disabled);
-
-const getSelectedIndex = (
-  options: ReactElement<SelectLikeChildProps>[],
-  value: unknown,
-  multiple: boolean,
-): number => options.findIndex((option) => isOptionSelected(option.props.value, value, multiple));
-
-const getNextEnabledIndex = (
-  options: ReactElement<SelectLikeChildProps>[],
-  startIndex: number,
-  direction: 1 | -1,
-): number => {
-  if (!options.length) {
-    return -1;
-  }
-
-  let index = startIndex;
-
-  for (let step = 0; step < options.length; step += 1) {
-    index = (index + direction + options.length) % options.length;
-
-    if (!options[index]?.props.disabled) {
-      return index;
-    }
-  }
-
-  return -1;
-};
 
 export const Select = ({
   'aria-describedby': ariaDescribedby,
@@ -282,16 +58,16 @@ export const Select = ({
   variant,
   ref,
   ...rest
-}: SelectProps): ReactElement | null => {
+}: SelectProps) => {
   const formControl = useFormControl();
 
   const resolvedColor = color ?? formControl?.color ?? 'primary';
   const resolvedDisabled = disabled ?? formControl?.disabled ?? false;
   const resolvedError = error ?? formControl?.error ?? false;
   const resolvedFullWidth = fullWidth ?? formControl?.fullWidth ?? false;
+  const resolvedRequired = required ?? formControl?.required ?? false;
   const resolvedSize = size ?? formControl?.size ?? 'md';
   const resolvedVariant = variant ?? formControl?.variant ?? 'boxed';
-  const resolvedRequired = required ?? formControl?.required ?? false;
 
   const rootRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -303,6 +79,7 @@ export const Select = ({
 
   const [focused, setFocused] = useState(false);
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+
   const isControlledOpen = openProp != null;
   const open = openProp ?? uncontrolledOpen;
 
@@ -313,59 +90,39 @@ export const Select = ({
   const value = isControlledValue ? valueProp : valueState;
 
   const optionElements = useMemo(() => flattenOptionChildren(children), [children]);
-  const selectedOptions = optionElements.filter((child) =>
-    isOptionSelected(child.props.value, value, multiple),
+
+  const selectedOptions = useMemo(
+    () => optionElements.filter((child) => isOptionSelected(child.props.value, value, multiple)),
+    [multiple, optionElements, value],
   );
 
-  const [highlightedIndex, setHighlightedIndex] = useState<number>(() => {
-    const selectedIndex = getSelectedIndex(optionElements, value, multiple);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(() =>
+    getInitialHighlightedIndex(optionElements, isOptionDisabled, (option) =>
+      isOptionSelected(option.props.value, value, multiple),
+    ),
+  );
 
-    if (selectedIndex >= 0) {
-      return selectedIndex;
-    }
+  const hiddenValues = useMemo(
+    () =>
+      getHiddenValues({
+        multiple,
+        value,
+      }),
+    [multiple, value],
+  );
 
-    return getFirstEnabledIndex(optionElements);
-  });
-
-  const hiddenValues = multiple
-    ? Array.isArray(value)
-      ? value.map((item) => stringifyValue(item))
-      : []
-    : [stringifyValue(value)];
-
-  const displayValue = useMemo(() => {
-    if (renderValue) {
-      return renderValue(value);
-    }
-
-    if (hasDisplayValue(value, multiple)) {
-      if (multiple) {
-        const texts = selectedOptions
-          .map((child) => getNodeText(child.props.children))
-          .filter(Boolean);
-
-        return texts.join(', ');
-      }
-
-      const selected = selectedOptions[0];
-      return selected ? getNodeText(selected.props.children) : null;
-    }
-
-    if (displayEmpty) {
-      if (multiple) {
-        return '';
-      }
-
-      const selected = selectedOptions[0];
-      return selected ? getNodeText(selected.props.children) : '';
-    }
-
-    if (placeholder != null) {
-      return placeholder;
-    }
-
-    return null;
-  }, [displayEmpty, multiple, placeholder, renderValue, selectedOptions, value]);
+  const displayValue = useMemo(
+    () =>
+      getDisplayValue({
+        displayEmpty,
+        multiple,
+        placeholder,
+        renderValue,
+        selectedOptions,
+        value,
+      }),
+    [displayEmpty, multiple, placeholder, renderValue, selectedOptions, value],
+  );
 
   useEffect(() => {
     if (!autoFocus || resolvedDisabled) {
@@ -380,8 +137,9 @@ export const Select = ({
       return;
     }
 
-    const selectedIndex = getSelectedIndex(optionElements, value, multiple);
-    const initialIndex = selectedIndex >= 0 ? selectedIndex : getFirstEnabledIndex(optionElements);
+    const initialIndex = getInitialHighlightedIndex(optionElements, isOptionDisabled, (option) =>
+      isOptionSelected(option.props.value, value, multiple),
+    );
 
     setHighlightedIndex(initialIndex);
 
@@ -416,7 +174,7 @@ export const Select = ({
         setUncontrolledOpen(false);
       }
 
-      onClose?.(event as unknown as MouseEvent<HTMLElement>);
+      onClose?.(event);
     };
 
     document.addEventListener('mousedown', handlePointerDown);
@@ -463,7 +221,7 @@ export const Select = ({
     };
   }, [triggerId, resolvedDisabled, open, isControlledOpen, onOpen]);
 
-  const handleOpen = (event?: Event | MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => {
+  const handleOpen = (event?: SelectOpenCloseEvent) => {
     if (resolvedDisabled) {
       return;
     }
@@ -475,7 +233,7 @@ export const Select = ({
     onOpen?.(event);
   };
 
-  const handleClose = (event?: Event | MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => {
+  const handleClose = (event?: SelectOpenCloseEvent) => {
     if (!isControlledOpen) {
       setUncontrolledOpen(false);
     }
@@ -483,17 +241,7 @@ export const Select = ({
     onClose?.(event);
   };
 
-  const createSyntheticChangeEvent = (nextValue: unknown): SelectChangeEvent => ({
-    target: {
-      name,
-      value: nextValue,
-    },
-  });
-
-  const selectOption = (
-    event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>,
-    child: ReactElement<SelectLikeChildProps>,
-  ) => {
+  const selectOption = (event: SelectOpenCloseEvent, child: SelectOptionElement) => {
     if (child.props.disabled) {
       return;
     }
@@ -512,7 +260,7 @@ export const Select = ({
         setValueState(nextValue);
       }
 
-      onChange?.(createSyntheticChangeEvent(nextValue), child);
+      onChange?.(createSyntheticChangeEvent(name, nextValue), child);
       return;
     }
 
@@ -526,12 +274,12 @@ export const Select = ({
       setValueState(optionValue);
     }
 
-    onChange?.(createSyntheticChangeEvent(optionValue), child);
+    onChange?.(createSyntheticChangeEvent(name, optionValue), child);
     handleClose(event);
     triggerRef.current?.focus();
   };
 
-  const handleTriggerClick = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleTriggerClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (open) {
       handleClose(event);
       return;
@@ -540,7 +288,7 @@ export const Select = ({
     handleOpen(event);
   };
 
-  const handleTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+  const handleTriggerKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     if (resolvedDisabled) {
       return;
     }
@@ -551,6 +299,7 @@ export const Select = ({
       if (!open) {
         handleOpen(event);
       }
+
       return;
     }
 
@@ -562,6 +311,8 @@ export const Select = ({
       } else {
         handleOpen(event);
       }
+
+      return;
     }
 
     if (event.key === 'Escape' && open) {
@@ -570,7 +321,7 @@ export const Select = ({
     }
   };
 
-  const handleRootBlur: FocusEventHandler<HTMLDivElement> = (event) => {
+  const handleRootBlur: React.FocusEventHandler<HTMLDivElement> = (event) => {
     const nextFocusedElement = event.relatedTarget;
 
     if (nextFocusedElement instanceof Node && event.currentTarget.contains(nextFocusedElement)) {
@@ -581,20 +332,20 @@ export const Select = ({
     onBlur?.(event);
   };
 
-  const handleRootFocus: FocusEventHandler<HTMLDivElement> = (event) => {
+  const handleRootFocus: React.FocusEventHandler<HTMLDivElement> = (event) => {
     setFocused(true);
     onFocus?.(event);
   };
 
   const handleOptionKeyDown = (
-    event: KeyboardEvent<HTMLButtonElement>,
-    child: ReactElement<SelectLikeChildProps>,
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    child: SelectOptionElement,
     index: number,
   ) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
 
-      const nextIndex = getNextEnabledIndex(optionElements, index, 1);
+      const nextIndex = getNextEnabledIndex(optionElements, index, 1, isOptionDisabled);
 
       if (nextIndex >= 0) {
         setHighlightedIndex(nextIndex);
@@ -607,7 +358,7 @@ export const Select = ({
     if (event.key === 'ArrowUp') {
       event.preventDefault();
 
-      const nextIndex = getNextEnabledIndex(optionElements, index, -1);
+      const nextIndex = getNextEnabledIndex(optionElements, index, -1, isOptionDisabled);
 
       if (nextIndex >= 0) {
         setHighlightedIndex(nextIndex);
@@ -620,7 +371,7 @@ export const Select = ({
     if (event.key === 'Home') {
       event.preventDefault();
 
-      const firstIndex = getFirstEnabledIndex(optionElements);
+      const firstIndex = getFirstEnabledIndex(optionElements, isOptionDisabled);
 
       if (firstIndex >= 0) {
         setHighlightedIndex(firstIndex);
@@ -633,12 +384,9 @@ export const Select = ({
     if (event.key === 'End') {
       event.preventDefault();
 
-      const reversedIndex = [...optionElements]
-        .reverse()
-        .findIndex((option) => !option.props.disabled);
+      const lastIndex = getLastEnabledIndex(optionElements, isOptionDisabled);
 
-      if (reversedIndex >= 0) {
-        const lastIndex = optionElements.length - 1 - reversedIndex;
+      if (lastIndex >= 0) {
         setHighlightedIndex(lastIndex);
         optionRefs.current[lastIndex]?.focus();
       }
@@ -659,23 +407,18 @@ export const Select = ({
     }
   };
 
-  const rootClassName = cx(
-    selectClasses.root,
-    open && selectClasses.open,
-    focused && selectClasses.focused,
-    resolvedDisabled && selectClasses.disabled,
-    resolvedError && selectClasses.error,
-    multiple && selectClasses.multiple,
-    resolvedFullWidth && selectClasses.fullWidth,
-    resolvedSize === 'sm' && selectClasses.sizeSm,
-    resolvedSize === 'md' && selectClasses.sizeMd,
-    resolvedVariant === 'plain' && selectClasses.variantPlain,
-    resolvedVariant === 'filled' && selectClasses.variantFilled,
-    resolvedVariant === 'boxed' && selectClasses.variantBoxed,
-    resolvedColor === 'primary' && selectClasses.colorPrimary,
-    resolvedColor === 'secondary' && selectClasses.colorSecondary,
+  const rootClassName = getSelectRootClassNames({
     className,
-  );
+    color: resolvedColor,
+    disabled: resolvedDisabled,
+    error: resolvedError,
+    focused,
+    fullWidth: resolvedFullWidth,
+    multiple,
+    open,
+    size: resolvedSize,
+    variant: resolvedVariant,
+  });
 
   return (
     <div

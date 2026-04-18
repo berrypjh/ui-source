@@ -12,6 +12,7 @@ import type {
 import { PlainInput, type PlainInputProps } from '../plain-input';
 import { FilledInput, type FilledInputProps } from '../filled-input';
 import { BoxedInput, type BoxedInputProps } from '../boxed-input';
+import { assignRef } from '../../utils';
 import './search-field.scss';
 
 export const searchFieldClasses = {
@@ -64,17 +65,6 @@ const variantComponent = {
   SearchFieldVariant,
   (props: PlainInputProps | FilledInputProps | BoxedInputProps) => ReactElement | null
 >;
-
-const assignRef = (ref: unknown, value: unknown) => {
-  if (typeof ref === 'function') {
-    ref(value);
-    return;
-  }
-
-  if (ref && typeof ref === 'object' && 'current' in ref) {
-    (ref as { current: unknown }).current = value;
-  }
-};
 
 const toInputString = (value: unknown): string => {
   if (Array.isArray(value)) {

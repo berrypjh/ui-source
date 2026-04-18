@@ -4,26 +4,7 @@ import { inputBaseClasses } from './InputBase.constants';
 import type { HandleNativeElementRef, InputBaseProps, InputDomValue } from './InputBase.types';
 import type { InputLikeElement } from '../../types';
 import type { FormControlContextValue } from '../form-control';
-import { hasFormValue } from '../../utils';
-
-/**
- * 전달받은 ref에 value를 할당합니다.
- *
- * 함수형 ref와 object ref를 모두 지원합니다.
- *
- * @param ref 할당할 ref
- * @param value ref에 연결할 값
- */
-const assignRef = (ref: unknown, value: unknown) => {
-  if (typeof ref === 'function') {
-    ref(value);
-    return;
-  }
-
-  if (ref && typeof ref === 'object' && 'current' in ref) {
-    ref.current = value;
-  }
-};
+import { assignRef, hasFormValue } from '../../utils';
 
 /**
  * 내부 input ref와 외부 ref를 함께 동기화하는 ref 핸들러를 생성합니다.
