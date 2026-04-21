@@ -1,10 +1,17 @@
 ---
-description: 기존 컴포넌트에 누락되거나 부족한 Storybook 스토리를 자동 생성합니다
-argument-hint: '<ComponentName>'
+name: story
+description: 기존 컴포넌트와 인접 스토리 패턴을 분석해 누락된 Storybook 스토리만 최소 수정으로 추가합니다
+argument-hint: <ComponentName>
 ---
 
 $ARGUMENTS에서 컴포넌트 이름을 파악하세요.
-인자가 없으면 현재 열려 있는 파일의 컴포넌트를 대상으로 하세요.
+인자가 없으면 현재 열려 있는 파일 또는 현재 작업 중인 컴포넌트를 기준으로 추론하세요.
+
+목표:
+
+- 기존 Storybook 파일이 없으면 새로 생성
+- 기존 Storybook 파일이 있으면 누락된 스토리만 최소 수정으로 추가
+- 항상 현재 모노레포의 기존 스토리 패턴을 우선 재사용
 
 ## 0단계 — 이름 변환
 
@@ -19,60 +26,53 @@ $ARGUMENTS에서 컴포넌트 이름을 파악하세요.
 - `boxed-input` → PascalCase: `BoxedInput` / kebab-case: `boxed-input`
 - `button` → PascalCase: `Button` / kebab-case: `button`
 
-경로 조합 예시 (`BoxedInput`인 경우):폴더: libs/react-ui/src/components/boxed-input/
-React 파일: libs/react-ui/src/components/boxed-input/BoxedInput.tsx
+경로 조합 예시 (`BoxedInput`인 경우): 폴더: `libs/react-ui/src/components/boxed-input/` / React 파일: `libs/react-ui/src/components/boxed-input/BoxedInput.tsx`
 
-이후 모든 단계에서 경로를 조합할 때 이 규칙을 따르세요.
+## 1단계 — 컴포넌트 탐색
 
-## 1단계 — 컴포넌트 파악
+경로를 "고정 조합"하지 말고 아래 순서로 찾으세요.
 
-다음 파일들을 읽으세요:
+1. `libs/react-ui/src/components/**/{PascalCase}.tsx`
+2. 같은 폴더의 `index.ts`
+3. 같은 폴더의 `{PascalCase}.stories.tsx`
+4. 같은 라이브러리에서 이름/props가 유사한 인접 스토리 파일 2~3개
+5. 필요하면 연관 타입 정의 파일 (`libs/ui-core/src/types/{kebab-case}.ts`)
 
-**React:**
+컴포넌트 파일이 여러 개면:
 
-- `libs/react-ui/src/components/{kebab-case}/{PascalCase}.tsx`
-- `libs/react-ui/src/components/{kebab-case}/index.ts`
-- `libs/ui-core/src/types/{kebab-case}.ts`
+- `libs/react-ui/src/components/` 아래를 우선
+- 동일 이름이면 현재 작업 파일과 가장 가까운 경로를 우선
 
-기존 스토리 파일이 있으면 함께 읽어 중복을 피하세요:
+## 2단계 — 기존 패턴 학습
 
-- `libs/react-ui/src/components/{kebab-case}/{PascalCase}.stories.tsx`
+스토리를 생성하기 전에 반드시 아래를 파악하세요.
 
-파악할 내용:
+- title 패턴
+- meta 구조
+- tags, parameters, decorators 사용 방식
+- argTypes 관례
+- Playground/Default/Variants 계열 스토리 관례
+- wrapper 필요 여부 (예: FormControl, ThemeProvider)
 
-- 모든 Props와 타입, 기본값
-- 필수 Props vs optional Props 구분
-- union 타입 (`variant`, `size`, `color` 등) — 가능한 값 전부 열거
+기존 패턴이 있으면 일반 Storybook 예시보다 프로젝트 패턴을 우선합니다.
+
+## 3단계 — 컴포넌트 분석
+
+다음을 분석하세요.
+
+- 필수/선택 props
+- union props (`variant`, `size`, `color` 등) — 가능한 값 전부 열거
+- boolean 상태 props (`disabled`, `error`, `loading`, `readOnly`, `required`, `multiline`, `checked`, `open` 등)
 - 이벤트 핸들러 (`onClick`, `onChange` 등)
-- `children` 또는 slot 여부
-- boolean 상태 Props 전부 (`disabled`, `error`, `loading`, `readOnly`, `required`, `multiline`, `checked`, `open` 등)
-- slot/adornment Props (`startAdornment`, `endAdornment`, `icon`, `prefix` 등)
+- children / slot / adornment (`startAdornment`, `endAdornment`, `icon`, `prefix` 등)
+- 스토리로 의미 있게 보여줄 수 있는 상태 조합
 
-## 2단계 — 스토리 커버리지 분석
+## 4단계 — 커버리지 분석
 
-기존 스토리가 있다면, 빠진 스토리를 분석해서 먼저 보고하세요:
+기존 story가 있으면 먼저 현재 커버리지를 요약해서 보고하세요.
+누락된 스토리만 생성 대상으로 확정하세요.
 
-```
-현재 커버리지:
-- ✅ Default
-- ✅ Disabled
-- ❌ AllVariants (없음)
-- ❌ Loading 상태 (없음)
-- ❌ 에러 상태 (없음)
-- ❌ 접근성 예시 (없음)
-
-생성할 스토리: AllVariants, Loading, Error, A11y
-```
-
-기존 스토리가 없으면 아래 필수 목록 전체를 생성하세요.
-
-## 3단계 — 스토리 생성
-
-### React 스토리 파일
-
-저장 위치: `libs/react-ui/src/components/{kebab-case}/{PascalCase}.stories.tsx`
-
-**필수 스토리 목록:**
+기본 후보:
 
 | 스토리 이름      | 설명                                                   | 조건                                           |
 | ---------------- | ------------------------------------------------------ | ---------------------------------------------- |
@@ -92,9 +92,19 @@ React 파일: libs/react-ui/src/components/boxed-input/BoxedInput.tsx
 | `WithLongText`   | 긴 텍스트/내용에서의 레이아웃                          | 항상                                           |
 | `A11y`           | aria 속성 올바른 사용 예시                             | 항상                                           |
 
-> **상태 Props 일반 원칙:** 위 목록 외에도 컴포넌트에 boolean 상태 prop이 있으면 (`checked`, `selected`, `expanded`, `open` 등) 각각 독립된 스토리를 추가하세요. 상태 조합(예: `disabled + error`)이 의미 있는 경우 `DisabledWithError` 같은 이름으로 추가합니다.
+위 목록 외에도 컴포넌트에 boolean 상태 prop이 있으면 각각 독립된 스토리를 추가하세요. 상태 조합(예: `disabled + error`)이 의미 있는 경우 `DisabledWithError` 같은 이름으로 추가합니다. 단, 컴포넌트 의미에 맞지 않는 스토리는 억지로 만들지 마세요.
 
-**코드 형식 (CSF3, Storybook 8 기준):**
+## 5단계 — 스토리 생성
+
+저장 위치: `libs/react-ui/src/components/{kebab-case}/{PascalCase}.stories.tsx`
+
+기존 패턴이 없을 때 아래 예시 파일을 참고하세요:
+
+- `examples/variant-component.stories.tsx` — variant / size / color / loading이 있는 버튼형 컴포넌트
+- `examples/input-component.stories.tsx` — 텍스트 입력형 컴포넌트 (adornment / multiline / fullWidth)
+- `examples/children-component.stories.tsx` — children을 직접 전달하는 컴포넌트 (render 함수 기반)
+
+기본 코드 형식 (CSF3, Storybook 8 기준):
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react-vite';
@@ -108,7 +118,6 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  // 모든 스토리에서 공유할 기본 args를 meta.args에 선언
   args: {
     // 컴포넌트의 기본 Props 값
   },
@@ -136,7 +145,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// 여러 스토리에서 공유하는 레이아웃 스타일은 상수로 추출
 const columnStyle = {
   display: 'grid',
   gap: '16px',
@@ -150,51 +158,40 @@ const rowStyle = {
   alignItems: 'center',
 };
 
-// Playground — Controls 패널로 전부 조작 가능
 export const Playground: Story = {
   render: (args) => <{PascalCase} {...args} />,
 };
 
-// Default — 가장 기본 형태
 export const Default: Story = {
-  args: {
-    // 필수 Props만, 나머지는 meta.args 기본값에 맡김
-  },
-};
-
-// AllVariants — 모든 variant를 한눈에
-export const AllVariants: Story = {
-  render: () => (
-    <div style={rowStyle}>
-      {/* variant 값마다 인스턴스 — 컴포넌트 분석 결과로 채울 것 */}
-    </div>
-  ),
-};
-
-// A11y — 접근성 올바른 사용 예시
-export const A11y: Story = {
-  render: () => (
-    <div style={columnStyle}>
-      {/* aria-label, role, aria-describedby 등 올바른 사용 예시 */}
-    </div>
-  ),
-  parameters: {
-    a11y: { disable: false },
-  },
+  args: {},
 };
 ```
 
-## 규칙
+## 생성 규칙
 
-- 경로 조합 시 폴더는 반드시 kebab-case, 파일명은 반드시 PascalCase
-- `meta.args`에 모든 스토리의 공유 기본값을 선언하고, 개별 스토리 `args`는 그 위에 덮어쓰기만 함
-- `argTypes`에서 union 타입은 반드시 `control: 'select'`와 `options` 명시
-- `ReactNode`, `ref`, `className`, `style`, `component` 등 직렬화 불가 props는 `control: false`로 설정
-- `Playground`는 반드시 `render: (args) => <Component {...args} />` 형태로 작성
-- 여러 스토리에서 공유하는 레이아웃 스타일은 파일 상단에 상수(`columnStyle`, `rowStyle`)로 추출
-- `render` 함수 안 `style`은 인라인 또는 상단 상수만 사용 (CSS 파일 import 금지)
+- 폴더는 반드시 kebab-case, 파일명은 반드시 PascalCase
+- 기존 story 파일이 있으면 전체 재작성하지 말고 최소 수정만 수행
+- `meta.args`에 공통 기본값을 두고 개별 스토리는 덮어쓰기만 사용
+- union prop은 `argTypes` select + options 명시
+- `ReactNode`, `ref`, `className`, `style` 등 직렬화 불가 props는 `control: false`
+- `Playground`는 반드시 `render: (args) => <Component {...args} />` 형태
+- 여러 스토리에서 쓰는 레이아웃 style은 파일 상단 상수(`columnStyle`, `rowStyle`)로 추출
+- `render` 함수 안 style은 인라인 또는 상단 상수만 사용 (CSS 파일 import 금지)
 - `AllVariants`에는 실제 컴포넌트 인스턴스를 variant 수만큼 렌더링
 - `A11y` 스토리에는 `parameters.a11y.disable: false` 반드시 명시
-- 스토리 export 이름은 영문 PascalCase (`Default`, `AllVariants` 등)
+- 스토리 export 이름은 영문 PascalCase
 - Lorem ipsum 금지 — 실제 UI에서 쓸 법한 텍스트 사용
-- 기존 스토리가 있을 때는 덮어쓰지 말고 누락된 스토리만 추가
+
+## 6단계 — 출력 방식
+
+먼저 아래 형식으로 보고하세요.
+
+```
+현재 커버리지:
+- ✅ Default
+- ❌ AllVariants (없음)
+
+생성할 스토리: AllVariants, ...
+```
+
+그 다음 실제 파일 변경을 수행하세요.
