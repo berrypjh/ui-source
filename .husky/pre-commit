@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -e
+
+echo -e "===\n>> 브랜치 검사 중..."
+
+# 긴급 우회 플래그
+if [ "${HUSKY_ALLOW_PROTECTED_BRANCH:-0}" = "1" ]; then
+  echo "⚠️  보호 브랜치 커밋 우회가 활성화되었습니다 (HUSKY_ALLOW_PROTECTED_BRANCH=1)."
+  echo -e ">> 브랜치 검사 우회 완료\n==="
+  exit 0
+fi
+
+# 현재 브랜치 이름 가져오기 (detached HEAD 대비)
+BRANCH="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
+
+# detached HEAD(예: tag/commit 체크아웃) 상태면 브랜치 검사 스킵
+if [ -z "$BRANCH" ]; then
+  echo "⚠️  현재 detached HEAD 상태입니다. (브랜치 이름을 확인할 수 없어 검사 생략)"
+  echo -e ">> 브랜치 검사 완료\n==="
+  exit 0
+fi
+
+# 보호 브랜치 직접 커밋 차단
+PROTECTED_REGEX='^(main|master|develop|release\/.*|hotfix\/.*)$'
+if echo "$BRANCH" | grep -Eq "$PROTECTED_REGEX"; then
+  echo "❌ 보호 브랜치에 대한 직접 커밋이 차단되었습니다: '$BRANCH'"
+  echo "   → feature/* 브랜치를 만들고 PR로 병합하세요."
+  echo "   → 긴급 시(우회): HUSKY_ALLOW_PROTECTED_BRANCH=1 git commit ..."
+  exit 1
+fi
+
+# 브랜치 이름에 비-ASCII 문자가 포함되면 차단 (예: 한글/일본어 등)
+if [[ "$BRANCH" = *[![:ascii:]]* ]]; then
+  echo "❌ 브랜치 이름에 ASCII 이외 문자를 사용할 수 없습니다: '$BRANCH'"
+  echo "   → 영문/숫자/기호(-_/.) 위주로 브랜치를 다시 만들어 주세요."
+  exit 1
+fi
+
+# 브랜치 이름에 대문자가 포함되면 차단
+if [[ "$BRANCH" == *[[:upper:]]* ]]; then
+  echo "❌ 브랜치 이름에 대문자를 사용할 수 없습니다: '$BRANCH'"
+  exit 1
+fi
+
+echo -e ">> 브랜치 검사 완료\n==="
+
+# staged 파일만 lint/format 적용
+if command -v pnpm >/dev/null 2>&1; then
+  pnpm exec lint-staged
+else
+  npx lint-staged
+fi
+
+echo -e ">> lint-staged 완료\n==="

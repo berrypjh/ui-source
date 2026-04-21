@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo -e "===\n>> 브랜치 검사 중..."
+
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+# 보호 브랜치 차단
+PROTECTED_REGEX='^(main|master|develop|release\/.*|hotfix\/.*)$'
+if [[ "$BRANCH" =~ $PROTECTED_REGEX ]]; then
+  echo -e "\n❌ 보호 브랜치(${BRANCH})에는 직접 푸시할 수 없습니다."
+  echo -e "   → feature/* 브랜치를 만들고 PR로 병합하세요.\n"
+  exit 1
+fi
+
+echo -e ">> 브랜치 검사 완료\n==="
+exit 0

@@ -23,13 +23,16 @@
     "format:check": "nx format:check",
     "release:local": "tsx tools/scripts/release/release-local.ts",
     "local-registry": "nx local-registry",
-    "reset": "nx reset"
+    "reset": "nx reset",
+    "prepare": "husky install"
   },
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
     "@babel/runtime": "~7.27.6",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^9.8.0",
     "@expo/cli": "~54.0.16",
     "@nx/cypress": "^22.3.3",
@@ -83,9 +86,11 @@
     "eslint-plugin-react": "7.35.0",
     "eslint-plugin-react-hooks": "5.0.0",
     "eslint-plugin-storybook": "^10.2.19",
+    "husky": "^8.0.0",
     "jiti": "2.4.2",
     "jsdom": "^27.1.0",
     "jsonc-eslint-parser": "^2.1.0",
+    "lint-staged": "^16.4.0",
     "metro-config": "~0.83.0",
     "metro-resolver": "~0.83.0",
     "nx": "22.3.3",
@@ -120,6 +125,15 @@
     "react-native": "0.81.5",
     "react-native-web": "~0.21.0",
     "zod": "^4.3.6"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,jsonc,css,scss,md,mdx,yaml,yml}": [
+      "prettier --write"
+    ]
   },
   "nx": {
     "includedScripts": [],

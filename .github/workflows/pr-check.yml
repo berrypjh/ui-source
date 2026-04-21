@@ -1,0 +1,202 @@
+name: PR Quality Check
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+# 동일한 PR에 새로운 커밋이 푸시되면 진행 중이던 이전 워크플로우를 취소하여 리소스를 절약
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  derive-shas:
+    name: Derive NX base/head SHAs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+    outputs:
+      nx_base: ${{ steps.setshas.outputs.base }}
+      nx_head: ${{ steps.setshas.outputs.head }}
+    steps:
+      - name: Checkout (full history for Nx)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Nx Set SHAs
+        id: setshas
+        uses: nrwl/nx-set-shas@v4
+        # base(main)와 head(PR) 커밋을 비교하여 변경된 프로젝트 범위를 계산
+
+      - name: Print derived SHAs
+        run: |
+          echo "NX_BASE=${{ steps.setshas.outputs.base }}"
+          echo "NX_HEAD=${{ steps.setshas.outputs.head }}"
+
+  format:
+    name: Format Check (Prettier)
+    runs-on: ubuntu-latest
+    needs: [derive-shas]
+    permissions:
+      contents: read
+    env:
+      NX_BASE: ${{ needs.derive-shas.outputs.nx_base }}
+      NX_HEAD: ${{ needs.derive-shas.outputs.nx_head }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ vars.PNPM_VERSION }}
+
+      - name: Setup Node.js (pnpm cache)
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Format Check (Prettier)
+        run: pnpm nx format:check --base=$NX_BASE --head=$NX_HEAD
+
+  lint-typecheck:
+    name: Lint & Typecheck (affected)
+    runs-on: ubuntu-latest
+    needs: [derive-shas]
+    permissions:
+      contents: read
+    env:
+      NX_BASE: ${{ needs.derive-shas.outputs.nx_base }}
+      NX_HEAD: ${{ needs.derive-shas.outputs.nx_head }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ vars.PNPM_VERSION }}
+
+      - name: Setup Node.js (pnpm cache)
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Lint & Typecheck
+        run: pnpm nx affected -t lint typecheck --parallel=3 --base=$NX_BASE --head=$NX_HEAD
+
+  audit:
+    name: Audit Dependencies
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ vars.PNPM_VERSION }}
+
+      - name: Setup Node.js (pnpm cache)
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Audit Dependencies
+        run: pnpm audit --prod --audit-level=high
+
+  test:
+    name: Unit Tests (affected)
+    runs-on: ubuntu-latest
+    needs: [derive-shas, format, lint-typecheck, audit]
+    permissions:
+      contents: read
+    env:
+      NX_BASE: ${{ needs.derive-shas.outputs.nx_base }}
+      NX_HEAD: ${{ needs.derive-shas.outputs.nx_head }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ vars.PNPM_VERSION }}
+
+      - name: Setup Node.js (pnpm cache)
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Run Unit Tests
+        run: pnpm nx affected -t test --configuration=ci --parallel=3 --base=$NX_BASE --head=$NX_HEAD
+
+  build:
+    name: Build (affected)
+    runs-on: ubuntu-latest
+    needs: [derive-shas, format, lint-typecheck, audit, test]
+    permissions:
+      contents: read
+    env:
+      NX_BASE: ${{ needs.derive-shas.outputs.nx_base }}
+      NX_HEAD: ${{ needs.derive-shas.outputs.nx_head }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ vars.PNPM_VERSION }}
+
+      - name: Setup Node.js (pnpm cache)
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Build Affected Projects
+        run: pnpm nx affected -t build --parallel=3 --base=$NX_BASE --head=$NX_HEAD
