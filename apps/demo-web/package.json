@@ -1,0 +1,12 @@
+{
+  "name": "@berrypjh/demo-web",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@berrypjh/design-tokens": "workspace:*",
+    "@berrypjh/react-ui": "workspace:*",
+    "react": "*",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "6.29.0"
+  }
+}
