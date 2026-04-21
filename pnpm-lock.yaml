@@ -35,18 +35,12 @@ importers:
       react:
         specifier: ^19.1.0
         version: 19.2.3
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.2.3(react@19.2.3)
       react-native:
         specifier: 0.81.5
         version: 0.81.5(@babel/core@7.28.6)(@react-native-community/cli@18.0.1(typescript@5.9.3))(@react-native/metro-config@0.79.7(@babel/core@7.28.6))(@types/react@19.2.8)(react@19.2.3)
       react-native-web:
         specifier: ~0.21.0
         version: 0.21.2(encoding@0.1.13)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react-router-dom:
-        specifier: 6.29.0
-        version: 6.29.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -333,6 +327,24 @@ importers:
       react-native-web:
         specifier: '*'
         version: 0.21.2(encoding@0.1.13)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+
+  apps/demo-web:
+    dependencies:
+      '@berrypjh/design-tokens':
+        specifier: workspace:*
+        version: link:../../libs/design-tokens
+      '@berrypjh/react-ui':
+        specifier: workspace:*
+        version: link:../../libs/react-ui
+      react:
+        specifier: '*'
+        version: 19.2.3
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.3(react@19.2.3)
+      react-router-dom:
+        specifier: 6.29.0
+        version: 6.29.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
   libs/design-tokens:
     devDependencies:
