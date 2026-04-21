@@ -8,6 +8,7 @@
     "build": "nx run-many -t build --all",
     "build:libs": "nx run-many -t build --projects=@berrypjh/ui-core,@berrypjh/react-ui",
     "build:design-tokens": "nx run @berrypjh/design-tokens:build",
+    "build:commit-mcp": "nx run commit-mcp:build",
     "publish:design-tokens": "nx run @berrypjh/design-tokens:publish",
     "storybook": "nx storybook @berrypjh/react-ui",
     "build-storybook": "nx build-storybook @berrypjh/react-ui",
@@ -22,9 +23,7 @@
     "format:check": "nx format:check",
     "release:local": "tsx tools/scripts/release/release-local.ts",
     "local-registry": "nx local-registry",
-    "reset": "nx reset",
-    "ai:commit": "tsx tools/scripts/ai/ai-commit-msg.mts",
-    "ai:ui": "tsx tools/scripts/ai/ai-ui-scaffold.mts"
+    "reset": "nx reset"
   },
   "private": true,
   "devDependencies": {
@@ -76,7 +75,6 @@
     "babel-preset-expo": "~54.0.7",
     "core-js": "^3.36.1",
     "cypress": "^15.8.0",
-    "dotenv": "^17.2.3",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-cypress": "^3.5.0",
@@ -91,7 +89,6 @@
     "metro-config": "~0.83.0",
     "metro-resolver": "~0.83.0",
     "nx": "22.3.3",
-    "openai": "^6.16.0",
     "postcss": "8.4.38",
     "prettier": "~3.6.2",
     "react-native-svg": "15.12.1",
@@ -114,6 +111,7 @@
     "@berrypjh/design-tokens": "^0.0.1",
     "@expo/metro-config": "~54.0.9",
     "@expo/metro-runtime": "~6.1.2",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "expo": "~54.0.0",
     "expo-splash-screen": "~31.0.11",
     "expo-status-bar": "~3.0.8",
@@ -122,7 +120,8 @@
     "react-dom": "^19.1.0",
     "react-native": "0.81.5",
     "react-native-web": "~0.21.0",
-    "react-router-dom": "6.29.0"
+    "react-router-dom": "6.29.0",
+    "zod": "^4.3.6"
   },
   "nx": {
     "includedScripts": [],
