@@ -32,7 +32,6 @@
     "react-native": "~0.81.5"
   },
   "dependencies": {
-    "@berrypjh/ui-core": "^0.0.1",
-    "@berrypjh/design-tokens": "^0.0.1"
+    "@berrypjh/ui-core": "workspace:^"
   }
 }
