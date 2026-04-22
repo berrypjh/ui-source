@@ -157,7 +157,13 @@
   "targetDefaults": {
     "build": {
       "cache": true,
+      "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "typecheck": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^default"]
     },
     "test": {
       "cache": true,
