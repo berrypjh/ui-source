@@ -149,3 +149,6 @@ storybook-static
 # design token
 **/.generated/
 **/_generated/
+
+# log
+*.log
