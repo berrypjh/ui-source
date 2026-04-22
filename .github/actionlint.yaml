@@ -1,0 +1,3 @@
+vars:
+  - NODE_VERSION
+  - PNPM_VERSION
