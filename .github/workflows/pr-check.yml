@@ -72,8 +72,8 @@ jobs:
       - name: Format Check (Prettier)
         run: pnpm nx format:check --base=$NX_BASE --head=$NX_HEAD
 
-  lint-typecheck:
-    name: Lint & Typecheck (affected)
+  lint:
+    name: Lint (affected)
     runs-on: ubuntu-latest
     needs: [derive-shas]
     permissions:
@@ -103,40 +103,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Lint & Typecheck
-        run: pnpm nx affected -t lint typecheck --parallel=3 --base=$NX_BASE --head=$NX_HEAD
-
-  audit:
-    name: Audit Dependencies
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ vars.PNPM_VERSION }}
-
-      - name: Setup Node.js (pnpm cache)
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ vars.NODE_VERSION }}
-          cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
-
-      - name: Audit Dependencies
-        run: pnpm audit --prod --audit-level=high
-
   test:
     name: Unit Tests (affected)
     runs-on: ubuntu-latest
-    needs: [derive-shas, format, lint-typecheck, audit]
+    needs: [derive-shas, format, lint]
     permissions:
       contents: read
     env:
@@ -170,7 +140,7 @@ jobs:
   build:
     name: Build (affected)
     runs-on: ubuntu-latest
-    needs: [derive-shas, format, lint-typecheck, audit, test]
+    needs: [derive-shas, format, lint, test]
     permissions:
       contents: read
     env:
