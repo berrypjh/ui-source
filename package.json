@@ -10,7 +10,7 @@
     "build:apps": "nx run-many -t build --projects=demo-web,demo-mobile",
     "build:tokens": "nx run @berrypjh/design-tokens:build:tokens",
     "build:commit-mcp": "nx run commit-mcp:build",
-    "build:storybook": "nx build-storybook @berrypjh/react-ui",
+    "build-storybook": "nx build-storybook @berrypjh/react-ui",
     "storybook": "nx storybook @berrypjh/react-ui",
     "typecheck": "nx run-many -t typecheck",
     "lint": "nx run-many -t lint",
@@ -77,6 +77,7 @@
     "@vitest/ui": "^4.0.0",
     "autoprefixer": "10.4.13",
     "babel-preset-expo": "~54.0.7",
+    "chromatic": "^16.5.0",
     "core-js": "^3.36.1",
     "cypress": "^15.8.0",
     "eslint": "^9.8.0",
@@ -114,7 +115,6 @@
     "vitest": "^4.0.0"
   },
   "dependencies": {
-    "@berrypjh/design-tokens": "workspace:^",
     "@expo/metro-config": "~54.0.9",
     "@expo/metro-runtime": "~6.1.2",
     "@modelcontextprotocol/sdk": "^1.29.0",

@@ -63,15 +63,6 @@ pnpm storybook
 | `pnpm typecheck` | 전체 타입 체크 |
 | `pnpm release:local` | 로컬 레지스트리로 릴리즈 |
 
-## 패키지
-
-| 패키지 | 설명 |
-| --- | --- |
-| `@berrypjh/ui-core` | 공통 비즈니스 로직 |
-| `@berrypjh/design-tokens` | 디자인 토큰 (CSS / Tailwind / RN) |
-| `@berrypjh/react-ui` | React 컴포넌트 라이브러리 |
-| `@berrypjh/react-native-ui` | React Native 컴포넌트 라이브러리 |
-
 ## 사용 (설치)
 
 GitHub Packages 비공개 배포로 제공됩니다. 설치 전 `.npmrc`에 레지스트리와 인증 토큰을 설정해야 합니다.
