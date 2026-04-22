@@ -66,8 +66,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Build library dependencies
-        run: pnpm nx run-many -t build --projects=@berrypjh/design-tokens,@berrypjh/ui-core
+      - name: Build design-tokens
+        run: pnpm nx run @berrypjh/design-tokens:build
+
+      - name: Build ui-core
+        run: pnpm nx run @berrypjh/ui-core:build
 
       - name: Upload built dependency artifacts
         uses: actions/upload-artifact@v4
