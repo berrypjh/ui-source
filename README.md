@@ -65,12 +65,12 @@ pnpm storybook
 
 ## 패키지
 
-| 패키지 | 버전 | 설명 |
-| --- | --- | --- |
-| `@berrypjh/ui-core` | 0.0.1 | 공통 비즈니스 로직 |
-| `@berrypjh/design-tokens` | 0.0.1 | 디자인 토큰 (CSS / Tailwind / RN) |
-| `@berrypjh/react-ui` | 0.0.1 | React 컴포넌트 라이브러리 |
-| `@berrypjh/react-native-ui` | 0.0.1 | React Native 컴포넌트 라이브러리 |
+| 패키지 | 설명 |
+| --- | --- |
+| `@berrypjh/ui-core` | 공통 비즈니스 로직 |
+| `@berrypjh/design-tokens` | 디자인 토큰 (CSS / Tailwind / RN) |
+| `@berrypjh/react-ui` | React 컴포넌트 라이브러리 |
+| `@berrypjh/react-native-ui` | React Native 컴포넌트 라이브러리 |
 
 ## 사용 (설치)
 

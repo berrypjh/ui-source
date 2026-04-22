@@ -51,7 +51,7 @@ jobs:
         if: github.ref == 'refs/heads/pre-release'
         run: pnpm release:npm:beta
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Stable 배포
@@ -59,5 +59,5 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: pnpm release:npm
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

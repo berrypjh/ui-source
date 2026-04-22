@@ -30,57 +30,13 @@ jobs:
 
       - name: Nx Set SHAs
         id: setshas
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@v5
         # base(main)와 head(PR) 커밋을 비교하여 변경된 프로젝트 범위를 계산
 
       - name: Print derived SHAs
         run: |
           echo "NX_BASE=${{ steps.setshas.outputs.base }}"
           echo "NX_HEAD=${{ steps.setshas.outputs.head }}"
-
-  build-deps:
-    name: Build shared library dependencies
-    runs-on: ubuntu-latest
-    needs: [derive-shas]
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          filter: tree:0
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ vars.PNPM_VERSION }}
-
-      - name: Setup Node.js (pnpm cache)
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ vars.NODE_VERSION }}
-          cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
-
-      - name: Build design-tokens
-        run: pnpm nx run @berrypjh/design-tokens:build
-
-      - name: Build ui-core
-        run: pnpm nx run @berrypjh/ui-core:build
-
-      - name: Upload built dependency artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: shared-lib-dist
-          path: |
-            libs/design-tokens/dist
-            libs/ui-core/dist
-          if-no-files-found: error
-          retention-days: 1
 
   format:
     name: Format Check (Prettier)
@@ -99,7 +55,7 @@ jobs:
           filter: tree:0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: ${{ vars.PNPM_VERSION }}
 
@@ -119,7 +75,7 @@ jobs:
   lint:
     name: Lint (affected)
     runs-on: ubuntu-latest
-    needs: [derive-shas, build-deps]
+    needs: [derive-shas]
     permissions:
       contents: read
     env:
@@ -133,7 +89,7 @@ jobs:
           filter: tree:0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: ${{ vars.PNPM_VERSION }}
 
@@ -146,12 +102,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-
-      - name: Download built dependency artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: shared-lib-dist
-          path: libs
 
       - name: Lint (affected)
         run: pnpm nx affected -t lint --parallel=3 --base=$NX_BASE --head=$NX_HEAD
@@ -159,7 +109,7 @@ jobs:
   test:
     name: Unit Tests (affected)
     runs-on: ubuntu-latest
-    needs: [derive-shas, format, lint, build-deps]
+    needs: [derive-shas, format, lint]
     permissions:
       contents: read
     env:
@@ -173,7 +123,7 @@ jobs:
           filter: tree:0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: ${{ vars.PNPM_VERSION }}
 
@@ -186,12 +136,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-
-      - name: Download built dependency artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: shared-lib-dist
-          path: libs
 
       - name: Run Unit Tests
         run: pnpm nx affected -t test --configuration=ci --parallel=3 --base=$NX_BASE --head=$NX_HEAD
@@ -213,7 +157,7 @@ jobs:
           filter: tree:0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: ${{ vars.PNPM_VERSION }}
 
@@ -228,4 +172,4 @@ jobs:
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Build Affected Projects
-        run: pnpm nx affected -t build --parallel=3 --base=$NX_BASE --head=$NX_HEAD
+        run: pnpm nx affected -t build --parallel=3 --exclude=@berrypjh/demo-mobile --base=$NX_BASE --head=$NX_HEAD
