@@ -73,7 +73,7 @@ jobs:
         run: pnpm nx run @berrypjh/ui-core:build
 
       - name: Upload built dependency artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: shared-lib-dist
           path: dist
