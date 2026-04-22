@@ -166,6 +166,7 @@
     },
     "lint": {
       "cache": true,
+      "dependsOn": ["^build"],
       "inputs": ["default", "^default"]
     },
     "e2e": {
