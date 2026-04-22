@@ -24,8 +24,7 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@berrypjh/design-tokens": "^0.0.1",
-    "@berrypjh/ui-core": "^0.0.1"
+    "@berrypjh/ui-core": "workspace:^"
   },
   "devDependencies": {
     "rollup-plugin-postcss": "^4.0.2",
