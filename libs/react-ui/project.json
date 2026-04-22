@@ -77,6 +77,10 @@
           "runMode": "run"
         }
       }
+    },
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["build"]
     }
   }
 }
