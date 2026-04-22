@@ -58,7 +58,7 @@ const preview: Preview = {
 
       const mode = context.globals.themeMode === 'dark' ? 'dark' : 'global';
 
-      return createElement(ThemeProvider, { mode }, content);
+      return createElement(ThemeProvider, { mode, children: content });
     },
   ],
 };

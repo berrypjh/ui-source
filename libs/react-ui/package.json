@@ -27,6 +27,7 @@
     "@berrypjh/ui-core": "workspace:^"
   },
   "devDependencies": {
+    "@berrypjh/design-tokens": "workspace:^",
     "rollup-plugin-postcss": "^4.0.2",
     "sass": "^1.97.3"
   }
