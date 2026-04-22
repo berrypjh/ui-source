@@ -27,12 +27,15 @@
       "options": {
         "command": "cd libs/design-tokens && pnpm publish --registry=https://npm.pkg.github.com"
       }
+    },
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["build"]
     }
   },
   "tags": [],
   "release": {
     "version": {
-      "manifestRootsToUpdate": ["dist/{projectRoot}"],
       "currentVersionResolver": "git-tag",
       "fallbackCurrentVersionResolver": "disk"
     }
