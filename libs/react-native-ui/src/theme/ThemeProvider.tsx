@@ -1,7 +1,6 @@
 import { createContext, useContext, useMemo } from 'react';
-import { createTheme } from '@berrypjh/ui-core';
+import { createTheme, Native } from '@berrypjh/ui-core';
 import type { Theme, ThemeName, RNTokens } from '@berrypjh/ui-core';
-import { Native } from '@berrypjh/design-tokens';
 
 const ThemeContext = createContext<Theme<RNTokens> | null>(null);
 

@@ -1,0 +1,11 @@
+{
+  "name": "@berrypjh/react-native-ui",
+  "projectType": "library",
+  "sourceRoot": "libs/react-native-ui/src",
+  "targets": {
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["build"]
+    }
+  }
+}
