@@ -1,3 +1,5 @@
+export { Web, Native } from '@berrypjh/design-tokens';
+
 export {
   getColor,
   getSpacing,
