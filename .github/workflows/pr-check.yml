@@ -76,7 +76,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: shared-lib-dist
-          path: dist
+          path: |
+            libs/design-tokens/dist
+            libs/ui-core/dist
           if-no-files-found: error
           retention-days: 1
 
@@ -149,7 +151,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: shared-lib-dist
-          path: dist
+          path: libs
 
       - name: Lint (affected)
         run: pnpm nx affected -t lint --parallel=3 --base=$NX_BASE --head=$NX_HEAD
@@ -189,7 +191,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: shared-lib-dist
-          path: dist
+          path: libs
 
       - name: Run Unit Tests
         run: pnpm nx affected -t test --configuration=ci --parallel=3 --base=$NX_BASE --head=$NX_HEAD
