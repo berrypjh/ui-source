@@ -130,8 +130,14 @@
       "@berrypjh/react-native-ui"
     ],
     "projectsRelationship": "independent",
+    "git": {
+      "commitMessage": "chore(release): publish"
+    },
     "version": {
-      "conventionalCommits": true
+      "conventionalCommits": true,
+      "versionActionsOptions": {
+        "skipLockFileUpdate": true
+      }
     },
     "changelog": {
       "automaticFromRef": true,

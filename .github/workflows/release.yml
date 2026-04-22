@@ -1,0 +1,63 @@
+name: Release Libraries
+
+on:
+  push:
+    branches:
+      - main # 정식 버전
+      - pre-release # 베타 버전
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Release Libraries
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ vars.PNPM_VERSION }}
+
+      - name: Setup Node.js (pnpm cache)
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: '@${{ github.repository_owner }}'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Git Configuration
+        run: |
+          git config user.name "${{ vars.RELEASE_GIT_NAME }}"
+          git config user.email "${{ vars.RELEASE_GIT_EMAIL }}"
+
+      # Beta 배포
+      - name: NX Release (Beta)
+        if: github.ref == 'refs/heads/pre-release'
+        run: pnpm release:npm:beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Stable 배포
+      - name: NX Release (Stable)
+        if: github.ref == 'refs/heads/main'
+        run: pnpm release:npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

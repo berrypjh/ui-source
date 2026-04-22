@@ -1,3 +1,9 @@
 vars:
   - NODE_VERSION
   - PNPM_VERSION
+  - RELEASE_GIT_NAME
+  - RELEASE_GIT_EMAIL
+
+secrets:
+  - NPM_TOKEN
+  - GITHUB_TOKEN
