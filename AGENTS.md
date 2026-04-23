@@ -29,8 +29,6 @@ Agents must optimize for:
 - `libs/ui-core`: platform-agnostic contracts, shared logic, and foundational utilities
 - `libs/react-ui`: React web UI component library
 - `libs/react-native-ui`: React Native UI component library
-- `tools/scripts/release`: local release and publishing scripts
-- `.github/workflows`: CI/CD automation
 
 ---
 
