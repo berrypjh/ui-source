@@ -7,6 +7,7 @@
     "start:mobile": "nx run demo-mobile:start",
     "build": "nx run-many -t build",
     "build:libs": "nx run-many -t build --projects=@berrypjh/design-tokens,@berrypjh/ui-core,@berrypjh/react-ui,@berrypjh/react-native-ui",
+    "build:libs:web": "nx run-many -t build --projects=@berrypjh/design-tokens,@berrypjh/ui-core,@berrypjh/react-ui",
     "build:apps": "nx run-many -t build --projects=demo-web,demo-mobile",
     "build:tokens": "nx run @berrypjh/design-tokens:build:tokens",
     "build:commit-mcp": "nx run commit-mcp:build",
