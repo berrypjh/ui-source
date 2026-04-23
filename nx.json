@@ -130,17 +130,23 @@
       "@berrypjh/react-native-ui"
     ],
     "projectsRelationship": "independent",
-    "git": {
-      "commitMessage": "chore(release): publish"
-    },
     "version": {
       "conventionalCommits": true,
+      "fallbackCurrentVersionResolver": "disk",
       "versionActionsOptions": {
         "skipLockFileUpdate": true
+      },
+      "git": {
+        "commitMessage": "chore(release): publish",
+        "commit": true,
+        "tag": false
       }
     },
     "changelog": {
       "automaticFromRef": true,
+      "git": {
+        "commit": false
+      },
       "workspaceChangelog": {
         "createRelease": "github",
         "renderOptions": {
