@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build Libraries
+        run: pnpm run build:libs:web
+
       - name: Build Storybook
         run: pnpm run build-storybook
 
