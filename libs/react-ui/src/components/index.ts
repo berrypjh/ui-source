@@ -16,3 +16,4 @@ export * from './form-helper-text';
 export * from './input-label';
 export * from './select';
 export * from './text-field';
+export * from './search-field';
