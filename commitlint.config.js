@@ -19,7 +19,19 @@ module.exports = {
     'type-enum': [
       2,
       'always',
-      ['feat', 'fix', 'docs', 'design', 'style', 'refactor', 'test', 'chore', 'revert'],
+      [
+        'feat',
+        'fix',
+        'docs',
+        'design',
+        'style',
+        'refactor',
+        'test',
+        'chore',
+        'build',
+        'ci',
+        'revert',
+      ],
     ],
     // Subject의 케이스를 제한
     'subject-case': [0, 'always', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
