@@ -2,7 +2,9 @@
   "name": "@berrypjh/ui-core",
   "version": "0.0.2",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/css/index.css"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,6 +13,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./css": "./dist/css/index.css",
     "./package.json": "./package.json"
   },
   "files": [

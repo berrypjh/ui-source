@@ -4,6 +4,17 @@
   "sourceRoot": "libs/ui-core/src",
   "targets": {
     "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "commands": [
+          "nx run @berrypjh/ui-core:build-js",
+          "mkdir -p libs/ui-core/dist/css && cp libs/design-tokens/dist/css/variables.css libs/ui-core/dist/css/index.css"
+        ],
+        "parallel": false
+      }
+    },
+    "build-js": {
       "executor": "@nx/vite:build",
       "outputs": ["{projectRoot}/dist"],
       "options": {
