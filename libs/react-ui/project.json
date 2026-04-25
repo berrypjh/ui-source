@@ -18,7 +18,8 @@
         "commands": [
           "nx run @berrypjh/react-ui:bundle-js",
           "find libs/react-ui/dist -type f \\( -name '*.d.ts' -o -name '*.d.ts.map' \\) -delete",
-          "rm -rf libs/react-ui/dist/src"
+          "rm -rf libs/react-ui/dist/src",
+          "node -e \"const fs=require('fs'); const tokens=fs.readFileSync('libs/ui-core/dist/css/index.css','utf8'); const styles=fs.readFileSync('libs/react-ui/dist/index.css','utf8'); fs.writeFileSync('libs/react-ui/dist/index.css', tokens+'\\n'+styles);\""
         ],
         "parallel": false
       }
@@ -34,13 +35,7 @@
         "format": ["esm"],
         "outputFileName": "index",
         "extractCss": "index.css",
-        "external": [
-          "react",
-          "react-dom",
-          "react/jsx-runtime",
-          "@berrypjh/ui-core",
-          "@berrypjh/design-tokens"
-        ],
+        "external": ["react", "react-dom", "react/jsx-runtime", "@berrypjh/ui-core"],
         "assets": [
           {
             "input": ".",
