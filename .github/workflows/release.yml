@@ -41,6 +41,8 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
+        env:
+          HUSKY: 0
 
       - name: Git Configuration
         run: |
