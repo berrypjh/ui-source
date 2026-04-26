@@ -14,6 +14,7 @@ export * from './bubble-button';
 export * from './form-control';
 export * from './form-helper-text';
 export * from './input-label';
+export * from './menu-item';
 export * from './select';
 export * from './text-field';
 export * from './search-field';
