@@ -1,10 +1,10 @@
 {
-  "name": "@berry/demo-web-e2e",
+  "name": "@berrypjh/demo-web-e2e",
   "version": "0.0.1",
   "private": true,
   "nx": {
     "implicitDependencies": [
-      "@berry/demo-web"
+      "@berrypjh/demo-web"
     ]
   }
 }
