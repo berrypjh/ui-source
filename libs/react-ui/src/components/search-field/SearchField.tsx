@@ -9,7 +9,8 @@ import type {
   InputLikeElement,
   InputLikeFocusEventHandler,
 } from '../../types';
-import { assignRef, getTextFieldInputComponent, toInputString } from '../../utils';
+import { assignRef, toInputString } from '../../utils';
+import { getTextFieldInputComponent } from '../text-field';
 import { searchFieldClasses } from './SearchField.constants';
 import type {
   SearchFieldInputKeyDownHandler,
