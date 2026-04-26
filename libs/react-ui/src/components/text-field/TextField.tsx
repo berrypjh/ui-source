@@ -7,10 +7,13 @@ import { FormControl } from '../form-control';
 import { FormHelperText } from '../form-helper-text';
 import { InputLabel } from '../input-label';
 import { Select } from '../select';
-import { getTextFieldInputComponent } from '../../utils';
 import { textFieldClasses } from './TextField.constants';
 import type { TextFieldProps } from './TextField.types';
-import { getTextFieldHelperTextId, hasTextFieldContent } from './TextField.utils';
+import {
+  getTextFieldHelperTextId,
+  getTextFieldInputComponent,
+  hasTextFieldContent,
+} from './TextField.utils';
 import './text-field.scss';
 
 export const TextField = ({
