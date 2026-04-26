@@ -29,7 +29,7 @@ export default defineConfig(() => ({
     },
   },
   test: {
-    name: 'demo-web',
+    name: '@berrypjh/demo-web',
     watch: false,
     globals: true,
     environment: 'jsdom',
