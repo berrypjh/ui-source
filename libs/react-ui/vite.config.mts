@@ -11,6 +11,7 @@ export default defineConfig(() => ({
   plugins: [react()],
   resolve: {
     alias: {
+      '@berrypjh/ui-core/css': resolve(__dirname, '../ui-core/dist/css/index.css'),
       '@berrypjh/ui-core': resolve(__dirname, '../ui-core/src/index.ts'),
     },
   },
