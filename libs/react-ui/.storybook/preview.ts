@@ -1,8 +1,8 @@
 import { createElement } from 'react';
 import type { Preview } from '@storybook/react';
 
+import '@berrypjh/ui-core/css';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
-import '@berrypjh/design-tokens/css';
 
 const preview: Preview = {
   parameters: {
