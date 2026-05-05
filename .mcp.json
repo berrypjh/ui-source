@@ -2,7 +2,7 @@
   "mcpServers": {
     "ai-commit": {
       "command": "node",
-      "args": ["./tools/commit-mcp/dist/index.js"]
+      "args": ["./tools/mcp/commit/dist/index.js"]
     }
   }
 }
