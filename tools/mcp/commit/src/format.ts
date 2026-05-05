@@ -36,5 +36,20 @@ export const formatFileStatuses = (files: FileStatus[]): FormattedFileStatus[] =
 
 export const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+// commitlint.config.js의 type-enum과 동기화 유지 필요
+export const ALLOWED_COMMIT_TYPES = [
+  'feat',
+  'fix',
+  'docs',
+  'design',
+  'style',
+  'refactor',
+  'test',
+  'chore',
+  'build',
+  'ci',
+  'revert',
+] as const;
+
 export const buildConventionalCommitTitlePattern = (scope: string): RegExp =>
-  new RegExp(`^[a-z]+\\(${escapeRegExp(scope)}\\):\\s+\\S`);
+  new RegExp(`^(?:${ALLOWED_COMMIT_TYPES.join('|')})\\(${escapeRegExp(scope)}\\):\\s+\\S`);
