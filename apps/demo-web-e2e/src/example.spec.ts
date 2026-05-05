@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Berry UI Demo', () => {
   test('homepage loads with hero title', async ({ page }) => {
