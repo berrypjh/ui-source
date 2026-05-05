@@ -14,7 +14,7 @@ const server = new McpServer(
   },
   {
     instructions:
-      'Use list_staged_scopes to discover staged scope groups, get_scope_details to inspect a scope, and commit_scope only after the user explicitly approves the commit message.',
+      '커밋 메시지는 Conventional Commits 형식을 사용해야한다. list_staged_scopes를 사용해서 staged scope 그룹을 확인하고, get_scope_details를 사용해서 scope의 내용을 확인한 후, commit_scope를 사용해서 scope를 커밋한다. 커밋 메시지는 사용자가 명시적으로 승인한 후에 커밋한다.',
   },
 );
 

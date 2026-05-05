@@ -127,23 +127,58 @@ export const commitScope = (
 ): CommitExecutionResult => {
   assertCommitTitleMatchesScope(message.title, scope);
 
+  const targetPaths = new Set(getCommitPathspec(files));
+  const allStaged = getStagedFilesWithStatus();
+  const otherPaths = [
+    ...new Set(
+      allStaged
+        .flatMap((f) => (f.oldFile ? [f.oldFile, f.file] : [f.file]))
+        .filter((path) => !targetPaths.has(path)),
+    ),
+  ];
+
   const args = ['commit', '-m', message.title];
 
   if (message.body && message.body.trim()) {
     args.push('-m', message.body.trim());
   }
 
-  args.push('--', ...getCommitPathspec(files));
-
-  const result = runGit(args);
-
-  return {
-    ok: result.status === 0,
+  const command = ['git', ...args].join(' ');
+  const buildResult = (
+    ok: boolean,
+    extra: { stdout: string; stderr: string },
+  ): CommitExecutionResult => ({
+    ok,
     scope,
     title: message.title,
     body: message.body?.trim() ?? '',
-    command: ['git', ...args].join(' '),
-    stdout: result.stdout,
-    stderr: result.stderr,
-  };
+    command,
+    stdout: extra.stdout,
+    stderr: extra.stderr,
+  });
+
+  if (otherPaths.length > 0) {
+    const reset = runGit(['reset', 'HEAD', '--', ...otherPaths]);
+    if (reset.status !== 0) {
+      return buildResult(false, {
+        stdout: reset.stdout,
+        stderr: `다른 scope 파일을 임시 unstage하는데 실패했습니다.\n${reset.stderr}`,
+      });
+    }
+  }
+
+  const commitResult = runGit(args);
+
+  let restoreError = '';
+  if (otherPaths.length > 0) {
+    const restage = runGit(['add', '-A', '--', ...otherPaths]);
+    if (restage.status !== 0) {
+      restoreError = `\n[경고] 다른 scope 파일 재스테이지 실패. 수동 확인 필요.\n${restage.stderr}`;
+    }
+  }
+
+  return buildResult(commitResult.status === 0, {
+    stdout: commitResult.stdout,
+    stderr: commitResult.stderr + restoreError,
+  });
 };
