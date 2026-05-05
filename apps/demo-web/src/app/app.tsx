@@ -1,16 +1,16 @@
 import { Route, Routes } from 'react-router-dom';
 
-import '@berrypjh/react-ui/styles.css';
-
 import { Layout } from './components/Layout';
-import { HomePage } from './pages/HomePage';
-import { ButtonPage } from './pages/ButtonPage';
-import { TextFieldPage } from './pages/TextFieldPage';
-import { SelectPage } from './pages/SelectPage';
-import { SearchFieldPage } from './pages/SearchFieldPage';
-import { FabPage } from './pages/FabPage';
-import { IconButtonPage } from './pages/IconButtonPage';
 import { BubbleButtonPage } from './pages/BubbleButtonPage';
+import { ButtonPage } from './pages/ButtonPage';
+import { FabPage } from './pages/FabPage';
+import { HomePage } from './pages/HomePage';
+import { IconButtonPage } from './pages/IconButtonPage';
+import { SearchFieldPage } from './pages/SearchFieldPage';
+import { SelectPage } from './pages/SelectPage';
+import { TextFieldPage } from './pages/TextFieldPage';
+
+import '@berrypjh/react-ui/styles.css';
 
 export const App = () => {
   return (
