@@ -1,5 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@berrypjh/react-ui';
+
+import { useNavigate } from 'react-router-dom';
 
 export const HomePage = () => {
   const navigate = useNavigate();

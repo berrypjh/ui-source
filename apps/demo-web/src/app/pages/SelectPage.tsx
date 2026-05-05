@@ -1,4 +1,5 @@
-import { FormControl, FormHelperText, InputLabel, Select, MenuItem } from '@berrypjh/react-ui';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@berrypjh/react-ui';
+
 import { DemoSection, PageHeader } from '../components/DemoSection';
 
 const FRUITS = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];

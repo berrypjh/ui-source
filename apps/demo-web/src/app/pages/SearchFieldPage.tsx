@@ -1,4 +1,5 @@
 import { SearchField } from '@berrypjh/react-ui';
+
 import { DemoSection, PageHeader } from '../components/DemoSection';
 
 const SUGGESTIONS = [

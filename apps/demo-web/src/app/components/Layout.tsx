@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+
 import { ThemeProvider } from '@berrypjh/react-ui';
+
+import { NavLink, useLocation } from 'react-router-dom';
 
 const NAV_GROUPS = [
   {
