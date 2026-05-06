@@ -110,6 +110,16 @@ export default [
     rules: {
       ...reactHooks.configs.recommended.rules,
       ...jsxA11y.flatConfigs.recommended.rules,
+      // 커스텀 컴포넌트가 autoFocus prop을 forward 하는 패턴은 호출자 책임이므로 제외
+      'jsx-a11y/no-autofocus': ['error', { ignoreNonDOM: true }],
+    },
+  },
+  {
+    // 테스트 파일에서는 이벤트 버블링/위임 등을 검증하기 위해 의미 없는 div onClick을 자주 사용
+    files: ['**/*.test.{ts,tsx,jsx,js}', '**/*.spec.{ts,tsx,jsx,js}'],
+    rules: {
+      'jsx-a11y/click-events-have-key-events': 'off',
+      'jsx-a11y/no-static-element-interactions': 'off',
     },
   },
 ];
