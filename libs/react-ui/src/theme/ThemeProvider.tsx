@@ -4,7 +4,7 @@ import { themeProviderClasses } from './ThemeProvider.constants';
 import type { ThemeProviderProps } from './ThemeProvider.types';
 
 export const ThemeProvider = ({
-  mode = 'global',
+  mode = 'light',
   className,
   children,
   ref,
