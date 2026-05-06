@@ -1,13 +1,56 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { ThemeProvider } from '@berrypjh/react-ui';
 
 import { NavLink, useLocation } from 'react-router-dom';
 
+type ThemeMode = 'light' | 'dark';
+
+const ThemeToggle = ({ mode, onChange }: { mode: ThemeMode; onChange: (m: ThemeMode) => void }) => (
+  <div
+    role="group"
+    aria-label="Theme"
+    style={{
+      display: 'inline-flex',
+      border: '1px solid #e2e8f0',
+      borderRadius: 8,
+      overflow: 'hidden',
+      background: '#ffffff',
+    }}
+  >
+    {(['light', 'dark'] as const).map((m) => {
+      const isActive = mode === m;
+      return (
+        <button
+          key={m}
+          type="button"
+          onClick={() => onChange(m)}
+          aria-pressed={isActive}
+          style={{
+            padding: '6px 12px',
+            fontSize: 13,
+            fontWeight: 500,
+            border: 'none',
+            background: isActive ? '#0f172a' : 'transparent',
+            color: isActive ? '#f8fafc' : '#475569',
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+          }}
+        >
+          {m === 'light' ? 'Light' : 'Dark'}
+        </button>
+      );
+    })}
+  </div>
+);
+
 const NAV_GROUPS = [
   {
     label: 'Overview',
-    items: [{ label: 'Home', path: '/' }],
+    items: [
+      { label: 'Home', path: '/' },
+      { label: 'Design Tokens', path: '/tokens' },
+    ],
   },
   {
     label: 'Components',
@@ -25,9 +68,13 @@ const NAV_GROUPS = [
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
+  const [mode, setMode] = useState<ThemeMode>('light');
 
   return (
-    <ThemeProvider style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <ThemeProvider
+      mode={mode}
+      style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
+    >
       <div
         style={{
           display: 'flex',
@@ -128,6 +175,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
               borderBottom: '1px solid #e2e8f0',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'space-between',
               padding: '0 32px',
               background: '#ffffff',
               position: 'sticky',
@@ -140,9 +188,11 @@ export const Layout = ({ children }: { children: ReactNode }) => {
                 ? 'Getting Started'
                 : location.pathname
                     .replace('/components/', '')
+                    .replace(/^\//, '')
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (c) => c.toUpperCase())}
             </span>
+            <ThemeToggle mode={mode} onChange={setMode} />
           </header>
 
           {/* Content */}
