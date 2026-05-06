@@ -2,7 +2,7 @@ import type { LeafDotPath, PathValue } from './path';
 
 const readPath = (obj: unknown, path: string): unknown => {
   const parts = path.split('.');
-  let cur: any = obj;
+  let cur: unknown = obj;
 
   for (const p of parts) {
     if (cur == null || (typeof cur !== 'object' && typeof cur !== 'function')) {
