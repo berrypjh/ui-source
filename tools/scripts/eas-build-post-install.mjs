@@ -5,7 +5,7 @@
  * It will create a symlink from the project's node_modules to the workspace's node_modules.
  */
 
-import { existsSync,symlink } from 'fs';
+import { existsSync, symlink } from 'fs';
 import { join } from 'path';
 
 const [workspaceRoot, projectRoot] = process.argv.slice(2);
