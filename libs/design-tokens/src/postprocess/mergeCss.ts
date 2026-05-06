@@ -1,5 +1,5 @@
-import path from 'node:path';
 import fs from 'node:fs/promises';
+import path from 'node:path';
 
 /**
  * Style Dictionary 등으로 테마별로 생성된 CSS 변수 파일을 배포용(flat) 파일로 병합/재배치한다.

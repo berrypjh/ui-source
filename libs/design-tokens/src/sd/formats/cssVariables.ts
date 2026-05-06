@@ -1,6 +1,6 @@
 import type { Format, TransformedToken } from 'style-dictionary/types';
 
-import { makeCssVariableName, colorToRgbChannels } from '../utils';
+import { colorToRgbChannels, makeCssVariableName } from '../utils';
 
 type CssVariablesOptions = {
   selector?: string;

@@ -1,5 +1,5 @@
-import path from 'node:path';
 import fs from 'node:fs/promises';
+import path from 'node:path';
 
 /**
  * CSS 사이드 이펙트(예: `variables.css`)를 패키지의 `sideEffects`로 노출하는 구조에서,

@@ -1,11 +1,11 @@
-import path from 'node:path';
 import fs from 'node:fs/promises';
+import path from 'node:path';
 
 type FlatToken = {
   path: string[];
   pathString: string;
   type: string;
-  value: any;
+  value: unknown;
   cssVar: string;
   cssVarRgb: string;
 };
@@ -17,10 +17,10 @@ type FlatToken = {
  * @param pathArr 설정할 경로(배열)
  * @param value 설정할 값
  */
-const setDeep = (obj: any, pathArr: string[], value: any) => {
+const setDeep = (obj: Record<string, unknown>, pathArr: string[], value: unknown) => {
   if (pathArr.length === 0) return;
 
-  let cur = obj;
+  let cur: Record<string, unknown> = obj;
 
   for (let i = 0; i < pathArr.length - 1; i++) {
     const k = pathArr[i];
@@ -137,7 +137,7 @@ export const generateTailwindPreset = async (args: {
   const letterSpacing: Record<string, string> = {};
 
   // colors만 중첩 허용(테일윈드는 colors 중첩을 잘 처리함)
-  const colors: any = {};
+  const colors: Record<string, unknown> = {};
 
   for (const t of all) {
     const p = t.path; // 이미 theme prefix strip 됨

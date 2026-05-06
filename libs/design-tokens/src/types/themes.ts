@@ -1,5 +1,5 @@
-import { themes as webThemesInternal } from '../.generated/web/tokens.js';
 import { themes as rnThemesInternal } from '../.generated/rn/tokens.js';
+import { themes as webThemesInternal } from '../.generated/web/tokens.js';
 
 export const webThemes = webThemesInternal;
 export const rnThemes = rnThemesInternal;
@@ -18,7 +18,6 @@ type AssertSameThemeNames = [
   ? true
   : never;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const __assertSameThemeNames: AssertSameThemeNames = true;
 
 // 플랫폼별 ThemeTokens

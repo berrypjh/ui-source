@@ -1,5 +1,7 @@
 import path from 'node:path';
+
 import { expandTypesMap, getTransforms } from '@tokens-studio/sd-transforms';
+
 import type { ThemeName } from '../types';
 
 /**
