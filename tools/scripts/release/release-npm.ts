@@ -1,4 +1,4 @@
-import { releaseVersion, releaseChangelog, releasePublish } from 'nx/release';
+import { releaseChangelog, releasePublish, releaseVersion } from 'nx/release';
 
 const main = async () => {
   const isFirstRelease = process.argv.includes('--first-release');
