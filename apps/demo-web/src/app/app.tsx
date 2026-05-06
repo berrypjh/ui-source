@@ -9,6 +9,7 @@ import { IconButtonPage } from './pages/IconButtonPage';
 import { SearchFieldPage } from './pages/SearchFieldPage';
 import { SelectPage } from './pages/SelectPage';
 import { TextFieldPage } from './pages/TextFieldPage';
+import { TokensPage } from './pages/TokensPage';
 
 import '@berrypjh/react-ui/styles.css';
 
@@ -17,6 +18,7 @@ export const App = () => {
     <Layout>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/tokens" element={<TokensPage />} />
         <Route path="/components/button" element={<ButtonPage />} />
         <Route path="/components/text-field" element={<TextFieldPage />} />
         <Route path="/components/select" element={<SelectPage />} />
