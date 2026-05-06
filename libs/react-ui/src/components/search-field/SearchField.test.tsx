@@ -1,16 +1,17 @@
-import type { ComponentProps } from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import type { ComponentProps } from 'react';
 import { describe, expect, it, vi } from 'vitest';
+
+import { createRenderer } from '../../../test';
+import { boxedInputClasses } from '../boxed-input';
+import { filledInputClasses } from '../filled-input';
+import { FormControl } from '../form-control';
+import { inputBaseClasses } from '../input-base';
+import { plainInputClasses } from '../plain-input';
 
 import { SearchField } from './SearchField';
 import { searchFieldClasses } from './SearchField.constants';
 import type { SearchFieldSuggestion } from './SearchField.types';
-import { FormControl } from '../form-control';
-import { inputBaseClasses } from '../input-base';
-import { plainInputClasses } from '../plain-input';
-import { filledInputClasses } from '../filled-input';
-import { boxedInputClasses } from '../boxed-input';
-import { createRenderer } from '../../../test';
 
 const suggestions: SearchFieldSuggestion[] = [
   {

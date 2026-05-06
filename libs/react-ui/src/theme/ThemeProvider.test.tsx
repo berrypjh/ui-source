@@ -1,9 +1,10 @@
-import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+
+import { createRenderer, describeConformance } from '../../test';
 
 import { ThemeProvider } from './ThemeProvider';
 import { themeProviderClasses } from './ThemeProvider.constants';
-import { createRenderer, describeConformance } from '../../test';
 
 describe('<ThemeProvider />', () => {
   const { render } = createRenderer();

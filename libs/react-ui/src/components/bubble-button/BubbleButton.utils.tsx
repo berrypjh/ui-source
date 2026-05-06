@@ -1,5 +1,6 @@
-import type { CSSProperties, ReactNode } from 'react';
 import { cx } from '@berrypjh/ui-core';
+
+import type { CSSProperties, ReactNode } from 'react';
 
 import { bubbleButtonClasses } from './BubbleButton.constants';
 import type {

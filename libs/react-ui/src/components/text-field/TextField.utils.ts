@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
-import { PlainInput } from '../plain-input';
-import { FilledInput } from '../filled-input';
-import { BoxedInput } from '../boxed-input';
 import type { FieldVariant } from '../../types';
+import { BoxedInput } from '../boxed-input';
+import { FilledInput } from '../filled-input';
+import { PlainInput } from '../plain-input';
 
 const variantComponent = {
   plain: PlainInput,

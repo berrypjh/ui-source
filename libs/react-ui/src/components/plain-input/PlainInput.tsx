@@ -3,8 +3,10 @@
 import { cx } from '@berrypjh/ui-core';
 
 import { InputBase } from '../input-base';
+
 import { plainInputClasses } from './PlainInput.constants';
 import type { PlainInputProps } from './PlainInput.types';
+
 import './plain-input.scss';
 
 export const PlainInput = ({ className, ref, ...rest }: PlainInputProps) => {

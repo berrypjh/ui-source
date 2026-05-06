@@ -1,4 +1,3 @@
-import type { ChangeEventHandler, ElementType, FocusEventHandler, ReactNode } from 'react';
 import type {
   FieldColor,
   FieldMargin,
@@ -10,15 +9,17 @@ import type {
   TextFieldProps as CoreTextFieldProps,
 } from '@berrypjh/ui-core';
 
+import type { ChangeEventHandler, ElementType, FocusEventHandler, ReactNode } from 'react';
+
 export type {
+  CoreFormControlProps,
+  CoreTextFieldProps,
   FieldColor,
   FieldMargin,
   FieldProps,
   FieldSize,
   FieldVariant,
-  CoreFormControlProps,
   InputFieldProps,
-  CoreTextFieldProps,
 };
 
 export type InputLikeElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;

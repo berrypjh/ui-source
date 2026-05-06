@@ -1,11 +1,12 @@
-import type { ButtonHTMLAttributes, HTMLAttributes, Ref } from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
-import { beforeAll, describe, expect, it } from 'vitest';
+import type { ButtonHTMLAttributes, HTMLAttributes, Ref } from 'react';
 import { spy } from 'sinon';
+import { beforeAll, describe, expect, it } from 'vitest';
+
+import { createRenderer, describeConformance } from '../../../test';
 
 import { ButtonBase } from './ButtonBase';
 import { buttonBaseClasses } from './ButtonBase.constants';
-import { createRenderer, describeConformance } from '../../../test';
 
 describe('<ButtonBase />', () => {
   const { render } = createRenderer();

@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
 import { cx } from '@berrypjh/ui-core';
+
+import type { ReactNode } from 'react';
 
 import { formHelperTextClasses } from './FormHelperText.constants';
 import type { FormHelperTextOwnProps } from './FormHelperText.types';

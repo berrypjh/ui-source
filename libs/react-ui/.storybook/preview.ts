@@ -1,7 +1,9 @@
+import '@berrypjh/ui-core/css';
+
 import { createElement } from 'react';
+
 import type { Preview } from '@storybook/react';
 
-import '@berrypjh/ui-core/css';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
 
 const preview: Preview = {

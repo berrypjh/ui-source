@@ -1,4 +1,5 @@
 import { isObjectRecord } from '@berrypjh/ui-core';
+
 import { stringifyValue } from './value';
 
 /**

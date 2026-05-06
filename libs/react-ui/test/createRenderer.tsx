@@ -1,7 +1,8 @@
 import * as React from 'react';
+
 import {
-  render as rtlRender,
   act,
+  render as rtlRender,
   type RenderOptions as RTLRenderOptions,
   type RenderResult,
 } from '@testing-library/react';

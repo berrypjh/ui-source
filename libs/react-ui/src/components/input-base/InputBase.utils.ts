@@ -1,10 +1,11 @@
 import { cx } from '@berrypjh/ui-core';
 
+import type { InputLikeElement } from '../../types';
+import { assignRef, hasFormValue } from '../../utils';
+import type { FormControlContextValue } from '../form-control';
+
 import { inputBaseClasses } from './InputBase.constants';
 import type { HandleNativeElementRef, InputBaseProps, InputDomValue } from './InputBase.types';
-import type { InputLikeElement } from '../../types';
-import type { FormControlContextValue } from '../form-control';
-import { assignRef, hasFormValue } from '../../utils';
 
 /**
  * 내부 input ref와 외부 ref를 함께 동기화하는 ref 핸들러를 생성합니다.

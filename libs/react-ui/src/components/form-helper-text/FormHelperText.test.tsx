@@ -1,11 +1,13 @@
 import * as React from 'react';
+
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import { createRenderer, describeConformance } from '../../../test';
+import { FormControl } from '../form-control';
+
 import { FormHelperText } from './FormHelperText';
 import { formHelperTextClasses } from './FormHelperText.constants';
-import { FormControl } from '../form-control';
-import { createRenderer, describeConformance } from '../../../test';
 
 type VisualState = 'error' | 'disabled';
 

@@ -1,12 +1,14 @@
 import * as React from 'react';
+
 import { act, screen } from '@testing-library/react';
+import { type SinonSpy, spy } from 'sinon';
 import { describe, expect, it } from 'vitest';
-import { spy, type SinonSpy } from 'sinon';
+
+import { createRenderer, describeConformance } from '../../../test';
 
 import { FormControl } from './FormControl';
 import { formControlClasses } from './FormControl.constants';
 import { useFormControl } from './useFormControl';
-import { createRenderer, describeConformance } from '../../../test';
 
 type FormControlContextHookValue = ReturnType<typeof useFormControl>;
 type FormControlContextValue = NonNullable<FormControlContextHookValue>;

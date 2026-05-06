@@ -1,8 +1,9 @@
 import { cx } from '@berrypjh/ui-core';
 
+import { FormControlContextValue } from '../form-control';
+
 import { inputLabelClasses } from './InputLabel.constants';
 import type { InputLabelOwnProps } from './InputLabel.types';
-import { FormControlContextValue } from '../form-control';
 
 /**
  * InputLabel root className 문자열을 생성합니다.

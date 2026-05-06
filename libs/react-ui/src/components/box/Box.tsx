@@ -1,9 +1,11 @@
-import type { CSSProperties } from 'react';
 import { cx } from '@berrypjh/ui-core';
+
+import type { CSSProperties } from 'react';
 
 import { boxClasses } from './Box.constants';
 import type { ReactBoxProps } from './Box.types';
 import { getBoxComputedStyle } from './Box.utils';
+
 import './box.scss';
 
 export const Box = ({

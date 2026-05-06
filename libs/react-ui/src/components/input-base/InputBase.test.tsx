@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { act, fireEvent, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { spy } from 'sinon';
 
+import { act, fireEvent, screen } from '@testing-library/react';
+import { spy } from 'sinon';
+import { describe, expect, it } from 'vitest';
+
+import { createRenderer, describeConformance } from '../../../test';
 import { FormControl, useFormControl } from '../form-control';
+
 import { InputBase } from './InputBase';
 import { inputBaseClasses } from './InputBase.constants';
-import { createRenderer, describeConformance } from '../../../test';
 
 type FormControlContextValue = NonNullable<ReturnType<typeof useFormControl>>;
 

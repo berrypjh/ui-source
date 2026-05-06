@@ -1,31 +1,34 @@
 'use client';
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
+
 import { cx } from '@berrypjh/ui-core';
 
-import { useFormControl } from '../form-control';
 import {
   assignRef,
+  getFirstEnabledIndex,
+  getInitialHighlightedIndex,
+  getLastEnabledIndex,
+  getNextEnabledIndex,
   hasDisplayValue,
   isOptionSelected,
   isValueEqual,
   stringifyValue,
-  getFirstEnabledIndex,
-  getLastEnabledIndex,
-  getNextEnabledIndex,
-  getInitialHighlightedIndex,
 } from '../../utils';
+import { useFormControl } from '../form-control';
+
 import { selectClasses } from './Select.constants';
 import type { SelectOpenCloseEvent, SelectOptionElement, SelectProps } from './Select.types';
 import {
-  isOptionDisabled,
   createSyntheticChangeEvent,
   flattenOptionChildren,
   getDefaultSelectValue,
   getDisplayValue,
   getHiddenValues,
   getSelectRootClassNames,
+  isOptionDisabled,
 } from './Select.utils';
+
 import './select.scss';
 
 export const Select = ({

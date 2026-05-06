@@ -1,14 +1,16 @@
 import * as React from 'react';
+
 import { act, fireEvent, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
+import { describe, expect, it } from 'vitest';
+
+import { createRenderer, describeConformance } from '../../../test';
+import { FormControl } from '../form-control';
+import { InputLabel } from '../input-label';
+import { MenuItem } from '../menu-item';
 
 import { Select } from './Select';
 import { selectClasses } from './Select.constants';
-import { MenuItem } from '../menu-item';
-import { FormControl } from '../form-control';
-import { InputLabel } from '../input-label';
-import { createRenderer, describeConformance } from '../../../test';
 
 const getHiddenInputs = (container: HTMLElement): HTMLInputElement[] => {
   return Array.from(container.querySelectorAll('input[type="hidden"]')) as HTMLInputElement[];

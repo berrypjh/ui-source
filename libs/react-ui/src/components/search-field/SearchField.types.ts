@@ -1,9 +1,9 @@
 import type { FocusEventHandler, KeyboardEvent, ReactNode } from 'react';
 
 import type { FieldVariant } from '../../types';
-import type { PlainInputProps } from '../plain-input';
-import type { FilledInputProps } from '../filled-input';
 import type { BoxedInputProps } from '../boxed-input';
+import type { FilledInputProps } from '../filled-input';
+import type { PlainInputProps } from '../plain-input';
 
 export type SearchFieldSuggestion = {
   id: string;

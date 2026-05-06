@@ -1,5 +1,6 @@
-import type { CSSProperties, HTMLAttributes } from 'react';
 import type { BoxProps, BoxRadiusValue, BoxSpacingValue, ColorToken } from '@berrypjh/ui-core';
+
+import type { CSSProperties, HTMLAttributes } from 'react';
 
 export type { BoxProps, BoxRadiusValue, BoxSpacingValue, ColorToken };
 

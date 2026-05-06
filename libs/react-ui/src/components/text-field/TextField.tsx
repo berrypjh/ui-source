@@ -1,12 +1,14 @@
 'use client';
 
 import { useId } from 'react';
+
 import { cx } from '@berrypjh/ui-core';
 
 import { FormControl } from '../form-control';
 import { FormHelperText } from '../form-helper-text';
 import { InputLabel } from '../input-label';
 import { Select } from '../select';
+
 import { textFieldClasses } from './TextField.constants';
 import type { TextFieldProps } from './TextField.types';
 import {
@@ -14,6 +16,7 @@ import {
   getTextFieldInputComponent,
   hasTextFieldContent,
 } from './TextField.utils';
+
 import './text-field.scss';
 
 export const TextField = ({
