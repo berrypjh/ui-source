@@ -1,7 +1,7 @@
-import StyleDictionary from 'style-dictionary';
 import { register as registerTokensStudio } from '@tokens-studio/sd-transforms';
+import StyleDictionary from 'style-dictionary';
 
-import { dsCssVariablesFormat, tsThemeTokensFormat, jsonFlatTokensFormat } from './formats';
+import { dsCssVariablesFormat, jsonFlatTokensFormat, tsThemeTokensFormat } from './formats';
 import { fontWeightNameToNumberTransform, reactNativeNumberTransform } from './transforms';
 
 let done = false;

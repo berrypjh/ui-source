@@ -1,4 +1,4 @@
-export type { JsonPrimitive, JsonValue, JsonObject } from './json';
+export type { JsonObject, JsonPrimitive, JsonValue } from './json';
 export { isJsonObject } from './json';
-export type { TokenSet, TokensStudioMetadata, TokensStudioExport } from './tokensStudio';
 export type { ThemeName } from './themes';
+export type { TokenSet, TokensStudioExport, TokensStudioMetadata } from './tokensStudio';

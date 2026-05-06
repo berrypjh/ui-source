@@ -1,17 +1,18 @@
-import path from 'node:path';
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import StyleDictionary from 'style-dictionary';
 
-import { splitAndMergeThemes } from './preprocess';
-import { registerAll, makeSdConfig } from './sd';
-import { ThemeName } from './types';
 import {
+  generateTailwindPreset,
   mergeCssThemes,
   mergeThemeTs,
   writeCssSideEffectTypes,
-  generateTailwindPreset,
 } from './postprocess';
+import { splitAndMergeThemes } from './preprocess';
+import { makeSdConfig, registerAll } from './sd';
+import { ThemeName } from './types';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, '..');
