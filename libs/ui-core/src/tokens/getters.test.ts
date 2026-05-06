@@ -13,7 +13,7 @@ import {
 import type { RNTokens, Theme } from './types';
 
 const mockTheme = {
-  mode: 'global',
+  mode: 'light',
   tokens: {
     color: { primary: '#0000FF' },
     spacing: { sm: 8 },
