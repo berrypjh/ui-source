@@ -12,7 +12,7 @@ export interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({
-  mode = 'global',
+  mode = 'light',
   tokensByMode = Native as unknown as Record<ThemeName, RNTokens>,
   children,
 }: ThemeProviderProps) => {
