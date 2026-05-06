@@ -8,7 +8,7 @@ const readPath = (obj: unknown, path: string): unknown => {
     if (cur == null || (typeof cur !== 'object' && typeof cur !== 'function')) {
       throw new Error(`getToken: cannot read "${path}" (stuck at "${p}")`);
     }
-    cur = cur[p];
+    cur = (cur as Record<string, unknown>)[p];
   }
   return cur;
 };
