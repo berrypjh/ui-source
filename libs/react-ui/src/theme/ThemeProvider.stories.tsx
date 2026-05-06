@@ -13,13 +13,13 @@ const meta = {
     disableThemeDecorator: true,
   },
   args: {
-    mode: 'global',
+    mode: 'light',
     children: null,
   },
   argTypes: {
     mode: {
       control: 'select',
-      options: ['global', 'dark'],
+      options: ['light', 'dark'],
     },
     children: { control: false },
     ref: { control: false },
@@ -105,13 +105,13 @@ export const Playground: Story = {
 
 export const Default: Story = {
   args: {
-    mode: 'global',
+    mode: 'light',
     children: null,
   },
   render: (args) => (
     <ThemeProvider {...args}>
       <div style={{ ...surfaceStyle, background: '#ffffff' }}>
-        <h3 style={sectionTitleStyle}>Global Theme</h3>
+        <h3 style={sectionTitleStyle}>Light Theme</h3>
         <div style={rowStyle}>
           <Button>Button</Button>
           <Button variant="outlined">Button</Button>
@@ -130,9 +130,9 @@ export const AllModes: Story = {
   },
   render: () => (
     <div style={{ display: 'grid', gap: '24px' }}>
-      <ThemeProvider mode="global">
+      <ThemeProvider mode="light">
         <div style={{ ...surfaceStyle, background: '#ffffff' }}>
-          <h3 style={sectionTitleStyle}>Global</h3>
+          <h3 style={sectionTitleStyle}>Light</h3>
           <div style={rowStyle}>
             <Button variant="contained">Button</Button>
             <Button variant="outlined">Button</Button>
@@ -168,7 +168,7 @@ export const NestedThemeExample: Story = {
     layout: 'padded',
   },
   render: () => (
-    <ThemeProvider mode="global">
+    <ThemeProvider mode="light">
       <div
         style={{
           ...surfaceStyle,
@@ -176,7 +176,7 @@ export const NestedThemeExample: Story = {
           gap: '24px',
         }}
       >
-        <h3 style={sectionTitleStyle}>Global (Outer)</h3>
+        <h3 style={sectionTitleStyle}>Light (Outer)</h3>
         <div style={rowStyle}>
           <Button>Button</Button>
           <Button variant="outlined">Button</Button>

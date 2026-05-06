@@ -20,12 +20,12 @@ const preview: Preview = {
   globalTypes: {
     themeMode: {
       name: 'Theme',
-      description: 'Global theme mode',
-      defaultValue: 'global',
+      description: 'Theme mode',
+      defaultValue: 'light',
       toolbar: {
         icon: 'mirror',
         items: [
-          { value: 'global', title: 'Global' },
+          { value: 'light', title: 'Light' },
           { value: 'dark', title: 'Dark' },
         ],
         dynamicTitle: true,
@@ -58,7 +58,7 @@ const preview: Preview = {
         return content;
       }
 
-      const mode = context.globals.themeMode === 'dark' ? 'dark' : 'global';
+      const mode = context.globals.themeMode === 'dark' ? 'dark' : 'light';
 
       return createElement(ThemeProvider, { mode, children: content });
     },

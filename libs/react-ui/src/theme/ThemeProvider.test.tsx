@@ -27,13 +27,13 @@ describe('<ThemeProvider />', () => {
       expect(screen.getByRole('button', { name: 'hello' })).toBeInTheDocument();
     });
 
-    it('기본 mode는 global 이어야 한다', () => {
+    it('기본 mode는 light 이어야 한다', () => {
       render(<ThemeProvider>content</ThemeProvider>);
 
       const root = screen.getByText('content');
 
       expect(root).toHaveClass(themeProviderClasses.root);
-      expect(root).toHaveAttribute('data-theme', 'global');
+      expect(root).toHaveAttribute('data-theme', 'light');
     });
 
     it('전달한 mode를 data-theme에 적용해야 한다', () => {
