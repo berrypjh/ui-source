@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Theme, RNTokens } from './types';
 import {
-  getColor,
-  getSpacing,
-  getRadius,
-  getBorderWidth,
   getBorder,
-  getTypography,
-  getShadow,
-  getElevation,
+  getBorderWidth,
+  getColor,
   getComponent,
+  getElevation,
+  getRadius,
+  getShadow,
+  getSpacing,
+  getTypography,
 } from './getters';
+import type { RNTokens, Theme } from './types';
 
 const mockTheme = {
   mode: 'global',

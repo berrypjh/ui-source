@@ -1,4 +1,5 @@
-import { Native, Web, ThemeName as DefaultTheme } from '@berrypjh/design-tokens';
+import { Native, ThemeName as DefaultTheme, Web } from '@berrypjh/design-tokens';
+
 import type { LeafDotPath, PathValue } from './path';
 
 export type WebTokens = Web.Global.Tokens;

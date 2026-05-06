@@ -1,18 +1,18 @@
 import { getToken } from './getToken';
-import type {
-  Theme,
-  RNTokens,
-  ColorToken,
-  SpacingToken,
-  RadiusToken,
-  BorderWidthToken,
-  BorderToken,
-  TypographyToken,
-  ShadowToken,
-  ElevationToken,
-  ComponentToken,
-} from './types';
 import type { PathValue } from './path';
+import type {
+  BorderToken,
+  BorderWidthToken,
+  ColorToken,
+  ComponentToken,
+  ElevationToken,
+  RadiusToken,
+  RNTokens,
+  ShadowToken,
+  SpacingToken,
+  Theme,
+  TypographyToken,
+} from './types';
 
 export const getColor = <P extends ColorToken>(
   theme: Theme<RNTokens>,
