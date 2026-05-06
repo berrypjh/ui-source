@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { ThemeProvider } from './ThemeProvider';
 import { Button } from '../components/button/Button';
+
+import { ThemeProvider } from './ThemeProvider';
 
 const meta = {
   title: 'Theme/ThemeProvider',
@@ -71,8 +72,7 @@ export const Playground: Story = {
         style={{
           ...surfaceStyle,
           background: args.mode === 'dark' ? 'var(--ds-neutral-ne800)' : '#ffffff',
-          borderColor:
-            args.mode === 'dark' ? 'var(--ds-neutral-ne700)' : 'var(--ds-neutral-ne300)',
+          borderColor: args.mode === 'dark' ? 'var(--ds-neutral-ne700)' : 'var(--ds-neutral-ne300)',
           color: args.mode === 'dark' ? 'var(--ds-text-contrast-text)' : 'var(--ds-text-default)',
         }}
       >
@@ -84,8 +84,7 @@ export const Playground: Story = {
               color: args.mode === 'dark' ? 'var(--ds-neutral-ne300)' : 'var(--ds-text-light)',
             }}
           >
-            <code>data-theme</code> 변경에 따라 내부 컴포넌트가 어떻게 반응하는지 확인하기 위한
-            예시
+            <code>data-theme</code> 변경에 따라 내부 컴포넌트가 어떻게 반응하는지 확인하기 위한 예시
           </p>
         </div>
         <div style={rowStyle}>

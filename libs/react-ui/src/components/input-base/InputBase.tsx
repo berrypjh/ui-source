@@ -1,18 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+
 import { cx } from '@berrypjh/ui-core';
 
+import { hasFormValue } from '../../utils';
 import { useFormControl } from '../form-control';
-import {
-  createHandleNativeElementRef,
-  getCommonInputProps,
-  getInputBaseInputClassNames,
-  getInputBaseRootClassNames,
-  getResolvedDefaultValue,
-  getResolvedInputValue,
-  syncFilledState,
-} from './InputBase.utils';
+
 import { inputBaseClasses } from './InputBase.constants';
 import type {
   InputBaseProps,
@@ -23,7 +17,16 @@ import type {
   NativeTextareaChangeHandler,
   NativeTextareaFocusHandler,
 } from './InputBase.types';
-import { hasFormValue } from '../../utils';
+import {
+  createHandleNativeElementRef,
+  getCommonInputProps,
+  getInputBaseInputClassNames,
+  getInputBaseRootClassNames,
+  getResolvedDefaultValue,
+  getResolvedInputValue,
+  syncFilledState,
+} from './InputBase.utils';
+
 import './input-base.scss';
 
 export const InputBase = ({
@@ -241,7 +244,13 @@ export const InputBase = ({
   const resolvedDefaultValue = getResolvedDefaultValue(defaultValue);
 
   return (
-    <div {...rest} ref={ref} className={rootClassNames} onClick={handleRootClick}>
+    <div
+      {...rest}
+      ref={ref}
+      role="presentation"
+      className={rootClassNames}
+      onClick={handleRootClick}
+    >
       {startAdornment ? (
         <span className={inputBaseClasses.startAdornment}>{startAdornment}</span>
       ) : null}

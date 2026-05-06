@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
 import { cx } from '@berrypjh/ui-core';
+
+import type { ReactNode } from 'react';
 
 import { fabClasses } from './Fab.constants';
 import type { FabAutoAnchorProps, FabRenderableProps } from './Fab.types';

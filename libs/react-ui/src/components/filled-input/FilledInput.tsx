@@ -3,8 +3,10 @@
 import { cx } from '@berrypjh/ui-core';
 
 import { InputBase } from '../input-base';
+
 import { filledInputClasses } from './FilledInput.constants';
 import type { FilledInputProps } from './FilledInput.types';
+
 import './filled-input.scss';
 
 export const FilledInput = ({ className, ref, ...rest }: FilledInputProps) => {

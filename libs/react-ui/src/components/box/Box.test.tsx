@@ -1,9 +1,10 @@
-import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+
+import { createRenderer, describeConformance } from '../../../test';
 
 import { Box } from './Box';
 import { boxClasses } from './Box.constants';
-import { createRenderer, describeConformance } from '../../../test';
 
 describe('<Box />', () => {
   const { render } = createRenderer();

@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { describe, it, expect } from 'vitest';
+
 import type { RenderResult } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 
 import { randomStringValue } from './randomStringValue';
 

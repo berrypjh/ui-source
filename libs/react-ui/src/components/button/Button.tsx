@@ -3,6 +3,7 @@
 import { useId } from 'react';
 
 import { ButtonBase } from '../button-base';
+
 import type { ButtonAutoAnchorProps, ButtonRenderableProps } from './Button.types';
 import {
   getButtonClassNames,
@@ -12,6 +13,7 @@ import {
   getStartIcon,
   isAutoAnchorProps,
 } from './Button.utils';
+
 import './button.scss';
 
 export const Button = (props: ButtonRenderableProps) => {

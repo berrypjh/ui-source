@@ -1,15 +1,17 @@
 import * as React from 'react';
+
 import { fireEvent, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
+import { describe, expect, it } from 'vitest';
+
+import { createRenderer, describeConformance } from '../../../test';
+import { filledInputClasses } from '../filled-input';
+import { formControlClasses } from '../form-control';
+import { inputBaseClasses } from '../input-base';
+import { plainInputClasses } from '../plain-input';
 
 import { TextField } from './TextField';
 import { textFieldClasses } from './TextField.constants';
-import { inputBaseClasses } from '../input-base';
-import { formControlClasses } from '../form-control';
-import { plainInputClasses } from '../plain-input';
-import { filledInputClasses } from '../filled-input';
-import { createRenderer, describeConformance } from '../../../test';
 
 describe('<TextField />', () => {
   const { render } = createRenderer();

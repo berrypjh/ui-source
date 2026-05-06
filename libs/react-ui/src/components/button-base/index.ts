@@ -1,5 +1,4 @@
 export { ButtonBase } from './ButtonBase';
-
 export type {
   ButtonBaseAutoAnchorProps,
   ButtonBaseOwnProps,

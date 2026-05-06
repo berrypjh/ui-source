@@ -1,8 +1,10 @@
 'use client';
 
 import { useId, useMemo, useRef, useState } from 'react';
-import type { FocusEventHandler } from 'react';
+
 import { cx } from '@berrypjh/ui-core';
+
+import type { FocusEventHandler } from 'react';
 
 import type {
   InputLikeChangeEventHandler,
@@ -11,6 +13,7 @@ import type {
 } from '../../types';
 import { assignRef, toInputString } from '../../utils';
 import { getTextFieldInputComponent } from '../text-field';
+
 import { searchFieldClasses } from './SearchField.constants';
 import type {
   SearchFieldInputKeyDownHandler,
@@ -19,6 +22,7 @@ import type {
   SearchFieldSuggestionKeyDownHandler,
 } from './SearchField.types';
 import { getMergedInputProps, getSuggestionValue, isSuggestionSelected } from './SearchField.utils';
+
 import './search-field.scss';
 
 export const SearchField = ({
@@ -33,9 +37,8 @@ export const SearchField = ({
   placeholder = 'Search',
   variant = 'boxed',
   suggestions = [],
-  clearable = true,
   noSuggestionsText,
-  onClear,
+  onClear: _onClear,
   onValueChange,
   onSuggestionSelect,
   ...rest

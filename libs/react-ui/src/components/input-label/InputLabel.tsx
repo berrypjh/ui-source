@@ -1,9 +1,11 @@
 'use client';
 
 import { useFormControl } from '../form-control';
+
 import { inputLabelClasses } from './InputLabel.constants';
 import type { InputLabelProps } from './InputLabel.types';
 import { getInputLabelClassNames } from './InputLabel.utils';
+
 import './input-label.scss';
 
 export const InputLabel = ({

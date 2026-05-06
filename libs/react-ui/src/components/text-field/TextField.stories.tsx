@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { MenuItem } from '../menu-item';
+
 import { TextField } from './TextField';
 
 const meta = {
@@ -125,7 +126,12 @@ export const AllColors: Story = {
 export const Disabled: Story = {
   render: () => (
     <div style={columnStyle}>
-      <TextField label="Username" value="john.doe" disabled helperText="This field cannot be edited." />
+      <TextField
+        label="Username"
+        value="john.doe"
+        disabled
+        helperText="This field cannot be edited."
+      />
       <TextField variant="filled" label="Email" value="john@example.com" disabled />
     </div>
   ),
@@ -187,7 +193,13 @@ export const FullWidth: Story = {
   render: () => (
     <div style={{ display: 'grid', gap: '16px', width: '480px' }}>
       <TextField fullWidth label="Full name" placeholder="Jane Smith" />
-      <TextField fullWidth label="Email address" type="email" placeholder="you@example.com" helperText="We will never share your email." />
+      <TextField
+        fullWidth
+        label="Email address"
+        type="email"
+        placeholder="you@example.com"
+        helperText="We will never share your email."
+      />
       <TextField fullWidth size="sm" label="Company" placeholder="Acme Corp" />
     </div>
   ),

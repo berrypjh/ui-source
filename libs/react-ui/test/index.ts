@@ -1,2 +1,2 @@
 export { createRenderer } from './createRenderer';
-export { default as describeConformance, type ConformanceOptions } from './describeConformance';
+export { type ConformanceOptions, default as describeConformance } from './describeConformance';

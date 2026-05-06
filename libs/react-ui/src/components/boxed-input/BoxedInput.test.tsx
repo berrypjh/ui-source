@@ -1,12 +1,13 @@
-import type { ComponentProps } from 'react';
 import { screen } from '@testing-library/react';
+import type { ComponentProps } from 'react';
 import { describe, expect, it } from 'vitest';
+
+import { createRenderer, describeConformance } from '../../../test';
+import { FormControl } from '../form-control';
+import { inputBaseClasses } from '../input-base';
 
 import { BoxedInput } from './BoxedInput';
 import { boxedInputClasses } from './BoxedInput.constants';
-import { FormControl } from '../form-control';
-import { inputBaseClasses } from '../input-base';
-import { createRenderer, describeConformance } from '../../../test';
 
 describe('<BoxedInput />', () => {
   const { render } = createRenderer();

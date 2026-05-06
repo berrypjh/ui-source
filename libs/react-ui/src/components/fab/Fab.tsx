@@ -3,8 +3,10 @@
 import type { ElementType } from 'react';
 
 import { ButtonBase } from '../button-base';
+
 import type { FabAutoAnchorProps, FabProps, FabRenderableProps } from './Fab.types';
 import { getFabClassNames, getFabContent, isAutoAnchorProps } from './Fab.utils';
+
 import './fab.scss';
 
 export const Fab = (props: FabRenderableProps) => {

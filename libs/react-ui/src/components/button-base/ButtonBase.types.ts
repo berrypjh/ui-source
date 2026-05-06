@@ -1,3 +1,5 @@
+import type { ButtonProps as CoreButtonProps } from '@berrypjh/ui-core';
+
 import type {
   ComponentPropsWithRef,
   ElementType,
@@ -5,7 +7,7 @@ import type {
   MouseEventHandler,
   ReactNode,
 } from 'react';
-import type { ButtonProps as CoreButtonProps } from '@berrypjh/ui-core';
+
 import type { PolymorphicComponentPropsWithRef, PropsOf } from '../../types/polymorphic';
 
 export type ButtonBaseOwnProps = CoreButtonProps & {

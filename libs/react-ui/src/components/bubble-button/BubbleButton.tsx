@@ -3,6 +3,7 @@
 import type { ElementType } from 'react';
 
 import { ButtonBase } from '../button-base';
+
 import { bubbleButtonClasses } from './BubbleButton.constants';
 import type {
   BubbleButtonAutoAnchorProps,
@@ -15,6 +16,7 @@ import {
   getBubbleButtonWrapperStyle,
   isAutoAnchorProps,
 } from './BubbleButton.utils';
+
 import './bubble-button.scss';
 
 export const BubbleButton = (props: BubbleButtonRenderableProps) => {

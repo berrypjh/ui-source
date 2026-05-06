@@ -1,15 +1,18 @@
 'use client';
 
-import type { ElementType } from 'react';
 import { useId } from 'react';
 
+import type { ElementType } from 'react';
+
 import { ButtonBase } from '../button-base';
+
 import type {
   IconButtonAutoAnchorProps,
   IconButtonProps,
   IconButtonRenderableProps,
 } from './IconButton.types';
 import { getIconButtonClassNames, getLoadingWrapper, isAutoAnchorProps } from './IconButton.utils';
+
 import './icon-button.scss';
 
 export const IconButton = (props: IconButtonRenderableProps) => {
