@@ -1,0 +1,8 @@
+{
+  "component": {
+    "button": {
+      "value": "{spacing.sm} {spacing.lg}",
+      "type": "spacing"
+    }
+  }
+}

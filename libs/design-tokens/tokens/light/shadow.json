@@ -1,0 +1,202 @@
+{
+  "shadow": {
+    "none": {
+      "value": [
+        {
+          "x": "0",
+          "y": "0",
+          "blur": "0",
+          "spread": "0",
+          "color": "#000000",
+          "type": "dropShadow"
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "xs": {
+      "value": [
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "3",
+          "spread": "0",
+          "color": "#0000001f",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "1",
+          "spread": "0",
+          "color": "#00000024",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "2",
+          "blur": "1",
+          "spread": "-1",
+          "color": "#00000033",
+          "type": "dropShadow"
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "sm": {
+      "value": [
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "5",
+          "spread": "0",
+          "color": "#0000001f",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "2",
+          "blur": "2",
+          "spread": "0",
+          "color": "#00000024",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "3",
+          "blur": "1",
+          "spread": "-2",
+          "color": "#00000033",
+          "type": "dropShadow"
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "md": {
+      "value": [
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "8",
+          "spread": "0",
+          "color": "#0000001f",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "3",
+          "blur": "4",
+          "spread": "0",
+          "color": "#00000024",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "3",
+          "blur": "3",
+          "spread": "-2",
+          "color": "#00000033",
+          "type": "dropShadow"
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "lg": {
+      "value": [
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "10",
+          "spread": "0",
+          "color": "#0000001f",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "4",
+          "blur": "5",
+          "spread": "0",
+          "color": "#00000024",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "2",
+          "blur": "4",
+          "spread": "-1",
+          "color": "#00000033",
+          "type": "dropShadow"
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "xl": {
+      "value": [
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "14",
+          "spread": "0",
+          "color": "#0000001f",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "5",
+          "blur": "8",
+          "spread": "0",
+          "color": "#00000024",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "3",
+          "blur": "5",
+          "spread": "-1",
+          "color": "#00000033",
+          "type": "dropShadow"
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "2xl": {
+      "value": [
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "18",
+          "spread": "0",
+          "color": "#0000001f",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "6",
+          "blur": "10",
+          "spread": "0",
+          "color": "#00000024",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "3",
+          "blur": "5",
+          "spread": "-1",
+          "color": "#00000033",
+          "type": "dropShadow"
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "inner": {
+      "value": {
+        "x": "0",
+        "y": "1",
+        "blur": "2",
+        "spread": "0",
+        "color": "#1018280F",
+        "type": "innerShadow"
+      },
+      "type": "boxShadow"
+    }
+  }
+}

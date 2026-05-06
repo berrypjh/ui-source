@@ -64,7 +64,7 @@ const twVar = (cssVar: string) => `var(${cssVar})`;
 const stripThemePrefix = (pathArr: string[]) => {
   if (pathArr.length === 0) return pathArr;
   const first = pathArr[0];
-  if (first === 'global' || first === 'dark') return pathArr.slice(1);
+  if (first === 'light' || first === 'dark') return pathArr.slice(1);
   return pathArr;
 };
 
@@ -98,25 +98,25 @@ const toTsConst = (name: string, obj: unknown) => {
  * Style Dictionary 결과(JSON flat tokens)를 기반으로 Tailwind preset 파일을 생성한다.
  *
  * @param args 생성 옵션
- * @param args.distJsonDirAbs `global/`, `dark/` 하위에 tokens.json이 있는 디렉토리 절대경로
+ * @param args.distJsonDirAbs `light/`, `dark/` 하위에 tokens.json이 있는 디렉토리 절대경로
  * @param args.outFileAbs 생성될 preset TS 파일의 절대경로
  */
 export const generateTailwindPreset = async (args: {
   distJsonDirAbs: string;
   outFileAbs: string;
 }) => {
-  const globalJson = path.join(args.distJsonDirAbs, 'global', 'tokens.json');
+  const lightJson = path.join(args.distJsonDirAbs, 'light', 'tokens.json');
   const darkJson = path.join(args.distJsonDirAbs, 'dark', 'tokens.json');
 
-  const globalTokensRaw: FlatToken[] = JSON.parse(await fs.readFile(globalJson, 'utf8'));
+  const lightTokensRaw: FlatToken[] = JSON.parse(await fs.readFile(lightJson, 'utf8'));
   const darkTokensRaw: FlatToken[] = JSON.parse(await fs.readFile(darkJson, 'utf8'));
 
-  const globalTokens = globalTokensRaw.map(normalizeToken);
+  const lightTokens = lightTokensRaw.map(normalizeToken);
   const darkTokens = darkTokensRaw.map(normalizeToken);
 
-  // union: dark가 global full set 기반이므로 dark를 우선으로 사용
+  // union: dark가 light full set 기반이므로 dark를 우선으로 사용
   const byPath = new Map<string, FlatToken>();
-  for (const t of globalTokens) byPath.set(t.pathString, t);
+  for (const t of lightTokens) byPath.set(t.pathString, t);
   for (const t of darkTokens) byPath.set(t.pathString, t);
 
   const all = [...byPath.values()];

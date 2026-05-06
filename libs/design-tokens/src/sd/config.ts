@@ -19,7 +19,7 @@ const without = (arr: string[], remove: string[]): string[] => {
 /**
  * 주어진 테마/입력 파일/출력 경로를 기반으로 Style Dictionary 설정 객체를 생성합니다.
  *
- * 이 설정은 Tokens Studio export(JSON)를 입력으로 받아,
+ * 이 설정은 DTCG 형식(JSON)을 입력으로 받아,
  * 테마별로 아래 산출물을 생성하도록 플랫폼을 구성합니다:
  * - `css`: CSS Variables (`variables.css`)
  * - `json`: 평탄화된 토큰 목록(`tokens.json`)
@@ -27,12 +27,17 @@ const without = (arr: string[], remove: string[]): string[] => {
  * - `rn`: React Native용 TypeScript 토큰(`tokens.ts`)
  *
  * 테마 셀렉터 규칙
- * - global: `:root`
+ * - light: `:root`
  * - dark: `[data-theme="dark"], .theme-dark`
  *
+ * 소스/인클루드 분리
+ * - `include`: 베이스 토큰(글로벌 풀세트). 결과물에는 포함되지 않고 참조 해석용으로만 사용.
+ * - `source`: 해당 테마에서 빌드 산출물에 포함될 토큰. dark에서는 override 토큰만 둠.
+ *
  * @param args 설정 생성 인자
- * @param args.theme 테마 이름(`global` | `dark`)
- * @param args.sourceFileAbs 입력 토큰 파일의 절대 경로
+ * @param args.theme 테마 이름(`light` | `dark`)
+ * @param args.source 빌드 산출물에 포함될 토큰 파일/글롭(절대 경로)
+ * @param args.include 참조 해석용 베이스 토큰 파일/글롭(절대 경로). 산출물에는 포함되지 않음
  * @param args.out 각 플랫폼별 buildPath(디렉터리 경로)
  * @param args.out.css CSS 산출물 디렉터리
  * @param args.out.json JSON 산출물 디렉터리
@@ -42,7 +47,8 @@ const without = (arr: string[], remove: string[]): string[] => {
  */
 export const makeSdConfig = (args: {
   theme: ThemeName;
-  sourceFileAbs: string;
+  source: string[];
+  include?: string[];
   out: {
     css: string;
     json: string;
@@ -50,7 +56,7 @@ export const makeSdConfig = (args: {
     rn: string;
   };
 }) => {
-  const themeSelector = args.theme === 'global' ? ':root' : '[data-theme="dark"], .theme-dark';
+  const themeSelector = args.theme === 'light' ? ':root' : '[data-theme="dark"], .theme-dark';
 
   const base = getTransforms({ platform: 'css' });
   const baseStrings = base.filter((t): t is string => typeof t === 'string');
@@ -79,7 +85,8 @@ export const makeSdConfig = (args: {
       typesMap: expandTypesMap,
     },
 
-    source: [args.sourceFileAbs],
+    include: args.include ?? [],
+    source: args.source,
 
     platforms: {
       css: {
