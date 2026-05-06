@@ -66,7 +66,7 @@ export const tsThemeTokensFormat: Format = {
   name: 'ds/ts/theme-tokens',
   format: ({ dictionary, options }) => {
     const opt = (options ?? {}) as ThemeTokensOptions;
-    const theme = opt.theme ?? 'global';
+    const theme = opt.theme ?? 'light';
 
     const tokens = [...dictionary.allTokens] as TransformedToken[];
     tokens.sort((a, b) => a.path.join('.').localeCompare(b.path.join('.')));

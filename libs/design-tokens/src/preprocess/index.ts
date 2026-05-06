@@ -1,1 +1,0 @@
-export { splitAndMergeThemes } from './splitAndMerge';

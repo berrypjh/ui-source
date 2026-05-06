@@ -1,0 +1,62 @@
+{
+  "primitiveBorder": {
+    "hairline": {
+      "value": "0.5",
+      "type": "borderWidth"
+    },
+    "xs": {
+      "value": "1",
+      "type": "borderWidth"
+    },
+    "sm": {
+      "value": "2",
+      "type": "borderWidth"
+    },
+    "md": {
+      "value": "4",
+      "type": "borderWidth"
+    },
+    "lg": {
+      "value": "6",
+      "type": "borderWidth"
+    },
+    "xl": {
+      "value": "8",
+      "type": "borderWidth"
+    },
+    "xxl": {
+      "value": "10",
+      "type": "borderWidth"
+    },
+    "3xl": {
+      "value": "12",
+      "type": "borderWidth"
+    }
+  },
+  "semanticBorder": {
+    "divider": {
+      "value": "{primitiveBorder.xs}",
+      "type": "borderWidth"
+    },
+    "default": {
+      "value": "{primitiveBorder.sm}",
+      "type": "borderWidth"
+    },
+    "focus": {
+      "value": "{primitiveBorder.md}",
+      "type": "borderWidth"
+    },
+    "strong": {
+      "value": "{primitiveBorder.lg}",
+      "type": "borderWidth"
+    },
+    "outline": {
+      "value": "{primitiveBorder.xl}",
+      "type": "borderWidth"
+    },
+    "hairline": {
+      "value": "{primitiveBorder.hairline}",
+      "type": "borderWidth"
+    }
+  }
+}

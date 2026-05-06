@@ -24,30 +24,30 @@ export const mergeThemeTs = async (args: { generatedDirAbs: string }) => {
   const web = `/* eslint-disable */
 // AUTO-GENERATED: merged themes
 
-import { tokens as global } from './themes/global/tokens.js';
+import { tokens as light } from './themes/light/tokens.js';
 import { tokens as dark } from './themes/dark/tokens.js';
 
-export const themes = { global, dark } as const;
+export const themes = { light, dark } as const;
 
 export type ThemeName = keyof typeof themes;
 export type ThemeTokens<T extends ThemeName> = (typeof themes)[T];
 
 // 편의 export
-export { global, dark };
+export { light, dark };
 `;
 
   const rn = `/* eslint-disable */
 // AUTO-GENERATED: merged themes
 
-import { tokens as global } from './themes/global/tokens.js';
+import { tokens as light } from './themes/light/tokens.js';
 import { tokens as dark } from './themes/dark/tokens.js';
 
-export const themes = { global, dark } as const;
+export const themes = { light, dark } as const;
 
 export type ThemeName = keyof typeof themes;
 export type ThemeTokens<T extends ThemeName> = (typeof themes)[T];
 
-export { global, dark };
+export { light, dark };
 `;
 
   await write(webOut, web);
