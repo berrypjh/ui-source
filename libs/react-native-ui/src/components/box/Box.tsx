@@ -1,7 +1,9 @@
 import { View } from 'react-native';
-import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
+
 import type { BoxProps, BoxRadiusValue, BoxSpacingValue, RNTokens } from '@berrypjh/ui-core';
 import { getColor } from '@berrypjh/ui-core';
+
+import type { StyleProp, ViewProps, ViewStyle } from 'react-native';
 
 import { useTheme } from '../../theme';
 
