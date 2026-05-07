@@ -1,37 +1,5 @@
-export {
-  getBorder,
-  getBorderWidth,
-  getColor,
-  getComponent,
-  getElevation,
-  getRadius,
-  getShadow,
-  getSpacing,
-  getTypography,
-} from './getters';
+export { getColor } from './getters';
 export { createTheme } from './theme';
-export type {
-  BorderToken,
-  BorderValue,
-  BorderWidthToken,
-  BorderWidthValue,
-  ColorToken,
-  ColorValue,
-  ComponentToken,
-  ComponentValue,
-  ElevationToken,
-  ElevationValue,
-  RadiusToken,
-  RadiusValue,
-  RNTokens,
-  ShadowToken,
-  ShadowValue,
-  SpacingToken,
-  SpacingValue,
-  Theme,
-  ThemeName,
-  TypographyToken,
-  TypographyValue,
-  WebTokens,
-} from './types';
-export { Native, Web } from '@berrypjh/design-tokens';
+export type { ColorToken, RadiusToken, RNTokens, SpacingToken, Theme, ThemeName } from './types';
+export type { ThemeDef } from '@berrypjh/design-tokens';
+export { Native, themes, Web } from '@berrypjh/design-tokens';

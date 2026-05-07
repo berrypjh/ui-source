@@ -9,7 +9,9 @@
       "options": {
         "commands": [
           "nx run @berrypjh/ui-core:build-js",
-          "mkdir -p libs/ui-core/dist/css && cp libs/design-tokens/dist/css/variables.css libs/ui-core/dist/css/index.css"
+          "mkdir -p libs/ui-core/dist/css && cp libs/design-tokens/dist/css/variables.css libs/ui-core/dist/css/index.css",
+          "cp libs/design-tokens/dist/tokens.json libs/ui-core/dist/tokens.json",
+          "cp libs/ui-core/AGENTS.consumer.md libs/ui-core/dist/AGENTS.md"
         ],
         "parallel": false
       }
@@ -40,10 +42,7 @@
           "runMode": "run"
         }
       }
-    },
-    "nx-release-publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["build"]
     }
-  }
+  },
+  "tags": ["scope:internal"]
 }

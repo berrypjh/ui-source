@@ -14,6 +14,8 @@ export default defineConfig(() => ({
       entryRoot: resolve(__dirname, 'src'),
       tsconfigPath: resolve(__dirname, 'tsconfig.lib.json'),
       outDir: resolve(__dirname, 'dist'),
+      rollupTypes: true,
+      bundledPackages: ['@berrypjh/design-tokens'],
     }),
   ],
   build: {
@@ -24,10 +26,18 @@ export default defineConfig(() => ({
       transformMixedEsModules: true,
     },
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        tailwind: resolve(__dirname, 'src/tailwind.ts'),
+      },
       name: '@berrypjh/ui-core',
-      fileName: 'index',
       formats: ['es' as const],
+    },
+    rollupOptions: {
+      external: ['tailwindcss'],
+      output: {
+        entryFileNames: '[name].js',
+      },
     },
   },
 }));

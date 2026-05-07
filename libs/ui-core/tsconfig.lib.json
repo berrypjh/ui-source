@@ -1,8 +1,6 @@
 {
   "extends": "../../tsconfig.lib.base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": true,
     "forceConsistentCasingInFileNames": true,

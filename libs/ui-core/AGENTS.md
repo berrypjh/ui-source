@@ -1,155 +1,78 @@
-# AGENTS.md
+# ui-core
 
-## Scope
+## 절대 원칙
 
-This file contains package-specific instructions for `libs/ui-core`.
+- **플랫폼 독립**: web/native 렌더링 가정·DOM API·RN-only API 금지. 두 플랫폼이 **모두** 쓸 수 있어야 ui-core에 들어옴.
+- **design-tokens 캡슐화**: ui-core가 design-tokens를 wrap. 다운스트림(`react-ui`/`react-native-ui`/apps)은 **design-tokens를 직접 import하지 않는다**. `Web`, `Native`, `themes`, `ThemeDef`, `/tailwind`, `/css`는 ui-core에서 패스스루.
+- **공개 surface는 안정**: `cx`, `getColor`, contracts, 토큰 타입은 다운스트림이 의존. 변경 시 reverse-search로 영향 확인 필수.
+- **단일 사용처면 ui-core가 아님**: 한 컴포넌트만 쓰면 그 컴포넌트 패키지로 옮겨라.
 
-This package owns platform-agnostic contracts, shared logic, and reusable primitives that can be consumed by multiple UI implementations.
+## 파일 (전부)
 
-Always read the root `/AGENTS.md` first.
+```
+src/
+  index.ts          public re-export (contracts/tokens/utils)
+  tailwind.ts       design-tokens/tailwind 패스스루
+  contracts/
+    box.ts          BoxProps, BoxSpacingValue, BoxRadiusValue
+    button.ts       ButtonProps, ButtonColor, ButtonSize, ButtonVariant
+    field.ts        FieldProps, FormControlProps, InputFieldProps, TextFieldProps + 4 enums
+    index.ts
+  tokens/
+    types.ts        ColorToken, SpacingToken, RadiusToken, RNTokens, Theme<T>, ThemeName
+    path.ts         LeafDotPath, PathValue (internal generic 유틸)
+    getToken.ts     internal path-walk
+    getters.ts      getColor (현재 1개. 새 카테고리 getter 필요 시 여기 추가)
+    theme.ts        createTheme
+    index.ts        + design-tokens 패스스루 (Web, Native, themes, ThemeDef)
+  utils/
+    cx.ts           className 결합 (다운스트림 ~16곳에서 사용)
+    object.ts       isObjectRecord
+    index.ts
+```
 
----
+## 작업 매트릭스
 
-## Package Intent
+| 작업                              | 수정 파일                                           |
+| --------------------------------- | --------------------------------------------------- |
+| 새 prop 계약 (예: TooltipProps)   | `src/contracts/<name>.ts` + `contracts/index.ts`    |
+| 새 토큰 카테고리 getter           | `src/tokens/getters.ts` (기존 `getColor` 패턴 따라) |
+| 새 토큰 타입 alias 노출           | `src/tokens/types.ts` + `tokens/index.ts`           |
+| 새 유틸 (양 플랫폼에서 쓰는 것만) | `src/utils/<name>.ts` + `utils/index.ts`            |
+| design-tokens에서 새 심볼 노출    | `src/tokens/index.ts`의 패스스루 라인에 추가        |
 
-`ui-core` should be the shared foundation for the UI system.
+`HEAD_REWRITE`/카테고리 추가는 design-tokens 쪽 작업. ui-core는 noop.
 
-It should:
+## 빌드 / 테스트
 
-- define stable contracts
-- host reusable types and platform-agnostic logic
-- reduce duplication across platform-specific UI packages
-- remain conceptually clean and reusable
+```bash
+pnpm nx build @berrypjh/ui-core         # vite + dts + css 복사
+pnpm nx test @berrypjh/ui-core          # vitest
+pnpm nx typecheck @berrypjh/ui-core     # tsc --noEmit
+pnpm nx lint @berrypjh/ui-core          # eslint
+```
 
----
+빌드 산출물: `dist/index.{js,d.ts}` + `dist/tailwind.{js,d.ts}` + `dist/css/index.css`. d.ts는 `vite-plugin-dts`의 `rollupTypes: true` + `bundledPackages: ['@berrypjh/design-tokens']`로 단일 파일 번들.
 
-## Core Design Principle
+## Gotcha
 
-Before adding code here, ask:
+- **design-tokens 직접 노출 금지**: 다운스트림에서 `from '@berrypjh/design-tokens'` 등장하면 ui-core 패스스루가 빠진 신호. ui-core를 통하도록 우회.
+- **path 매핑 금지**: `tsconfig.base.json`의 `paths`에 `@berrypjh/design-tokens` 추가하지 말 것 (composite + rootDir와 충돌해 빌드 깨짐 — design-tokens 리팩토링 시 학습된 사실).
+- **컴포넌트 props는 wrap이 원칙**: contracts의 `BoxProps` 등은 react-ui가 자체 props로 wrap해서 노출함. ui-core 자체의 props가 다운스트림에 그대로 노출되지 않게 주의.
+- **getters 일관성**: 추가 시 기존 `getColor` 시그니처(`<P extends XxxToken>`, `Theme<RNTokens>` 인자)를 따르라. PathValue 반환으로 type-narrow.
+- **테스트 위치**: 단위 테스트는 `*.test.ts`로 같은 폴더. `vitest`가 `src/**/*.{test,spec}.ts`를 픽업.
 
-**Is this truly platform-agnostic?**
+## 다운스트림 영향
 
-Put code in `ui-core` when it is:
+- `libs/react-ui/src/index.ts` · `libs/react-native-ui/src/index.ts`가 ui-core의 token type·헬퍼·design-tokens 패스스루를 그대로 re-export. **ui-core export 변경 시 두 파일 동기화 필수**.
+- `libs/react-ui/src/components/box/Box.types.ts` 등 `BoxProps`·`ColorToken` 등 직접 import.
+- `libs/react-native-ui/src/components/box/Box.tsx`가 `getColor` 사용.
+- `apps/demo-web/src/app/pages/TokensPage.tsx`가 `Web.Light.tokens` 트리 순회 — 카테고리 키 변경 시 깨짐.
 
-- shared across Web and Native platforms
-- a contract, token mapping, or reusable utility
-- independent of DOM rendering details
-- not tied to Storybook, browser APIs, or app environment
+## 변경 체크리스트
 
-Do not put code here when it is:
-
-- browser-only
-- CSS-specific
-- demo-app specific
-
----
-
-## Responsibilities
-
-### This package should own
-
-- shared types and contracts
-- cross-platform component prop models where appropriate
-- reusable utility functions
-- polymorphic or structural typing utilities when they are part of shared architecture
-- shared token-facing abstractions when they are platform-agnostic
-
----
-
-## API Discipline
-
-### Exported surface
-
-Treat exported types, contracts, and helpers as stable.
-Changes here can cascade into multiple packages.
-
-If changing exports:
-
-- update import sites
-- update affected tests
-- update downstream packages
-- update docs/examples if the public contract is consumed externally
-
-### Backward compatibility
-
-Prefer additive changes over breaking ones.
-Avoid renaming or reshaping widely used contracts unless clearly necessary.
-
----
-
-## Design and Implementation Rules
-
-### General
-
-- Keep code small, explicit, and reusable.
-- Prefer clear contracts over hidden magic.
-- Name shared concepts carefully.
-- Avoid utilities that are only used once.
-
-### Cross-platform mindset
-
-Think about:
-
-- React web consumer
-- React Native consumer
-- future consumers
-
-If logic only helps one platform, it likely belongs outside `ui-core`.
-
-### Dependency discipline
-
-Avoid pulling platform-heavy dependencies into `ui-core`.
-This package should remain light and portable.
-
----
-
-## Relationship To Other Packages
-
-### `design-tokens`
-
-`ui-core` may depend on token contracts or token-facing utilities, but should not redefine token values that belong in the token source layer.
-
-### `react-ui`
-
-React web should consume shared contracts from `ui-core` rather than duplicating them.
-
-### `react-native-ui`
-
-React Native should also consume shared contracts from `ui-core` when they are applicable.
-
-When duplication appears in both platform packages, check whether it should be promoted into `ui-core`.
-
----
-
-## Testing Rules
-
-### What to test here
-
-Focus on:
-
-- contract behavior
-- utility correctness
-- shared logic invariants
-- cross-platform assumptions at the non-rendering layer
-
----
-
-## Change Evaluation Checklist
-
-Before finalizing a change in `ui-core`, check:
-
-- Is this truly platform-agnostic?
-- Does this belong in shared contracts or should it remain in a platform package?
-- Did exported types or contracts change?
-- Were downstream consumers checked?
-- Is this the smallest reusable abstraction that solves the problem?
-
----
-
-## Do Not
-
-- Do not add React web rendering assumptions.
-- Do not add React Native-only rendering assumptions.
-- Do not move demo or app-specific behavior into this package.
-- Do not duplicate token values that belong in `design-tokens`.
-- Do not introduce broad abstraction layers without clear multi-package benefit.
+- [ ] 진짜 양 플랫폼이 쓰는가? (단일 사용처면 그 패키지로)
+- [ ] 다운스트림 사용처 grep 했는가? (`grep -rn '<symbol>' libs apps`)
+- [ ] design-tokens 패스스루를 우회하지 않는가?
+- [ ] 테스트가 의도를 표현하는가?
+- [ ] react-ui·react-native-ui index.ts re-export 동기화 필요 없는가?
