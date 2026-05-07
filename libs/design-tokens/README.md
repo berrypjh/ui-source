@@ -1,53 +1,91 @@
 # @berrypjh/design-tokens
 
-소스를 직접 편집하는 디자인 토큰 라이브러리. Style Dictionary로 빌드해 CSS / Web / RN / Tailwind 산출물을 생성·배포한다.
+토큰 JSON을 입력으로 **CSS 변수**, **React Native JS 객체**, **Tailwind preset**을 생성한다.
 
-## 워크플로우
+## 사용
+
+```ts
+// Web: CSS 변수 (side-effect import — 한 번만)
+import '@berrypjh/design-tokens/css';
+
+// Web/RN 공통: 타입 안전한 토큰 객체
+import { Web, Native, themes } from '@berrypjh/design-tokens';
+const color = Web.Light.tokens.color.primary.pr500;     // '#2E90FA'
+const spacing = Native.Light.tokens.spacing.md;          // 8 (number)
+
+// Tailwind v4 preset
+import preset from '@berrypjh/design-tokens/tailwind';
+```
+
+테마 전환은 `<html data-theme="dark">`처럼 `data-theme` 속성으로 한다(`themes.ts` 셀렉터 참조).
+
+## Export 경로
+
+| 경로 | 용도 |
+| --- | --- |
+| `@berrypjh/design-tokens` | `themes`, `ThemeName`, `ThemeDef`, `Web` / `Native` namespace, `tailwindPreset` |
+| `@berrypjh/design-tokens/web` | Web 토큰 namespace (`Light`, `Dark`, `Sepia`, ...) |
+| `@berrypjh/design-tokens/rn` | RN 토큰 namespace (숫자형 type은 number로 변환) |
+| `@berrypjh/design-tokens/css` | CSS 변수 (side-effect import) |
+| `@berrypjh/design-tokens/tailwind` | Tailwind preset (default export) |
+
+`Web.*` 와 `Native.*` 는 같은 토큰 트리 구조를 갖지만 RN 쪽은 px/dimension이 number로 변환되어 있다.
+
+추가로 **`dist/tokens.json`** (슬림 정적 카탈로그)이 npm 배포물에 포함된다 — 모든 토큰 path, cssVar, 테마별 값을 단일 평탄 JSON으로 enumerate. 자동화·문서화·AI 에이전트 분석용. 키는 결정적으로 정렬되어 빌드 간 diff가 0이다.
+
+```jsonc
+// dist/tokens.json (발췌)
+{
+  "schema": "tokens[path] = [cssVar, ...valuesInThemesOrder]",
+  "themes": ["light", "dark", "sepia"],
+  "categories": ["border", "borderWidth", "color", ...],
+  "tokens": {
+    "color.primary.pr500": ["--ds-primary-pr500", "#2E90FA", "#53B1FD", "#2E90FA"]
+  }
+}
+```
+
+`type` 필드는 path[0]이 곧 카테고리이므로 생략. 토큰 한 줄 = JSON 한 라인 형식으로 직렬화해 구두점·줄바꿈 최소화.
+
+`dist/AGENTS.md`도 함께 생성된다 — npm 소비자(AI 에이전트 포함)용 짧은 사용 안내. 라이브러리 상태(테마·카테고리 목록)에서 자동 추출되므로 동기화 부담 없음.
+
+## 파이프라인
 
 ```
+tokens/{theme}/{category}.json
+        │   pnpm build:tokens
+        ▼
+[Style Dictionary in-memory dict] ──▶ [generators]
+                                          │
+                                          ├─ dist/css/variables.css           (병합본)
+                                          ├─ dist/css/variables.{theme}.css   (테마별)
+                                          ├─ dist/tokens.json                 (평탄 카탈로그)
+                                          ├─ src/.generated/web/themes/<t>/tokens.ts
+                                          ├─ src/.generated/rn/themes/<t>/tokens.ts
+                                          └─ src/.generated/tailwind/preset.ts
+```
+
+SD는 transform 파이프라인으로만 사용한다. 사전(`Dictionary`)은 in-memory로 보관되고 generator가 직접 소비해 산출물을 만든다.
+
+## 디렉토리
+
+```
+src/
+  build.ts                  엔트리 (SD dict → generators)
+  themes.ts                 테마 등록부 (단일 진실)
+  index.ts / web.ts / rn.ts / tailwind.ts   public 진입점
+  lib/
+    sd.ts                   SD config + buildThemeDictionaries
+    tokens.ts               classify / cssVarName / colorRgb / getTokenType
+    genCss.ts               CSS 변수 생성
+    genTsTokens.ts          Web/RN TS 토큰 + namespace 인덱스 생성
+    genTailwind.ts          Tailwind preset 생성
 tokens/
-  light/{category}.json   ← 사람이 직접 편집(베이스 풀세트)
-  dark/{category}.json     ← 사람이 직접 편집(override만)
-        ↓  pnpm build:design-tokens
-   validate (formats / type 어휘)
-        ↓
-   Style Dictionary
-        ↓
-  ┌─────────────────────────────────┐
-  │  dist/css/variables.css         │  CSS 변수
-  │  src/.generated/web/tokens.ts   │  Web JS 객체
-  │  src/.generated/rn/tokens.ts    │  React Native JS 객체
-  │  src/.generated/tailwind/       │  Tailwind 프리셋
-  └─────────────────────────────────┘
-        ↓  pnpm publish:design-tokens
-  GitHub Packages (@berrypjh/design-tokens)
+  light/                    base 풀세트
+  dark/, sepia/, ...        light을 덮어쓰는 토큰만
 ```
 
-## 토큰 파일 구조
-
-토큰은 카테고리별 파일로 분할되어 있다. 카테고리는 빌드 후 노출되는 9개 그룹과 1:1 일치한다.
-
-```
-tokens/
-├─ light/
-│   ├─ color.json        primary / secondary / neutral / success / warning / error /
-│   │                    primaryBtn / text / background / icon / stroke
-│   ├─ typography.json   fontFamilies / fontSize / fontWeight / lineHeight /
-│   │                    letterSpacing / display / heading / body / paragraph / caption
-│   ├─ spacing.json
-│   ├─ radius.json
-│   ├─ borderWidth.json  primitiveBorder / semanticBorder
-│   ├─ border.json
-│   ├─ shadow.json
-│   ├─ elevation.json
-│   └─ component.json
-└─ dark/
-    └─ color.json        light을 덮어쓰는 토큰만 둔다
-```
-
-dark 테마는 글로벌 풀세트와 deep-merge되어 빌드된다(뒤쪽 source가 우선). dark에서 override하지 않은 카테고리는 아예 파일을 두지 않으면 된다.
-
-## leaf 토큰 형식
+## 토큰 JSON 형식
 
 ```json
 {
@@ -58,42 +96,55 @@ dark 테마는 글로벌 풀세트와 deep-merge되어 빌드된다(뒤쪽 sourc
 }
 ```
 
-- `value`: 토큰 값. 다른 토큰을 참조하려면 `{path.to.token}` 사용
-- `type`: Tokens Studio 호환 어휘 — `color`, `spacing`, `borderRadius`, `borderWidth`,
-  `fontSizes`, `fontWeights`, `lineHeights`, `letterSpacing`, `fontFamilies`,
-  `typography`, `boxShadow`, `dropShadow`, `innerShadow`, `border`
+- `value`: 토큰 값. 다른 토큰 참조는 `{path.to.token}`
+- `type`: `color`, `spacing`, `borderRadius`, `borderWidth`, `fontSizes`, `fontWeights`, `lineHeights`, `letterSpacing`, `fontFamilies`, `typography`, `boxShadow`, `dropShadow`, `innerShadow`, `border`
 
-새로운 type을 추가하려면 다음 4곳을 함께 갱신해야 한다:
+## 새 테마 추가
 
-1. `src/validate/tokens.ts` → `KNOWN_TYPES`
-2. `src/sd/utils/mapTokenPath.ts` → 해당 type의 카테고리 분기
-3. transforms (필요 시)
-4. tailwind preset 분기 (`src/postprocess/generateTailwindPreset.ts`)
+1. `tokens/{name}/*.json` 폴더에 override 토큰 작성 (light에 없는 키는 무시되거나 누락)
+2. `src/themes.ts`에 한 줄 추가
+   ```ts
+   { name: 'sepia', selector: '[data-theme="sepia"]', sourceDirs: ['light', 'sepia'] }
+   ```
+   `sourceDirs`는 deep-merge 순서 (뒤가 우선). base가 아닌 테마는 보통 `['light', '<name>']`.
+3. `pnpm build:tokens` — namespace 진입점 (`src/.generated/{web,rn}/index.ts`)이 자동 갱신된다.
 
-미등록 type / 미등록 top-level head는 빌드 시 throw 된다. 새 토큰 추가 시 즉시 감지되도록 의도된 가드다.
+첫 번째 항목이 base 테마. 풀세트 토큰을 가져야 한다.
 
-## 토큰 업데이트 방법
+## 새 top-level 키 추가
 
-1. `tokens/{theme}/{category}.json` 편집
-2. 빌드 및 미리보기
+토큰의 path[0]은 카테고리(color / spacing / radius / borderWidth / border / typography / shadow / elevation / component)로 매핑되어야 한다. 매핑은 `src/lib/tokens.ts`의 `HEAD_REWRITE`에 정의된다.
 
-```bash
-pnpm build:design-tokens
-pnpm nx run @berrypjh/demo-web:serve   # /tokens 페이지에서 시각 확인
+새 키(예: `tertiary` 색상)를 도입할 땐 거기에 한 줄 추가한다.
+
+```ts
+tertiary: ['color', 'tertiary'],
 ```
 
-3. 배포
+미등록 키가 토큰에 등장하면 빌드가 즉시 throw — 무음 누락이 발생하지 않는다.
 
-```bash
-pnpm publish:design-tokens
-```
+## Build 타깃
 
-## export 경로
+| nx 타깃 | 명령 | 역할 |
+| --- | --- | --- |
+| `build:tokens` | `tsx src/build.ts` | SD dict → CSS / Web / RN / Tailwind 생성 |
+| `build:ts` | `tsc -p tsconfig.lib.json` | `dist/`로 d.ts·JS 컴파일 |
+| `build` | 위 둘 (`dependsOn`) | 전체 빌드 |
 
-| 경로 | 용도 |
+`dist/`가 배포 대상. `src/.generated/`는 빌드 중간 산출물이며 `tsc`가 함께 컴파일해 `dist/.generated/`로 내보낸다.
+
+### root 스크립트 (workflow shortcut)
+
+| 스크립트 | 역할 |
 | --- | --- |
-| `@berrypjh/design-tokens` | 테마 타입 (`ThemeName`, `Theme` 등) |
-| `@berrypjh/design-tokens/web` | Web 토큰 (`Light`, `Dark`) |
-| `@berrypjh/design-tokens/rn` | React Native 토큰 (`Light`, `Dark`) |
-| `@berrypjh/design-tokens/css` | CSS 변수 파일 (`variables.css`) |
-| `@berrypjh/design-tokens/tailwind` | Tailwind 프리셋 |
+| `pnpm tokens:gen` | 토큰 JSON → CSS / Web / RN / Tailwind (compile 없음, 가장 빠름) |
+| `pnpm tokens:build` | 풀 빌드 (gen + tsc → dist) |
+| `pnpm tokens:watch` | `tokens/**/*.json` 변경 시 자동 regen |
+| `pnpm tokens:lint` | design-tokens lint |
+| `pnpm tokens:clean` | `dist/`, `src/.generated/`, `tsbuildinfo` 정리 |
+
+## Publish
+
+`private: true` 패키지. 직접 publish하지 않고 `react-ui` / `react-native-ui` 빌드 시 d.ts와 CSS로 번들되어 다운스트림에 전달된다. `nx.json`의 `release.projects`에 포함되어 버전·changelog는 함께 생성된다.
+
+`package.json`의 `sideEffects: ["./dist/css/variables.css"]`가 CSS-only import의 tree-shake를 막는다.

@@ -76,6 +76,14 @@
     }
   },
   "background": {
+    "default": {
+      "value": "{neutral.ne900}",
+      "type": "color"
+    },
+    "surface": {
+      "value": "{neutral.ne800}",
+      "type": "color"
+    },
     "dark": {
       "value": "{neutral.ne100}",
       "type": "color"

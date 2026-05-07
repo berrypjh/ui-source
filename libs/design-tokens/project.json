@@ -20,24 +20,7 @@
     "build": {
       "executor": "nx:noop",
       "dependsOn": ["build:tokens", "build:ts"]
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "dependsOn": ["build"],
-      "options": {
-        "command": "cd libs/design-tokens && pnpm publish --registry=https://npm.pkg.github.com"
-      }
-    },
-    "nx-release-publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["build"]
     }
   },
-  "tags": [],
-  "release": {
-    "version": {
-      "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk"
-    }
-  }
+  "tags": ["scope:internal"]
 }
