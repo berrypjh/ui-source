@@ -1,1 +1,0 @@
-export { validateTokenFiles } from './tokens';

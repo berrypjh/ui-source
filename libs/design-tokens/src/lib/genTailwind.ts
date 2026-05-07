@@ -1,0 +1,150 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+import type { TransformedToken } from 'style-dictionary/types';
+
+import { baseTheme } from '../themes';
+
+import type { ThemeBuild } from './sd';
+import { cssVarName, getTokenType } from './tokens';
+
+const PREFIX = 'ds';
+
+/** Tailwind alpha 유틸 호환 색상 표현식 (`rgb(var(--x-rgb) / <alpha-value>)`). */
+const twAlphaColor = (rgbVar: string) => `rgb(var(${rgbVar}) / <alpha-value>)`;
+
+/** CSS 변수 참조식 (`var(--x)`). */
+const twVar = (cssVar: string) => `var(${cssVar})`;
+
+type Flat = {
+  path: string[];
+  type: string;
+  cssVar: string;
+};
+
+/** SD 토큰을 preset 생성에 필요한 최소 필드(path/type/cssVar)로 평탄화. */
+const toFlat = (t: TransformedToken): Flat => ({
+  path: t.path,
+  type: getTokenType(t) ?? 'unknown',
+  cssVar: cssVarName(PREFIX, t.path),
+});
+
+type Rec = Record<string, unknown>;
+
+/** 배열·null이 아닌 평범한 record인지 검사. */
+const isRec = (v: unknown): v is Rec => !!v && typeof v === 'object' && !Array.isArray(v);
+
+/** path를 따라 중첩 record 트리에 값을 설정. 중간 노드가 record가 아니면 새 record로 교체. */
+const setDeep = (obj: Rec, p: string[], value: unknown) => {
+  let cur = obj;
+  for (let i = 0; i < p.length - 1; i++) {
+    const k = p[i];
+    if (!k) return;
+    const existing = cur[k];
+    const child: Rec = isRec(existing) ? existing : {};
+    cur[k] = child;
+    cur = child;
+  }
+  const last = p[p.length - 1];
+  if (last) cur[last] = value;
+};
+
+/** color 토큰만 골라 path 트리에 alpha 호환 색상 표현식을 채운다. */
+const buildColors = (tokens: Flat[]): Rec => {
+  const out: Rec = {};
+  for (const t of tokens) {
+    if (t.type !== 'color') continue;
+    setDeep(out, t.path, twAlphaColor(`${t.cssVar}-rgb`));
+  }
+  return out;
+};
+
+type SimpleMap = Record<string, string>;
+
+/**
+ * path[0]이 `heads` 인 토큰을 평탄 record로 수집.
+ * - dropFirst: head를 키에서 제거 (예: 'sm' vs 'spacing-sm')
+ * - topLevelOnly: path 길이가 정확히 2인 토큰만 (typography composite 제외)
+ */
+const collect = (
+  tokens: Flat[],
+  heads: string | string[],
+  dropFirst: boolean,
+  topLevelOnly = false,
+): SimpleMap => {
+  const set = new Set(Array.isArray(heads) ? heads : [heads]);
+  const out: SimpleMap = {};
+  for (const t of tokens) {
+    if (!set.has(t.path[0])) continue;
+    if (topLevelOnly && t.path.length !== 2) continue;
+    const key = (dropFirst ? t.path.slice(1) : t.path).join('-');
+    out[key] = twVar(t.cssVar);
+  }
+  return out;
+};
+
+/** preset 파일에 들어갈 `const X = {...} as const;` 선언 문자열을 만든다. */
+const tsConst = (name: string, obj: unknown) =>
+  `const ${name} = ${JSON.stringify(obj, null, 2)} as const;\n\n`;
+
+/**
+ * Tailwind preset(`.generated/tailwind/preset.ts`) 생성.
+ * 모든 색상/사이즈는 CSS 변수 참조라 테마 무관 → base 사전만 사용한다.
+ * boxShadow는 expand로 child 변수로 분해되어 단일 변수가 없으므로 비워둔다.
+ */
+export const writeTailwindPreset = async (
+  builds: ThemeBuild[],
+  outFileAbs: string,
+): Promise<void> => {
+  const base = builds.find((b) => b.theme === baseTheme.name);
+  if (!base) throw new Error(`base theme "${baseTheme.name}" not found in builds`);
+  const tokens = base.web.allTokens.map(toFlat);
+
+  const emptyMap: SimpleMap = {};
+
+  const sections = {
+    colors: buildColors(tokens),
+    spacing: collect(tokens, 'spacing', true),
+    borderRadius: collect(tokens, 'radius', true),
+    borderWidth: collect(tokens, ['primitiveBorder', 'semanticBorder'], false),
+    boxShadow: emptyMap,
+    fontFamily: collect(tokens, 'fontFamilies', true, true),
+    fontWeight: collect(tokens, ['fontWeight', 'fontWeights'], true, true),
+    fontSize: collect(tokens, ['fontSize', 'fontSizes'], true, true),
+    lineHeight: collect(tokens, ['lineHeight', 'lineHeights'], true, true),
+    letterSpacing: collect(tokens, 'letterSpacing', true, true),
+  };
+
+  const decls = Object.entries(sections)
+    .map(([name, obj]) => tsConst(name, obj))
+    .join('');
+
+  const presetTs = `/* eslint-disable */
+// AUTO-GENERATED Tailwind preset (uses CSS variables from variables.css)
+
+import type { Config } from 'tailwindcss';
+
+${decls}export const preset = {
+  content: [],
+  theme: {
+    extend: {
+      colors,
+      spacing,
+      borderRadius,
+      borderWidth,
+      boxShadow,
+      fontFamily,
+      fontWeight,
+      fontSize,
+      lineHeight,
+      letterSpacing
+    }
+  }
+} satisfies Config;
+
+export default preset;
+`;
+
+  await fs.mkdir(path.dirname(outFileAbs), { recursive: true });
+  await fs.writeFile(outFileAbs, presetTs, 'utf8');
+};

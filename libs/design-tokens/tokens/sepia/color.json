@@ -1,0 +1,46 @@
+{
+  "background": {
+    "surface": {
+      "value": "{neutral.ne200}",
+      "type": "color"
+    }
+  },
+  "neutral": {
+    "ne100": {
+      "value": "#FAF4E4",
+      "type": "color"
+    },
+    "ne200": {
+      "value": "#F4ECD8",
+      "type": "color"
+    },
+    "ne300": {
+      "value": "#E8DDB9",
+      "type": "color"
+    },
+    "ne400": {
+      "value": "#C9B98F",
+      "type": "color"
+    },
+    "ne500": {
+      "value": "#8C7A5C",
+      "type": "color"
+    },
+    "ne600": {
+      "value": "#6B5C42",
+      "type": "color"
+    },
+    "ne700": {
+      "value": "#4A3F2E",
+      "type": "color"
+    },
+    "ne800": {
+      "value": "#2E2820",
+      "type": "color"
+    },
+    "ne900": {
+      "value": "#1A1610",
+      "type": "color"
+    }
+  }
+}
