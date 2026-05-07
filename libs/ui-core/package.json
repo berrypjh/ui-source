@@ -1,6 +1,7 @@
 {
   "name": "@berrypjh/ui-core",
   "version": "0.0.5",
+  "private": true,
   "type": "module",
   "sideEffects": [
     "./dist/css/index.css"
@@ -14,6 +15,10 @@
       "import": "./dist/index.js"
     },
     "./css": "./dist/css/index.css",
+    "./tailwind": {
+      "types": "./dist/tailwind.d.ts",
+      "import": "./dist/tailwind.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -21,7 +26,7 @@
     "!**/*.tsbuildinfo",
     "!**/*.d.ts.map"
   ],
-  "dependencies": {
+  "devDependencies": {
     "@berrypjh/design-tokens": "workspace:^"
   }
 }
