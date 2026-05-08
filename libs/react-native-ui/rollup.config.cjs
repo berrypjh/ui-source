@@ -8,15 +8,9 @@ module.exports = withNx(
     outputPath: './dist',
     tsConfig: './tsconfig.rollup.json',
     compiler: 'swc',
-    external: [
-      'react/jsx-runtime',
-      'react-native',
-      'react',
-      '@berrypjh/ui-core',
-      '@berrypjh/design-tokens',
-    ],
+    external: ['react/jsx-runtime', 'react-native', 'react'],
     format: ['esm'],
-    assets: [{ input: '.', output: '.', glob: 'README.md' }],
+    assets: [{ input: 'libs/react-native-ui', output: '.', glob: 'README.md' }],
   },
   {
     // Provide additional rollup configuration here. See: https://rollupjs.org/configuration-options

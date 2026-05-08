@@ -1,4 +1,4 @@
-import { useThemeContext } from './ThemeProvider.js';
+import { useThemeContext } from './ThemeProvider';
 
 export const useTheme = () => {
   const theme = useThemeContext();
