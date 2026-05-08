@@ -13,8 +13,6 @@ import type {
 } from './IconButton.types';
 import { getIconButtonClassNames, getLoadingWrapper, isAutoAnchorProps } from './IconButton.utils';
 
-import './icon-button.scss';
-
 export const IconButton = (props: IconButtonRenderableProps) => {
   const generatedId = useId();
 

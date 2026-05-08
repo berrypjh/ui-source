@@ -17,8 +17,6 @@ import {
   isAutoAnchorProps,
 } from './BubbleButton.utils';
 
-import './bubble-button.scss';
-
 export const BubbleButton = (props: BubbleButtonRenderableProps) => {
   const { className, style, icon, label, size = 'md', delay = 0, disabled = false } = props;
 

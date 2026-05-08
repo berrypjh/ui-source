@@ -9,7 +9,7 @@ import type {
   TextFieldProps as CoreTextFieldProps,
 } from '@berrypjh/ui-core';
 
-import type { ChangeEventHandler, ElementType, FocusEventHandler, ReactNode } from 'react';
+import type { ChangeEventHandler, FocusEventHandler } from 'react';
 
 export type {
   CoreFormControlProps,
@@ -26,14 +26,3 @@ export type InputLikeElement = HTMLInputElement | HTMLTextAreaElement | HTMLSele
 
 export type InputLikeFocusEventHandler = FocusEventHandler<InputLikeElement>;
 export type InputLikeChangeEventHandler = ChangeEventHandler<InputLikeElement>;
-
-export type SlotPropsResolver<OwnerState, Props extends Record<string, unknown>> =
-  | Props
-  | ((ownerState: OwnerState) => Props);
-
-export type SlotCommonProps = {
-  className?: string;
-  component?: ElementType;
-  ref?: unknown;
-  children?: ReactNode;
-} & Record<string, unknown>;

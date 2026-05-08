@@ -17,8 +17,6 @@ import {
   hasTextFieldContent,
 } from './TextField.utils';
 
-import './text-field.scss';
-
 export const TextField = ({
   autoComplete,
   autoFocus = false,

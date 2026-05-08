@@ -6,8 +6,6 @@ import { boxClasses } from './Box.constants';
 import type { ReactBoxProps } from './Box.types';
 import { getBoxComputedStyle } from './Box.utils';
 
-import './box.scss';
-
 export const Box = ({
   className,
   style,

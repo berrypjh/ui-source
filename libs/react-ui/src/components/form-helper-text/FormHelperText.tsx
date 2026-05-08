@@ -5,8 +5,6 @@ import { useFormControl } from '../form-control';
 import type { FormHelperTextProps } from './FormHelperText.types';
 import { getFormHelperTextClassNames, getFormHelperTextContent } from './FormHelperText.utils';
 
-import './form-helper-text.scss';
-
 export const FormHelperText = ({
   children,
   className,

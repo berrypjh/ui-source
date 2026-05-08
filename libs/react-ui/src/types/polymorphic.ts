@@ -4,8 +4,6 @@ type MergeProps<BaseProps, OverrideProps> = Omit<BaseProps, keyof OverrideProps>
 
 export type PropsOf<C extends ElementType> = ComponentPropsWithRef<C>;
 
-export type PolymorphicRef<C extends ElementType> = PropsOf<C>['ref'];
-
 export type PolymorphicComponentProps<
   C extends ElementType,
   OwnProps extends object = Record<string, never>,

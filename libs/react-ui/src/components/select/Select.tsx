@@ -29,8 +29,6 @@ import {
   isOptionDisabled,
 } from './Select.utils';
 
-import './select.scss';
-
 export const Select = ({
   'aria-describedby': ariaDescribedby,
   autoFocus = false,

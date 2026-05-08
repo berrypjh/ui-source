@@ -14,8 +14,6 @@ import {
   isAutoAnchorProps,
 } from './Button.utils';
 
-import './button.scss';
-
 export const Button = (props: ButtonRenderableProps) => {
   const labelId = useId();
 

@@ -12,8 +12,6 @@ import {
   isNativeButtonProps,
 } from './ButtonBase.utils';
 
-import './button-base.scss';
-
 export const ButtonBase = (props: ButtonBaseRenderableProps) => {
   if (isNativeButtonProps(props)) {
     const {

@@ -27,8 +27,6 @@ import {
   syncFilledState,
 } from './InputBase.utils';
 
-import './input-base.scss';
-
 export const InputBase = ({
   'aria-describedby': ariaDescribedby,
   autoComplete,
