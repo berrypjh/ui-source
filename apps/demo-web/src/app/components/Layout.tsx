@@ -1,43 +1,32 @@
 import { ReactNode, useState } from 'react';
 
-import { ThemeProvider } from '@berrypjh/react-ui';
+import { ThemeName, ThemeProvider, themes } from '@berrypjh/react-ui';
 
 import { NavLink, useLocation } from 'react-router-dom';
 
-type ThemeMode = 'light' | 'dark';
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-const ThemeToggle = ({ mode, onChange }: { mode: ThemeMode; onChange: (m: ThemeMode) => void }) => (
+const ThemeToggle = ({ mode, onChange }: { mode: ThemeName; onChange: (m: ThemeName) => void }) => (
   <div
     role="group"
     aria-label="Theme"
-    style={{
-      display: 'inline-flex',
-      border: '1px solid #e2e8f0',
-      borderRadius: 8,
-      overflow: 'hidden',
-      background: '#ffffff',
-    }}
+    className="inline-flex border border-stroke-default rounded-lg overflow-hidden bg-background-surface"
   >
-    {(['light', 'dark'] as const).map((m) => {
-      const isActive = mode === m;
+    {themes.map((t) => {
+      const isActive = mode === t.name;
       return (
         <button
-          key={m}
+          key={t.name}
           type="button"
-          onClick={() => onChange(m)}
+          onClick={() => onChange(t.name)}
           aria-pressed={isActive}
-          style={{
-            padding: '6px 12px',
-            fontSize: 13,
-            fontWeight: 500,
-            border: 'none',
-            background: isActive ? '#0f172a' : 'transparent',
-            color: isActive ? '#f8fafc' : '#475569',
-            cursor: 'pointer',
-            transition: 'all 0.15s',
-          }}
+          className={
+            isActive
+              ? 'px-3 py-1.5 text-xs font-medium border-0 cursor-pointer transition-all bg-primary-pr500 text-text-contrastText'
+              : 'px-3 py-1.5 text-xs font-medium border-0 cursor-pointer transition-all bg-transparent text-text-light'
+          }
         >
-          {m === 'light' ? 'Light' : 'Dark'}
+          {capitalize(t.name)}
         </button>
       );
     })}
@@ -68,7 +57,7 @@ const NAV_GROUPS = [
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
-  const [mode, setMode] = useState<ThemeMode>('light');
+  const [mode, setMode] = useState<ThemeName>('light');
 
   return (
     <ThemeProvider
@@ -170,20 +159,19 @@ export const Layout = ({ children }: { children: ReactNode }) => {
         <div style={{ marginLeft: 240, flex: 1, display: 'flex', flexDirection: 'column' }}>
           {/* Top bar */}
           <header
+            className="bg-background-surface border-b border-stroke-default"
             style={{
               height: 56,
-              borderBottom: '1px solid #e2e8f0',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '0 32px',
-              background: '#ffffff',
               position: 'sticky',
               top: 0,
               zIndex: 50,
             }}
           >
-            <span style={{ fontSize: 14, color: '#64748b' }}>
+            <span className="text-text-light text-sm">
               {location.pathname === '/'
                 ? 'Getting Started'
                 : location.pathname
@@ -195,8 +183,11 @@ export const Layout = ({ children }: { children: ReactNode }) => {
             <ThemeToggle mode={mode} onChange={setMode} />
           </header>
 
-          {/* Content */}
-          <main style={{ flex: 1, background: '#f8fafc', padding: '40px 48px', minHeight: 0 }}>
+          {/* Content — 페이지 메인 배경. Tailwind 클래스로 토큰 사용. light/dark/sepia에서 자동 변환 */}
+          <main
+            className="bg-background-default text-text-default"
+            style={{ flex: 1, padding: '40px 48px', minHeight: 0 }}
+          >
             {children}
           </main>
         </div>

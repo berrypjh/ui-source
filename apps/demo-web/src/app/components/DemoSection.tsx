@@ -7,23 +7,10 @@ interface DemoSectionProps {
 }
 
 export const DemoSection = ({ title, description, children }: DemoSectionProps) => (
-  <div style={{ marginBottom: 48 }}>
-    <h2 style={{ fontSize: 20, fontWeight: 600, color: '#0f172a', margin: '0 0 4px' }}>{title}</h2>
-    {description && (
-      <p style={{ fontSize: 14, color: '#64748b', margin: '0 0 20px' }}>{description}</p>
-    )}
-    <div
-      style={{
-        background: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: 12,
-        padding: 32,
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 16,
-        alignItems: 'center',
-      }}
-    >
+  <div className="mb-12">
+    <h2 className="text-text-default text-xl font-semibold mb-1">{title}</h2>
+    {description && <p className="text-text-light text-sm mb-5">{description}</p>}
+    <div className="bg-background-surface border border-stroke-default rounded-xl p-8 flex flex-wrap gap-4 items-center">
       {children}
     </div>
   </div>
@@ -36,51 +23,20 @@ interface PageHeaderProps {
 }
 
 export const PageHeader = ({ title, description, badge }: PageHeaderProps) => (
-  <div style={{ marginBottom: 40 }}>
+  <div className="mb-10">
     {badge && (
-      <span
-        style={{
-          display: 'inline-block',
-          padding: '2px 10px',
-          background: '#ede9fe',
-          color: '#6d28d9',
-          borderRadius: 20,
-          fontSize: 12,
-          fontWeight: 600,
-          marginBottom: 12,
-        }}
-      >
+      <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold mb-3 bg-primary-pr100 text-primary-pr700">
         {badge}
       </span>
     )}
-    <h1
-      style={{
-        fontSize: 32,
-        fontWeight: 700,
-        color: '#0f172a',
-        margin: '0 0 10px',
-        letterSpacing: '-0.5px',
-      }}
-    >
-      {title}
-    </h1>
-    <p style={{ fontSize: 16, color: '#64748b', margin: 0, maxWidth: 600 }}>{description}</p>
-    <div style={{ height: 1, background: '#e2e8f0', marginTop: 32 }} />
+    <h1 className="text-text-default text-3xl font-bold tracking-tight mb-2.5">{title}</h1>
+    <p className="text-text-light text-base max-w-[600px]">{description}</p>
+    <div className="h-px bg-stroke-default mt-8" />
   </div>
 );
 
 export const PropTag = ({ children }: { children: ReactNode }) => (
-  <code
-    style={{
-      display: 'inline-block',
-      padding: '1px 6px',
-      background: '#f1f5f9',
-      color: '#334155',
-      borderRadius: 4,
-      fontSize: 12,
-      fontFamily: 'monospace',
-    }}
-  >
+  <code className="inline-block px-1.5 py-0.5 rounded text-xs font-mono bg-background-default text-text-default">
     {children}
   </code>
 );
