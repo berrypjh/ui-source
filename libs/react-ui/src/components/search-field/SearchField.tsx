@@ -23,8 +23,6 @@ import type {
 } from './SearchField.types';
 import { getMergedInputProps, getSuggestionValue, isSuggestionSelected } from './SearchField.utils';
 
-import './search-field.scss';
-
 export const SearchField = ({
   className,
   defaultValue,

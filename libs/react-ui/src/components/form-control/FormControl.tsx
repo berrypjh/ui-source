@@ -6,8 +6,6 @@ import type { FormControlImplementationProps } from './FormControl.types';
 import { deriveStateFromChildren, getFormControlClassNames } from './FormControl.utils';
 import { FormControlContext } from './FormControlContext';
 
-import './form-control.scss';
-
 export const FormControl = (props: FormControlImplementationProps) => {
   const {
     children,

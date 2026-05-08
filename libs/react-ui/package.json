@@ -12,7 +12,11 @@
       "import": "./dist/index.esm.js",
       "default": "./dist/index.esm.js"
     },
-    "./styles.css": "./dist/index.css"
+    "./styles.css": "./dist/index.css",
+    "./tailwind": {
+      "types": "./dist/tailwind.d.ts",
+      "import": "./dist/tailwind.js"
+    }
   },
   "main": "./dist/index.esm.js",
   "types": "./dist/types/index.d.ts",
@@ -23,10 +27,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
-  "dependencies": {
-    "@berrypjh/ui-core": "workspace:^"
-  },
   "devDependencies": {
+    "@berrypjh/ui-core": "workspace:^",
     "rollup-plugin-postcss": "^4.0.2",
     "sass": "^1.97.3"
   }
