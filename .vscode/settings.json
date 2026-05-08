@@ -1,0 +1,62 @@
+{
+  // ───────────── 저장 시 동작 ─────────────
+  // Prettier가 포맷, ESLint가 코드 액션(자동 수정) 담당
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // ───────────── 언어별 formatter ─────────────
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[scss]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[yaml]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  // ───────────── Prettier ─────────────
+  // .prettierrc·.prettierignore가 있을 때만 포맷 (모노레포 외부 파일 보호)
+  "prettier.requireConfig": true,
+
+  // ───────────── ESLint ─────────────
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  // ───────────── CSS lint ─────────────
+  // Tailwind v4의 @config, @apply 등은 VS Code 내장 CSS validator가 인식 못함
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+
+  // ───────────── 인덱싱·검색 제외 ─────────────
+  // .prettierignore의 빌드 산출물·캐시 경로와 동기화
+  "search.exclude": {
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/.nx": true,
+    "**/.cache": true,
+    "**/tmp": true,
+    "**/out": true,
+    "**/out-tsc": true,
+    "**/.next": true,
+    "**/.storybook-static": true,
+    "**/pnpm-lock.yaml": true,
+    "**/*.log": true
+  },
+  "files.watcherExclude": {
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/coverage/**": true,
+    "**/.nx/**": true,
+    "**/.cache/**": true,
+    "**/tmp/**": true,
+    "**/out/**": true,
+    "**/out-tsc/**": true,
+    "**/.next/**": true,
+    "**/.storybook-static/**": true
+  }
+}
