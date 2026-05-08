@@ -6,6 +6,7 @@
     "eas-build-post-install": "cd ../../ && node tools/scripts/eas-build-post-install.mjs . apps/demo-mobile"
   },
   "dependencies": {
+    "@berrypjh/react-native-ui": "workspace:*",
     "@expo/metro-config": "*",
     "@testing-library/react-native": "*",
     "expo": "*",
