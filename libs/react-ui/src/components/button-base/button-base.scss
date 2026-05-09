@@ -52,8 +52,8 @@ $colors: (
     text-focus-halo: var(--ds-primary-btn-focus-ripple),
   ),
   secondary: (
-    solid-bg: var(--ds-secondary-se500),
-    solid-bg-hover: var(--ds-secondary-se700),
+    solid-bg: var(--ds-secondary-se700),
+    solid-bg-hover: var(--ds-secondary-se800),
     solid-bg-disabled: var(--ds-neutral-ne300),
     solid-fg: var(--ds-text-contrast-text),
     solid-focus-halo: var(--ds-secondary-se100),
@@ -66,8 +66,8 @@ $colors: (
     text-focus-halo: var(--ds-secondary-se100),
   ),
   error: (
-    solid-bg: var(--ds-error-er600),
-    solid-bg-hover: var(--ds-error-er700),
+    solid-bg: var(--ds-error-er700),
+    solid-bg-hover: var(--ds-error-er800),
     solid-bg-disabled: var(--ds-neutral-ne300),
     solid-fg: var(--ds-text-contrast-text),
     solid-focus-halo: var(--ds-error-er100),

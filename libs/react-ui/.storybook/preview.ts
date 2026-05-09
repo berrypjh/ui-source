@@ -28,6 +28,7 @@ const preview: Preview = {
         items: [
           { value: 'light', title: 'Light' },
           { value: 'dark', title: 'Dark' },
+          { value: 'sepia', title: 'Sepia' },
         ],
         dynamicTitle: true,
       },
@@ -59,7 +60,7 @@ const preview: Preview = {
         return content;
       }
 
-      const mode = context.globals.themeMode === 'dark' ? 'dark' : 'light';
+      const mode = context.globals.themeMode;
 
       return createElement(ThemeProvider, { mode, children: content });
     },

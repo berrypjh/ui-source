@@ -1,6 +1,8 @@
 {
   "extends": "../../tsconfig.lib.base.json",
   "compilerOptions": {
+    "outDir": "out-tsc",
+    "tsBuildInfoFile": "out-tsc/tsconfig.lib.tsbuildinfo",
     "lib": ["es2022", "dom"],
     "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"],
     "module": "esnext",

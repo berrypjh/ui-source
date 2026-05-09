@@ -1,15 +1,21 @@
-// 모든 컴포넌트의 SCSS를 한 곳에 모아 dist/index.css로 추출.
+// 공유 base(selector·CSS 변수 정의)는 이를 덮는 컴포넌트보다 먼저 로드되어야 cascade가 의도대로 동작.
+// 알파벳 정렬 시 base가 뒤로 가서 소비자 컴포넌트를 덮어버리는 회귀가 발생하므로 수동 정렬을 유지함.
+/* eslint-disable simple-import-sort/imports */
+
+// 1. 공유 base
+import './components/button-base/button-base.scss';
+import './components/input-base/input-base.scss';
+
+// 2. 나머지 컴포넌트 (알파벳 순)
 import './components/box/box.scss';
 import './components/boxed-input/boxed-input.scss';
 import './components/bubble-button/bubble-button.scss';
-import './components/button-base/button-base.scss';
 import './components/button/button.scss';
 import './components/fab/fab.scss';
 import './components/filled-input/filled-input.scss';
 import './components/form-control/form-control.scss';
 import './components/form-helper-text/form-helper-text.scss';
 import './components/icon-button/icon-button.scss';
-import './components/input-base/input-base.scss';
 import './components/input-label/input-label.scss';
 import './components/plain-input/plain-input.scss';
 import './components/search-field/search-field.scss';
