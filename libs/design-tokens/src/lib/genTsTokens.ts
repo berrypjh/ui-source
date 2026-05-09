@@ -4,7 +4,7 @@ import path from 'node:path';
 import type { Dictionary } from 'style-dictionary/types';
 
 import type { ThemeBuild } from './sd';
-import { classifyTokenPath, TOKEN_CATEGORIES } from './tokens';
+import { classifyTokenPath, getTokenValue, TOKEN_CATEGORIES } from './tokens';
 
 type Rec = Record<string, unknown>;
 
@@ -33,7 +33,7 @@ const groupedTokensJson = (dict: Dictionary): string => {
     a.path.join('.').localeCompare(b.path.join('.')),
   );
   for (const t of tokens) {
-    setDeep(root, classifyTokenPath(t.path), t.value);
+    setDeep(root, classifyTokenPath(t.path), getTokenValue(t));
   }
   return JSON.stringify(root, null, 2);
 };

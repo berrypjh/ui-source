@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import type { TransformedToken } from 'style-dictionary/types';
 
 import type { ThemeBuild } from './sd';
-import { classifyTokenPath, cssVarName } from './tokens';
+import { classifyTokenPath, cssVarName, getTokenValue } from './tokens';
 
 const PREFIX = 'ds';
 
@@ -23,7 +23,7 @@ const collectItems = (
       if (!items[id]) {
         items[id] = { cssVar: cssVarName(PREFIX, t.path), values: {} };
       }
-      items[id].values[build.theme] = t.value;
+      items[id].values[build.theme] = getTokenValue(t);
     }
   }
   return { items, categories, themeOrder };

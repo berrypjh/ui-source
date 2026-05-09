@@ -6,6 +6,7 @@
 - `Web.*`/`Native.*` namespace 구조와 `tokens.{category}.{...}` 트리는 **공개 API**. 다운스트림(ui-core)이 의존.
 - `themes` 배열의 **첫 항목이 base** (light). 풀세트 토큰을 가짐. 다른 테마는 override.
 - 미등록 토큰 head는 **즉시 throw** — 무음 누락 금지.
+- **토큰 JSON은 DTCG 형식**(`$value`/`$type`)을 사용. type 어휘는 Tokens Studio 플러랄(`fontSizes`/`boxShadow` 등)을 유지하며 sd-transforms 전처리기가 DTCG 정렬 타입으로 자동 변환. 한 SD 인스턴스 안에서 legacy(`value`)와 DTCG는 섞을 수 없음.
 
 ## 파일 (전부)
 
@@ -17,10 +18,12 @@ src/
   web.ts/rn.ts/tailwind.ts   .generated/ → public 진입점
   lib/
     sd.ts           Style Dictionary 등록 + buildThemeDictionaries (web/rn 두 dict)
-    tokens.ts       getTokenType / cssVarName / colorToRgbChannels / classifyTokenPath / TOKEN_CATEGORIES
+    tokens.ts       getTokenType / getTokenValue / cssVarName / colorToRgbChannels / classifyTokenPath / TOKEN_CATEGORIES
     genCss.ts       writeCss → dist/css/variables{,.<theme>}.css
     genTsTokens.ts  writeTsTokens → src/.generated/{web,rn}/themes/<t>/tokens.ts + index.ts
     genTailwind.ts  writeTailwindPreset → src/.generated/tailwind/preset.ts
+    genCatalog.ts   writeTokensJson → dist/tokens.json (슬림 평탄 카탈로그)
+    genAgents.ts    writeAgents → dist/AGENTS.md (npm 소비자용)
 tokens/
   light/   base 풀세트 (color/typography/spacing/radius/borderWidth/border/shadow/elevation/component)
   dark/, sepia/   light 위 override
