@@ -159,8 +159,12 @@
     },
     "typecheck": {
       "cache": true,
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^typecheck"],
       "inputs": ["default", "^default"]
+    },
+    "build-storybook": {
+      "cache": true,
+      "dependsOn": ["^build"]
     },
     "test": {
       "cache": true,
