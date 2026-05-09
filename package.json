@@ -12,6 +12,7 @@
     "build:apps": "nx run-many -t build --projects=@berrypjh/demo-web,@berrypjh/demo-mobile",
     "build:commit-mcp": "nx run commit-mcp:build",
     "build-storybook": "nx build-storybook @berrypjh/react-ui",
+    "storybook:a11y": "concurrently -k -s first -n SB,A11Y \"http-server libs/react-ui/storybook-static -p 6006 --silent\" \"wait-on tcp:6006 && test-storybook --url http://localhost:6006 --config-dir libs/react-ui/.storybook\"",
     "tokens:gen": "nx run @berrypjh/design-tokens:build:tokens",
     "tokens:build": "nx run @berrypjh/design-tokens:build",
     "tokens:watch": "nx watch --projects=@berrypjh/design-tokens -- nx run @berrypjh/design-tokens:build:tokens",
@@ -74,10 +75,11 @@
     "@storybook/addon-docs": "^10.2.19",
     "@storybook/react": "10.2.19",
     "@storybook/react-vite": "10.2.19",
+    "@storybook/test-runner": "0.24.3",
     "@svgr/rollup": "^8.1.0",
     "@swc-node/register": "~1.9.1",
     "@swc/cli": "~0.6.0",
-    "@swc/core": "~1.5.7",
+    "@swc/core": "~1.15.33",
     "@swc/helpers": "~0.5.11",
     "@tailwindcss/postcss": "4.2.4",
     "@testing-library/dom": "10.4.0",
@@ -91,8 +93,10 @@
     "@vitejs/plugin-react": "^4.2.0",
     "@vitest/coverage-v8": "^4.0.0",
     "@vitest/ui": "^4.0.0",
+    "axe-playwright": "2.2.2",
     "babel-preset-expo": "~54.0.7",
     "chromatic": "^16.5.0",
+    "concurrently": "9.2.1",
     "core-js": "^3.36.1",
     "dts-bundle-generator": "^9.5.1",
     "eslint": "^9.8.0",
@@ -105,6 +109,7 @@
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "eslint-plugin-storybook": "^10.2.19",
     "eslint-plugin-unused-imports": "^4.4.1",
+    "http-server": "14.1.1",
     "husky": "^8.0.0",
     "jiti": "2.4.2",
     "jsdom": "^27.1.0",
@@ -131,7 +136,8 @@
     "verdaccio": "^6.0.5",
     "vite": "^7.0.0",
     "vite-plugin-dts": "~4.5.0",
-    "vitest": "^4.0.0"
+    "vitest": "^4.0.0",
+    "wait-on": "9.0.5"
   },
   "dependencies": {
     "@expo/metro-config": "~54.0.9",
@@ -154,6 +160,11 @@
     "*.{json,jsonc,css,scss,md,mdx,yaml,yml}": [
       "prettier --write"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "@swc/core": "^1.15.0"
+    }
   },
   "nx": {
     "includedScripts": [],
