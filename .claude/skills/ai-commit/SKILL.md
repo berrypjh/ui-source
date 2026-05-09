@@ -28,7 +28,10 @@ disable-model-invocation: true
 scope 선택은 사용자가 `git add`로 직접 제어한다. skill은 scope 인자를 받지 않는다.
 
 - 인자 없음: 모든 staged scope를 일반(patch/minor) commit 흐름으로 처리한다.
-- `major`: 이번 호출의 모든 commit에 BREAKING CHANGE footer 처리 흐름을 적용한다.
+- `major`: 이번 호출의 **published library scope** commit에만 BREAKING CHANGE footer 처리 흐름을 적용한다.
+  - published library scope = `libs/*`의 두 번째 path 세그먼트 (현재: `design-tokens`, `ui-core`, `react-ui`, `react-native-ui`)
+  - `root`, `apps/*`(예: `demo-web`, `demo-mobile`, `demo-web-e2e`), `scripts` 등 그 외 scope는 `major` 인자가 있어도 일반 흐름으로 처리한다.
+  - staged scope 중 library scope가 하나도 없으면 `major` 인자가 무시된다는 사실을 한 번 알리고 일반 흐름으로 진행한다.
   - 같은 메시지에 `BREAKING CHANGE: <본문>` 형식의 footer 본문이 함께 있으면 그 본문을 그대로 사용한다.
   - 본문이 없으면 사용자에게 마이그레이션 가이드를 묻고, 응답을 받기 전까지 commit하지 않는다.
   - 합성된 commit 메시지(title + body + footer) 전체를 사용자에게 다시 보여주고 별도 승인(`y`)을 받는다.
@@ -42,12 +45,16 @@ scope 선택은 사용자가 `git add`로 직접 제어한다. skill은 scope �
 3. 각 staged scope마다 `get_scope_details` tool을 호출한다.
 4. 각 scope에 대해 커밋 메시지를 제안한다.
    - title 형식: `type(scope): 설명`
-   - type은 영어 (`feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`, `build`, `ci`)
-   - scope는 MCP가 반환한 값 그대로 사용한다
+   - type은 영어 lower-case (`feat`, `fix`, `refactor`, `docs`, `design`, `style`, `test`, `chore`, `build`, `ci`, `revert`)
+   - scope는 MCP가 반환한 값 그대로 사용한다 (lower-case 유지)
    - 설명은 한국어로 작성한다
    - body는 최대 3줄
    - rename / delete / copy / 공통화 / 구조 정리가 핵심이면 body에서 반드시 언급한다
-   - `major` 인자가 있으면 위 BREAKING CHANGE footer 처리 절차를 함께 따른다
+   - 글자 수 제한 (commitlint hard limit — 위반 시 commit 차단)
+     - title: 100자 이내 (`header-max-length`)
+     - footer 각 줄: 100자 이내 (`footer-max-line-length`) — BREAKING CHANGE 본문이 길면 줄바꿈으로 wrap
+     - body: 제한 없음(프로젝트 override) 이지만 가독성을 위해 100자 이내 권장
+   - `major` 인자가 있고 scope가 published library(`libs/*`)일 때만 위 BREAKING CHANGE footer 처리 절차를 함께 따른다
 5. 반드시 사용자 승인 후에만 `commit_scope` tool을 호출한다.
    - 승인 전에는 절대 커밋하지 않는다.
 6. 여러 scope가 있으면 한 번에 전부 commit하지 말고, scope별로 순서대로 승인받고 진행한다.
@@ -87,5 +94,5 @@ scope 선택은 사용자가 `git add`로 직접 제어한다. skill은 scope �
 - body가 불필요하면 비워도 되지만, rename/refactor 성격이 강하면 body를 넣는다.
 - 사용자가 "본문 없이"를 원하면 title만 사용한다.
 - 사용자가 여러 scope를 한 번에 묶어달라고 명시하지 않은 이상, scope별 개별 커밋을 유지한다.
-- BREAKING CHANGE footer는 사용자가 `major` 인자로 명시적으로 요청한 경우에만 추가한다. LLM이 자체 판단으로 footer를 제안하거나 추가하지 않는다.
+- BREAKING CHANGE footer는 사용자가 `major` 인자로 명시적으로 요청하고 scope가 published library(`libs/*`)일 때만 추가한다. LLM이 자체 판단으로 footer를 제안하거나 추가하지 않는다.
 - title은 `feat(scope): ...` 같은 형식만 허용한다. `feat!:` 등 헤더 `!` 표기는 commitlint(`no-header-bang`)가 차단하므로 사용하지 않는다.
