@@ -88,3 +88,21 @@ body
 - 미래 계획 언급
 - "최적화", "개선", "정리"만 있고 대상이 없는 제목
 - scope 임의 변경
+
+## BREAKING CHANGE 표기 (`/ai-commit major` 사용 시에만)
+
+- 평소에는 절대 추가하지 않는다. 사용자가 `major` 인자로 명시적으로 요청한 호출에서만 처리한다.
+- title은 일반 conventional commit 그대로 사용한다. `feat!:`, `fix!:` 등 헤더 `!` 표기는 commitlint가 차단하므로 사용하지 않는다.
+- body 마지막 단락에 빈 줄 한 행을 둔 뒤 `BREAKING CHANGE: <마이그레이션 가이드>` footer를 작성한다.
+- footer 본문은 사용자가 제공한 텍스트를 그대로 사용한다. LLM이 추측해서 작성하지 않는다.
+
+좋은 예:
+
+```
+feat(react-ui): ThemeProvider API 정리
+
+기존 mode prop을 제거하고 theme prop으로 통합한다.
+
+BREAKING CHANGE: ThemeProvider의 mode prop이 theme prop으로 이름 변경됨.
+기존 사용처는 theme={mode}로 마이그레이션 필요.
+```

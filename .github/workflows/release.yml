@@ -37,7 +37,7 @@ jobs:
           node-version: ${{ vars.NODE_VERSION }}
           cache: pnpm
           registry-url: https://npm.pkg.github.com
-          scope: '@${{ github.repository_owner }}'
+          scope: "@${{ github.repository_owner }}"
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -48,6 +48,8 @@ jobs:
         run: |
           git config user.name "${{ vars.RELEASE_GIT_NAME }}"
           git config user.email "${{ vars.RELEASE_GIT_EMAIL }}"
+          # CI에서는 husky hooks(보호 브랜치 차단)를 명시적으로 무력화
+          git config core.hooksPath /dev/null
 
       # Beta 배포
       - name: NX Release (Beta)
