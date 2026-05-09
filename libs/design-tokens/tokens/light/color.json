@@ -1,14 +1,14 @@
 {
   "primary": {
-    "pr100": { "$value": "#D1E9FF", "$type": "color" },
-    "pr200": { "$value": "#B2DDFF", "$type": "color" },
-    "pr300": { "$value": "#84CAFF", "$type": "color" },
-    "pr400": { "$value": "#53B1FD", "$type": "color" },
-    "pr500": { "$value": "#2E90FA", "$type": "color" },
-    "pr600": { "$value": "#1570EF", "$type": "color" },
-    "pr700": { "$value": "#175CD3", "$type": "color" },
-    "pr800": { "$value": "#1849A9", "$type": "color" },
-    "pr900": { "$value": "#002C82", "$type": "color" }
+    "pr100": { "$value": "#D1FAE5", "$type": "color" },
+    "pr200": { "$value": "#A7F3D0", "$type": "color" },
+    "pr300": { "$value": "#6EE7B7", "$type": "color" },
+    "pr400": { "$value": "#34D399", "$type": "color" },
+    "pr500": { "$value": "#10B981", "$type": "color" },
+    "pr600": { "$value": "#059669", "$type": "color" },
+    "pr700": { "$value": "#047857", "$type": "color" },
+    "pr800": { "$value": "#065F46", "$type": "color" },
+    "pr900": { "$value": "#064E3B", "$type": "color" }
   },
   "secondary": {
     "se100": { "$value": "#F4E3CC", "$type": "color" },
@@ -66,11 +66,11 @@
     "er900": { "$value": "#7A271A", "$type": "color" }
   },
   "primaryBtn": {
-    "default": { "$value": "{primary.pr500}", "$type": "color" },
-    "hover": { "$value": "{primary.pr700}", "$type": "color" },
+    "default": { "$value": "{primary.pr700}", "$type": "color" },
+    "hover": { "$value": "{primary.pr800}", "$type": "color" },
     "disabled": { "$value": "{neutral.ne300}", "$type": "color" },
     "focusRipple": { "$value": "{neutral.ne100}", "$type": "color" },
-    "outlinedFocusRipple": { "$value": "{primary.pr600}", "$type": "color" },
+    "outlinedFocusRipple": { "$value": "{primary.pr700}", "$type": "color" },
     "outlinedHover": { "$value": "{primary.pr100}", "$type": "color" }
   },
   "text": {
@@ -78,25 +78,25 @@
     "light": { "$value": "{neutral.ne500}", "$type": "color" },
     "placeholder": { "$value": "{neutral.ne400}", "$type": "color" },
     "disable": { "$value": "{neutral.ne400}", "$type": "color" },
-    "primary": { "$value": "{primary.pr500}", "$type": "color" },
-    "secondary": { "$value": "{secondary.se500}", "$type": "color" },
-    "error": { "$value": "{error.er500}", "$type": "color" },
-    "warning": { "$value": "{warning.wa500}", "$type": "color" },
-    "link": { "$value": "{primary.pr500}", "$type": "color" },
+    "primary": { "$value": "{primary.pr700}", "$type": "color" },
+    "secondary": { "$value": "{secondary.se600}", "$type": "color" },
+    "error": { "$value": "{error.er600}", "$type": "color" },
+    "warning": { "$value": "{warning.wa700}", "$type": "color" },
+    "link": { "$value": "{primary.pr700}", "$type": "color" },
     "linkSelected": { "$value": "{primary.pr900}", "$type": "color" },
     "contrastText": { "$value": "{neutral.ne100}", "$type": "color" },
-    "success": { "$value": "{success.su500}", "$type": "color" }
+    "success": { "$value": "{success.su700}", "$type": "color" }
   },
   "background": {
     "default": { "$value": "{neutral.ne100}", "$type": "color" },
     "surface": { "$value": "#FFFFFF", "$type": "color" },
     "dark": { "$value": "{neutral.ne900}", "$type": "color" },
     "placeholder": { "$value": "{text.placeholder}", "$type": "color" },
-    "primary": { "$value": "{primary.pr600}", "$type": "color" },
-    "secondary": { "$value": "{secondary.se600}", "$type": "color" },
-    "error": { "$value": "{error.er600}", "$type": "color" },
-    "warning": { "$value": "{warning.wa600}", "$type": "color" },
-    "success": { "$value": "{success.su600}", "$type": "color" },
+    "primary": { "$value": "{primary.pr700}", "$type": "color" },
+    "secondary": { "$value": "{secondary.se700}", "$type": "color" },
+    "error": { "$value": "{error.er700}", "$type": "color" },
+    "warning": { "$value": "{warning.wa700}", "$type": "color" },
+    "success": { "$value": "{success.su700}", "$type": "color" },
     "grey": { "$value": "{neutral.ne400}", "$type": "color" },
     "disable": { "$value": "{text.disable}", "$type": "color" }
   },
