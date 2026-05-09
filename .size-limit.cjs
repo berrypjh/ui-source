@@ -36,10 +36,10 @@ module.exports = [
   reactUi('Web tokens (Light)', '{ Web }', '13 KB'),
   reactUi('* (full)', '*', '14 KB'),
 
-  // react-native-ui — 트리셰이킹 우수 (사용한 만큼만 들어감)
-  reactNativeUi('themes registry only', '{ themes }', '200 B'),
-  reactNativeUi('getColor only', '{ getColor }', '500 B'),
-  reactNativeUi('Box only', '{ Box }', '2 KB'),
+  // react-native-ui — 단일 import도 theme/styles 모듈 evaluate로 약 1.8~3 KB가 들어감
+  reactNativeUi('themes registry only', '{ themes }', '2.2 KB'),
+  reactNativeUi('getColor only', '{ getColor }', '2.6 KB'),
+  reactNativeUi('Box only', '{ Box }', '3.6 KB'),
   reactNativeUi('Native tokens (Light)', '{ Native }', '3 KB'),
   reactNativeUi('* (full)', '*', '6 KB'),
 ];
