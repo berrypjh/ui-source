@@ -79,7 +79,7 @@
     "placeholder": { "$value": "{neutral.ne400}", "$type": "color" },
     "disable": { "$value": "{neutral.ne400}", "$type": "color" },
     "primary": { "$value": "{primary.pr700}", "$type": "color" },
-    "secondary": { "$value": "{secondary.se600}", "$type": "color" },
+    "secondary": { "$value": "{secondary.se700}", "$type": "color" },
     "error": { "$value": "{error.er600}", "$type": "color" },
     "warning": { "$value": "{warning.wa700}", "$type": "color" },
     "link": { "$value": "{primary.pr700}", "$type": "color" },
