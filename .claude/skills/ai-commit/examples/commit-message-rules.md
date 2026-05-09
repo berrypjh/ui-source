@@ -14,11 +14,27 @@
 - `fix`: 버그 수정
 - `refactor`: 동작 변화 없이 구조 개선
 - `docs`: 문서 수정
+- `design`: 시각적 디자인/스타일 토큰 변경 (프로젝트 허용 type)
 - `style`: 포맷/스타일만 수정
 - `test`: 테스트 추가/수정
 - `chore`: 설정, 스크립트, 유지보수성 변경
 - `build`: 빌드 관련 변경
 - `ci`: CI/CD 관련 변경
+- `revert`: 이전 commit revert (프로젝트 허용 type)
+
+## 길이 제한 (commitlint hard limit)
+
+위반하면 commit이 차단된다. 메시지를 제안할 때 미리 맞춰서 작성한다.
+
+| 위치             | 제한                                    | 출처                                                |
+| ---------------- | --------------------------------------- | --------------------------------------------------- |
+| title (header)   | 100자 이내                              | `header-max-length` (config-conventional 기본)      |
+| footer 각 줄     | 100자 이내                              | `footer-max-line-length` (config-conventional 기본) |
+| body 각 줄       | 제한 없음 (가독성 위해 100자 이내 권장) | 프로젝트 override (`body-max-line-length: 0`)       |
+| header `!:` 표기 | 금지 — `feat!:` 사용 X                  | 프로젝트 custom rule `no-header-bang`               |
+| type/scope case  | lower-case 필수                         | config-conventional 기본                            |
+
+특히 BREAKING CHANGE footer 본문은 한 줄에 길게 쓰면 commitlint가 차단한다. 한국어 한 글자도 1자로 카운트되므로 마이그레이션 가이드 본문은 적절히 줄바꿈해야 한다.
 
 ## 제목 작성 규칙
 
@@ -91,7 +107,8 @@ body
 
 ## BREAKING CHANGE 표기 (`/ai-commit major` 사용 시에만)
 
-- 평소에는 절대 추가하지 않는다. 사용자가 `major` 인자로 명시적으로 요청한 호출에서만 처리한다.
+- 평소에는 절대 추가하지 않는다. 사용자가 `major` 인자로 명시적으로 요청하고, **scope가 published library(`libs/*`)일 때만** 처리한다.
+- `root`, `apps/*`, `scripts` 등 비-library scope는 `major` 인자가 있어도 일반 흐름으로 commit한다.
 - title은 일반 conventional commit 그대로 사용한다. `feat!:`, `fix!:` 등 헤더 `!` 표기는 commitlint가 차단하므로 사용하지 않는다.
 - body 마지막 단락에 빈 줄 한 행을 둔 뒤 `BREAKING CHANGE: <마이그레이션 가이드>` footer를 작성한다.
 - footer 본문은 사용자가 제공한 텍스트를 그대로 사용한다. LLM이 추측해서 작성하지 않는다.
