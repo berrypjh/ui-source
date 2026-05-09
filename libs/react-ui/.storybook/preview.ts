@@ -1,4 +1,5 @@
 import '@berrypjh/ui-core/css';
+import '../src/styles';
 
 import { createElement } from 'react';
 
