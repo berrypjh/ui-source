@@ -3,12 +3,12 @@ import { getToken } from './getToken';
 
 const tokens = {
   color: {
-    primary: { value: '#0000FF', type: 'color' },
-    neutral: { value: '#888888', type: 'color' },
+    primary: '#0000FF',
+    neutral: '#888888',
   },
   spacing: {
-    sm: { value: '8px', type: 'dimension' },
-    md: { value: '16px', type: 'dimension' },
+    sm: '8px',
+    md: '16px',
   },
 };
 
@@ -17,17 +17,13 @@ describe('getToken', () => {
     expect(getToken(tokens, 'color' as any)).toBe(tokens.color);
   });
 
-  it('중첩 경로에서 값을 읽는다', () => {
-    expect(getToken(tokens, 'color.primary')).toBe(tokens.color.primary);
-  });
-
-  it('깊은 중첩 경로에서 leaf 값을 읽는다', () => {
-    expect(getToken(tokens, 'color.primary.value' as any)).toBe('#0000FF');
+  it('leaf 값을 읽는다', () => {
+    expect(getToken(tokens, 'color.primary')).toBe('#0000FF');
   });
 
   it('서로 다른 top-level 키를 구분해 읽는다', () => {
-    expect(getToken(tokens, 'spacing.sm.value' as any)).toBe('8px');
-    expect(getToken(tokens, 'spacing.md.value' as any)).toBe('16px');
+    expect(getToken(tokens, 'spacing.sm')).toBe('8px');
+    expect(getToken(tokens, 'spacing.md')).toBe('16px');
   });
 
   it('존재하지 않는 경로는 undefined를 반환한다', () => {

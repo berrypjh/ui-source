@@ -1,8 +1,8 @@
 import { createTheme } from './theme';
 
 const mockTokens = {
-  color: { primary: { value: '#0000FF' } },
-  spacing: { sm: { value: 8 } },
+  color: { primary: '#0000FF' },
+  spacing: { sm: 8 },
 };
 
 describe('createTheme', () => {
