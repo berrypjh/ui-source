@@ -8,13 +8,13 @@
 
 ## 기술 스택
 
-| 분류 | 기술 |
-| --- | --- |
-| **Monorepo & Build** | ![Nx](https://img.shields.io/badge/Nx-143055?style=flat-square&logo=nx&logoColor=white) ![pnpm](https://img.shields.io/badge/pnpm-F69220?style=flat-square&logo=pnpm&logoColor=white) |
-| **Core** | ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) |
-| **Web Library** | ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white) |
-| **Mobile Library** | ![React Native](https://img.shields.io/badge/React_Native-61DAFB?style=flat-square&logo=react&logoColor=black) ![Expo](https://img.shields.io/badge/Expo-000020?style=flat-square&logo=expo&logoColor=white) |
-| **Testing & Docs** | ![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=flat-square&logo=vitest&logoColor=white) ![Storybook](https://img.shields.io/badge/Storybook-FF4785?style=flat-square&logo=storybook&logoColor=white) ![Chromatic](https://img.shields.io/badge/Chromatic-FC521F?style=flat-square&logo=chromatic&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white) |
+| 분류                 | 기술                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monorepo & Build** | ![Nx](https://img.shields.io/badge/Nx-143055?style=flat-square&logo=nx&logoColor=white) ![pnpm](https://img.shields.io/badge/pnpm-F69220?style=flat-square&logo=pnpm&logoColor=white)                                                                                                                                                                                                                                                                     |
+| **Core**             | ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)                                                                                                                                                                                                                                                                                                                                           |
+| **Web Library**      | ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)                                                                                                                                       |
+| **Mobile Library**   | ![React Native](https://img.shields.io/badge/React_Native-61DAFB?style=flat-square&logo=react&logoColor=black) ![Expo](https://img.shields.io/badge/Expo-000020?style=flat-square&logo=expo&logoColor=white)                                                                                                                                                                                                                                              |
+| **Testing & Docs**   | ![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=flat-square&logo=vitest&logoColor=white) ![Storybook](https://img.shields.io/badge/Storybook-FF4785?style=flat-square&logo=storybook&logoColor=white) ![Chromatic](https://img.shields.io/badge/Chromatic-FC521F?style=flat-square&logo=chromatic&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white) |
 
 ## 패키지 구조
 
@@ -31,8 +31,8 @@ apps/
 └── demo-mobile/          # 모바일 라이브러리 데모 (Expo)
 
 tools/
-├── scripts/              # 릴리즈 자동화 스크립트
-└── commit-mcp/           # MCP 기반 커밋 도구
+├── scripts/              # 측정·트리셰이킹·릴리즈 자동화 스크립트
+└── mcp/                  # mcp 도구
 ```
 
 ## 시작하기
@@ -45,7 +45,7 @@ pnpm install
 pnpm start
 
 # 모바일 데모 앱 실행
-pnpm start:mobile:expo
+pnpm start:mobile
 
 # Storybook 실행
 pnpm storybook
@@ -53,15 +53,15 @@ pnpm storybook
 
 ## 주요 명령어
 
-| 명령어 | 설명 |
-| --- | --- |
-| `pnpm build` | 전체 빌드 |
-| `pnpm build:libs` | 라이브러리만 빌드 (`ui-core`, `react-ui`) |
-| `pnpm build:design-tokens` | 디자인 토큰 빌드 |
-| `pnpm test` | 전체 테스트 실행 |
-| `pnpm lint` | 전체 린트 |
-| `pnpm typecheck` | 전체 타입 체크 |
-| `pnpm release:local` | 로컬 레지스트리로 릴리즈 |
+| 명령어               | 설명                                                                          |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `pnpm build`         | 전체 빌드                                                                     |
+| `pnpm build:libs`    | 라이브러리만 빌드 (`design-tokens`, `ui-core`, `react-ui`, `react-native-ui`) |
+| `pnpm tokens:build`  | 디자인 토큰 빌드                                                              |
+| `pnpm test`          | 전체 테스트 실행                                                              |
+| `pnpm lint`          | 전체 린트                                                                     |
+| `pnpm typecheck`     | 전체 타입 체크                                                                |
+| `pnpm release:local` | 로컬 레지스트리로 릴리즈                                                      |
 
 ## 사용 (설치)
 

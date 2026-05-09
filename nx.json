@@ -16,7 +16,11 @@
       "!{projectRoot}/**/*.spec.[jt]s?(x)",
       "!{projectRoot}/playwright.config.[jt]s"
     ],
-    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
+    "sharedGlobals": [
+      "{workspaceRoot}/.github/workflows/pr-check.yml",
+      "{workspaceRoot}/.github/workflows/release.yml",
+      "{workspaceRoot}/.github/workflows/chromatic.yml"
+    ]
   },
   "plugins": [
     {
@@ -119,7 +123,8 @@
       "@berrypjh/design-tokens",
       "@berrypjh/react-native-ui"
     ],
-    "projectsRelationship": "independent",
+    "projectsRelationship": "fixed",
+    "releaseTagPattern": "v{version}",
     "version": {
       "conventionalCommits": true,
       "fallbackCurrentVersionResolver": "disk",
@@ -127,26 +132,22 @@
         "skipLockFileUpdate": true
       },
       "git": {
-        "commitMessage": "chore(release): publish",
         "commit": true,
+        "commitMessage": "chore(release): publish v{version} [skip ci]",
         "tag": false
       }
     },
     "changelog": {
       "automaticFromRef": true,
-      "git": {
-        "commit": false
-      },
       "workspaceChangelog": {
         "createRelease": "github",
         "renderOptions": {
           "authors": false
         }
       },
-      "projectChangelogs": {
-        "renderOptions": {
-          "authors": false
-        }
+      "git": {
+        "commit": true,
+        "tag": true
       }
     }
   },
