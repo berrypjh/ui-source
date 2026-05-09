@@ -61,8 +61,9 @@
     },
     "typecheck": {
       "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/out-tsc"],
       "options": {
-        "command": "tsc -p libs/react-ui/tsconfig.types.json --noEmit"
+        "command": "tsc -p libs/react-ui/tsconfig.lib.json"
       }
     },
     "test": {
