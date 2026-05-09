@@ -20,6 +20,10 @@
     "build": {
       "executor": "nx:noop",
       "dependsOn": ["build:tokens", "build:ts"]
+    },
+    "typecheck": {
+      "executor": "nx:noop",
+      "dependsOn": ["build:ts"]
     }
   },
   "tags": ["scope:internal"]
