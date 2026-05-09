@@ -10,7 +10,7 @@ import type { Dictionary, Transform, TransformedToken } from 'style-dictionary/t
 
 import type { ThemeDef } from '../themes';
 
-import { getTokenType } from './tokens';
+import { getTokenType, getTokenValue } from './tokens';
 
 export type ThemeBuild = {
   theme: string;
@@ -19,59 +19,24 @@ export type ThemeBuild = {
   rn: Dictionary;
 };
 
-const FONT_WEIGHT_NAMES: Record<string, string> = {
-  thin: '100',
-  extralight: '200',
-  ultralight: '200',
-  light: '300',
-  regular: '400',
-  normal: '400',
-  medium: '500',
-  semibold: '600',
-  demibold: '600',
-  bold: '700',
-  extrabold: '800',
-  ultrabold: '800',
-  black: '900',
-};
-
 const RN_NUMERIC_TYPES = new Set([
-  'spacing',
-  'borderRadius',
-  'borderWidth',
-  'fontSizes',
-  'lineHeights',
-  'letterSpacing',
   'dimension',
+  'fontSize',
+  'lineHeight',
+  'letterSpacing',
+  'fontWeight',
 ]);
-
-/** fontWeight 이름(`bold` 등)을 CSS 표준 숫자(`700`)로 치환하는 SD transform. 이미 숫자면 그대로. */
-const fontWeightTransform: Transform = {
-  name: 'ds/fontWeight/name-to-number',
-  type: 'value',
-  transitive: true,
-  filter: (t) => getTokenType(t) === 'fontWeights' && typeof t.value === 'string',
-  transform: (t) => {
-    const raw = String(t.value).trim();
-    if (/^\d{3}$/.test(raw)) return raw;
-    const key = raw.replace(/[\s_-]+/g, '').toLowerCase();
-    return FONT_WEIGHT_NAMES[key] ?? raw;
-  },
-};
 
 /** 배열·객체가 아닌 평범한 record 객체인지 검사. */
 const isPlainObj = (v: unknown): v is Record<string, unknown> =>
   !!v && typeof v === 'object' && !Array.isArray(v);
 
-/** 숫자/숫자 문자열/`Npx`를 number로 강제 변환. 객체·배열은 재귀 적용. 그 외는 원본. */
+/** 숫자/숫자 문자열을 number로 강제 변환. 객체·배열은 재귀 적용. 그 외는 원본. */
 const coerceNum = (v: unknown): unknown => {
   if (typeof v === 'number') return v;
   if (typeof v === 'string') {
     const s = v.trim();
-    const px = s.match(/^(-?\d+(\.\d+)?)px$/i);
-    if (px) return Number(px[1]);
-    if (/^-?\d+(\.\d+)?$/.test(s)) return Number(s);
-    return v;
+    return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : v;
   }
   if (Array.isArray(v)) return v.map(coerceNum);
   if (isPlainObj(v)) {
@@ -91,7 +56,7 @@ const rnNumberTransform: Transform = {
     const type = getTokenType(t);
     return typeof type === 'string' && RN_NUMERIC_TYPES.has(type);
   },
-  transform: (t: TransformedToken) => coerceNum(t.value),
+  transform: (t: TransformedToken) => coerceNum(getTokenValue(t)),
 };
 
 let registered = false;
@@ -101,7 +66,6 @@ const registerOnce = () => {
   if (registered) return;
   registered = true;
   registerTokensStudio(StyleDictionary);
-  StyleDictionary.registerTransform(fontWeightTransform);
   StyleDictionary.registerTransform(rnNumberTransform);
 };
 
@@ -115,14 +79,9 @@ const baseTransforms = getTransforms({ platform: 'css' })
   .filter((t): t is string => typeof t === 'string')
   .filter((t) => !t.startsWith('name/'));
 
-const WEB_TRANSFORMS = [
-  'ds/fontWeight/name-to-number',
-  ...without(baseTransforms, ['ts/color/css/hexrgba']),
-  'name/kebab',
-];
+const WEB_TRANSFORMS = [...without(baseTransforms, ['ts/color/css/hexrgba']), 'name/kebab'];
 
 const RN_TRANSFORMS = [
-  'ds/fontWeight/name-to-number',
   ...without(baseTransforms, ['ts/size/px', 'ts/size/css/letterspacing', 'ts/color/css/hexrgba']),
   'ds/rn/number',
   'name/kebab',

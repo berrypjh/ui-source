@@ -1,20 +1,13 @@
 {
   "shadow": {
     "none": {
-      "value": [
-        {
-          "x": "0",
-          "y": "0",
-          "blur": "0",
-          "spread": "0",
-          "color": "#000000",
-          "type": "dropShadow"
-        }
+      "$value": [
+        { "x": "0", "y": "0", "blur": "0", "spread": "0", "color": "#000000", "type": "dropShadow" }
       ],
-      "type": "boxShadow"
+      "$type": "boxShadow"
     },
     "xs": {
-      "value": [
+      "$value": [
         {
           "x": "0",
           "y": "1",
@@ -40,10 +33,10 @@
           "type": "dropShadow"
         }
       ],
-      "type": "boxShadow"
+      "$type": "boxShadow"
     },
     "sm": {
-      "value": [
+      "$value": [
         {
           "x": "0",
           "y": "1",
@@ -69,10 +62,10 @@
           "type": "dropShadow"
         }
       ],
-      "type": "boxShadow"
+      "$type": "boxShadow"
     },
     "md": {
-      "value": [
+      "$value": [
         {
           "x": "0",
           "y": "1",
@@ -98,10 +91,10 @@
           "type": "dropShadow"
         }
       ],
-      "type": "boxShadow"
+      "$type": "boxShadow"
     },
     "lg": {
-      "value": [
+      "$value": [
         {
           "x": "0",
           "y": "1",
@@ -127,10 +120,10 @@
           "type": "dropShadow"
         }
       ],
-      "type": "boxShadow"
+      "$type": "boxShadow"
     },
     "xl": {
-      "value": [
+      "$value": [
         {
           "x": "0",
           "y": "1",
@@ -156,10 +149,10 @@
           "type": "dropShadow"
         }
       ],
-      "type": "boxShadow"
+      "$type": "boxShadow"
     },
     "2xl": {
-      "value": [
+      "$value": [
         {
           "x": "0",
           "y": "1",
@@ -185,10 +178,10 @@
           "type": "dropShadow"
         }
       ],
-      "type": "boxShadow"
+      "$type": "boxShadow"
     },
     "inner": {
-      "value": {
+      "$value": {
         "x": "0",
         "y": "1",
         "blur": "2",
@@ -196,7 +189,7 @@
         "color": "#1018280F",
         "type": "innerShadow"
       },
-      "type": "boxShadow"
+      "$type": "boxShadow"
     }
   }
 }

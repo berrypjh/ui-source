@@ -1,8 +1,5 @@
 {
   "component": {
-    "button": {
-      "value": "{spacing.sm} {spacing.lg}",
-      "type": "spacing"
-    }
+    "button": { "$value": "{spacing.sm} {spacing.lg}", "$type": "spacing" }
   }
 }

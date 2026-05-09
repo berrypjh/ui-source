@@ -1,72 +1,21 @@
 {
   "spacing": {
-    "xxxsm": {
-      "value": "2",
-      "type": "spacing"
-    },
-    "xxsm": {
-      "value": "{spacing.xxxsm} * 2",
-      "type": "spacing"
-    },
-    "xsm": {
-      "value": "{spacing.xxxsm} * 3",
-      "type": "spacing"
-    },
-    "sm": {
-      "value": "{spacing.xxxsm} * 4",
-      "type": "spacing"
-    },
-    "sml": {
-      "value": "{spacing.xxxsm} * 6",
-      "type": "spacing"
-    },
-    "md": {
-      "value": "{spacing.xxxsm} * 7",
-      "type": "spacing"
-    },
-    "mdl": {
-      "value": "{spacing.xxxsm} * 8",
-      "type": "spacing"
-    },
-    "lg": {
-      "value": "{spacing.xxxsm} * 10",
-      "type": "spacing"
-    },
-    "xlg": {
-      "value": "{spacing.xxxsm} * 12",
-      "type": "spacing"
-    },
-    "xl": {
-      "value": "{spacing.xxxsm} * 14",
-      "type": "spacing"
-    },
-    "xxl": {
-      "value": "{spacing.xxxsm} * 16",
-      "type": "spacing"
-    },
-    "3xl": {
-      "value": "{spacing.xxxsm} * 18",
-      "type": "spacing"
-    },
-    "4xl": {
-      "value": "{spacing.xxxsm} * 20",
-      "type": "spacing"
-    },
-    "5xl": {
-      "value": "{spacing.xxxsm} * 24",
-      "type": "spacing"
-    },
-    "6xl": {
-      "value": "{spacing.xxxsm} * 32",
-      "type": "spacing"
-    },
-    "7xl": {
-      "value": "{spacing.xxxsm} * 48",
-      "type": "spacing"
-    },
-    "8xl": {
-      "value": "{spacing.xxxsm} * 64",
-      "type": "spacing"
-    }
+    "xxxsm": { "$value": "2", "$type": "spacing" },
+    "xxsm": { "$value": "{spacing.xxxsm} * 2", "$type": "spacing" },
+    "xsm": { "$value": "{spacing.xxxsm} * 3", "$type": "spacing" },
+    "sm": { "$value": "{spacing.xxxsm} * 4", "$type": "spacing" },
+    "sml": { "$value": "{spacing.xxxsm} * 6", "$type": "spacing" },
+    "md": { "$value": "{spacing.xxxsm} * 7", "$type": "spacing" },
+    "mdl": { "$value": "{spacing.xxxsm} * 8", "$type": "spacing" },
+    "lg": { "$value": "{spacing.xxxsm} * 10", "$type": "spacing" },
+    "xlg": { "$value": "{spacing.xxxsm} * 12", "$type": "spacing" },
+    "xl": { "$value": "{spacing.xxxsm} * 14", "$type": "spacing" },
+    "xxl": { "$value": "{spacing.xxxsm} * 16", "$type": "spacing" },
+    "3xl": { "$value": "{spacing.xxxsm} * 18", "$type": "spacing" },
+    "4xl": { "$value": "{spacing.xxxsm} * 20", "$type": "spacing" },
+    "5xl": { "$value": "{spacing.xxxsm} * 24", "$type": "spacing" },
+    "6xl": { "$value": "{spacing.xxxsm} * 32", "$type": "spacing" },
+    "7xl": { "$value": "{spacing.xxxsm} * 48", "$type": "spacing" },
+    "8xl": { "$value": "{spacing.xxxsm} * 64", "$type": "spacing" }
   }
 }

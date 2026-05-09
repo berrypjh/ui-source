@@ -10,8 +10,8 @@ import '@berrypjh/design-tokens/css';
 
 // Web/RN 공통: 타입 안전한 토큰 객체
 import { Web, Native, themes } from '@berrypjh/design-tokens';
-const color = Web.Light.tokens.color.primary.pr500;     // '#2E90FA'
-const spacing = Native.Light.tokens.spacing.md;          // 8 (number)
+const color = Web.Light.tokens.color.primary.pr500; // '#2E90FA'
+const spacing = Native.Light.tokens.spacing.md; // 8 (number)
 
 // Tailwind v4 preset
 import preset from '@berrypjh/design-tokens/tailwind';
@@ -21,13 +21,13 @@ import preset from '@berrypjh/design-tokens/tailwind';
 
 ## Export 경로
 
-| 경로 | 용도 |
-| --- | --- |
-| `@berrypjh/design-tokens` | `themes`, `ThemeName`, `ThemeDef`, `Web` / `Native` namespace, `tailwindPreset` |
-| `@berrypjh/design-tokens/web` | Web 토큰 namespace (`Light`, `Dark`, `Sepia`, ...) |
-| `@berrypjh/design-tokens/rn` | RN 토큰 namespace (숫자형 type은 number로 변환) |
-| `@berrypjh/design-tokens/css` | CSS 변수 (side-effect import) |
-| `@berrypjh/design-tokens/tailwind` | Tailwind preset (default export) |
+| 경로                               | 용도                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------- |
+| `@berrypjh/design-tokens`          | `themes`, `ThemeName`, `ThemeDef`, `Web` / `Native` namespace, `tailwindPreset` |
+| `@berrypjh/design-tokens/web`      | Web 토큰 namespace (`Light`, `Dark`, `Sepia`, ...)                              |
+| `@berrypjh/design-tokens/rn`       | RN 토큰 namespace (숫자형 type은 number로 변환)                                 |
+| `@berrypjh/design-tokens/css`      | CSS 변수 (side-effect import)                                                   |
+| `@berrypjh/design-tokens/tailwind` | Tailwind preset (default export)                                                |
 
 `Web.*` 와 `Native.*` 는 같은 토큰 트리 구조를 갖지만 RN 쪽은 px/dimension이 number로 변환되어 있다.
 
@@ -76,10 +76,12 @@ src/
   index.ts / web.ts / rn.ts / tailwind.ts   public 진입점
   lib/
     sd.ts                   SD config + buildThemeDictionaries
-    tokens.ts               classify / cssVarName / colorRgb / getTokenType
+    tokens.ts               classify / cssVarName / colorRgb / getTokenType / getTokenValue
     genCss.ts               CSS 변수 생성
     genTsTokens.ts          Web/RN TS 토큰 + namespace 인덱스 생성
     genTailwind.ts          Tailwind preset 생성
+    genCatalog.ts           dist/tokens.json (슬림 카탈로그)
+    genAgents.ts            dist/AGENTS.md (npm 소비자용)
 tokens/
   light/                    base 풀세트
   dark/, sepia/, ...        light을 덮어쓰는 토큰만
@@ -87,17 +89,19 @@ tokens/
 
 ## 토큰 JSON 형식
 
+[DTCG](https://design-tokens.github.io/community-group/format/) 형식 (`$value` / `$type`).
+
 ```json
 {
   "primary": {
-    "pr500": { "value": "#2E90FA", "type": "color" },
-    "pr600": { "value": "{primary.pr500}", "type": "color" }
+    "pr500": { "$value": "#2E90FA", "$type": "color" },
+    "pr600": { "$value": "{primary.pr500}", "$type": "color" }
   }
 }
 ```
 
-- `value`: 토큰 값. 다른 토큰 참조는 `{path.to.token}`
-- `type`: `color`, `spacing`, `borderRadius`, `borderWidth`, `fontSizes`, `fontWeights`, `lineHeights`, `letterSpacing`, `fontFamilies`, `typography`, `boxShadow`, `dropShadow`, `innerShadow`, `border`
+- `$value`: 토큰 값. 다른 토큰 참조는 `{path.to.token}`
+- `$type`: `color`, `spacing`, `borderRadius`, `borderWidth`, `fontSizes`, `fontWeights`, `lineHeights`, `letterSpacing`, `fontFamilies`, `typography`, `boxShadow`, `dropShadow`, `innerShadow`, `border` (Tokens Studio 어휘 유지 — 전처리기가 DTCG 표준 type으로 자동 정렬)
 
 ## 새 테마 추가
 
@@ -125,23 +129,23 @@ tertiary: ['color', 'tertiary'],
 
 ## Build 타깃
 
-| nx 타깃 | 명령 | 역할 |
-| --- | --- | --- |
-| `build:tokens` | `tsx src/build.ts` | SD dict → CSS / Web / RN / Tailwind 생성 |
-| `build:ts` | `tsc -p tsconfig.lib.json` | `dist/`로 d.ts·JS 컴파일 |
-| `build` | 위 둘 (`dependsOn`) | 전체 빌드 |
+| nx 타깃        | 명령                       | 역할                                     |
+| -------------- | -------------------------- | ---------------------------------------- |
+| `build:tokens` | `tsx src/build.ts`         | SD dict → CSS / Web / RN / Tailwind 생성 |
+| `build:ts`     | `tsc -p tsconfig.lib.json` | `dist/`로 d.ts·JS 컴파일                 |
+| `build`        | 위 둘 (`dependsOn`)        | 전체 빌드                                |
 
 `dist/`가 배포 대상. `src/.generated/`는 빌드 중간 산출물이며 `tsc`가 함께 컴파일해 `dist/.generated/`로 내보낸다.
 
 ### root 스크립트 (workflow shortcut)
 
-| 스크립트 | 역할 |
-| --- | --- |
-| `pnpm tokens:gen` | 토큰 JSON → CSS / Web / RN / Tailwind (compile 없음, 가장 빠름) |
-| `pnpm tokens:build` | 풀 빌드 (gen + tsc → dist) |
-| `pnpm tokens:watch` | `tokens/**/*.json` 변경 시 자동 regen |
-| `pnpm tokens:lint` | design-tokens lint |
-| `pnpm tokens:clean` | `dist/`, `src/.generated/`, `tsbuildinfo` 정리 |
+| 스크립트            | 역할                                                            |
+| ------------------- | --------------------------------------------------------------- |
+| `pnpm tokens:gen`   | 토큰 JSON → CSS / Web / RN / Tailwind (compile 없음, 가장 빠름) |
+| `pnpm tokens:build` | 풀 빌드 (gen + tsc → dist)                                      |
+| `pnpm tokens:watch` | `tokens/**/*.json` 변경 시 자동 regen                           |
+| `pnpm tokens:lint`  | design-tokens lint                                              |
+| `pnpm tokens:clean` | `dist/`, `src/.generated/`, `tsbuildinfo` 정리                  |
 
 ## Publish
 

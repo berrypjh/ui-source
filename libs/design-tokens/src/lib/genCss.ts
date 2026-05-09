@@ -6,7 +6,7 @@ import type { TransformedToken } from 'style-dictionary/types';
 import { baseTheme } from '../themes';
 
 import type { ThemeBuild } from './sd';
-import { colorToRgbChannels, cssVarName, getTokenType } from './tokens';
+import { colorToRgbChannels, cssVarName, getTokenType, getTokenValue } from './tokens';
 
 const PREFIX = 'ds';
 
@@ -25,10 +25,11 @@ const declsFromDict = (tokens: TransformedToken[]): Decl[] => {
   const decls: Decl[] = [];
   for (const t of tokens) {
     const name = cssVarName(PREFIX, t.path);
-    decls.push({ name, value: stringify(t.value) });
+    const v = getTokenValue(t);
+    decls.push({ name, value: stringify(v) });
 
     if (getTokenType(t) === 'color') {
-      const channels = colorToRgbChannels(t.value);
+      const channels = colorToRgbChannels(v);
       if (channels) decls.push({ name: `${name}-rgb`, value: channels });
     }
   }

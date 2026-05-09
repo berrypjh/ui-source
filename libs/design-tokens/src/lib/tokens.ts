@@ -1,8 +1,11 @@
 import type { TransformedToken } from 'style-dictionary/types';
 
-/** type 필드는 `type | $type | original.{type,$type}` 어디든 올 수 있어 우선순위로 추출한다. */
+/** DTCG 토큰의 `$type` 추출. 자식 토큰이 부모의 `$type`을 상속받는 경우 SD가 leaf에 propagate. */
 export const getTokenType = (t: TransformedToken): string | undefined =>
-  t.type ?? t.$type ?? t.original.type ?? t.original.$type;
+  t.$type ?? t.original.$type;
+
+/** DTCG 토큰의 `$value` 추출. */
+export const getTokenValue = (t: TransformedToken): unknown => t.$value;
 
 /** camelCase / snake_case / 공백 혼합을 단일 kebab-case로 변환. */
 const toKebab = (s: string): string =>
@@ -76,14 +79,10 @@ const HEAD_REWRITE: Record<string, readonly string[]> = {
   icon: ['color', 'icon'],
   stroke: ['color', 'stroke'],
 
-  fontFamily: ['typography', 'fontFamilies'],
   fontFamilies: ['typography', 'fontFamilies'],
   fontWeight: ['typography', 'fontWeight'],
-  fontWeights: ['typography', 'fontWeight'],
   fontSize: ['typography', 'fontSize'],
-  fontSizes: ['typography', 'fontSize'],
   lineHeight: ['typography', 'lineHeight'],
-  lineHeights: ['typography', 'lineHeight'],
   letterSpacing: ['typography', 'letterSpacing'],
   display: ['typography', 'display'],
   heading: ['typography', 'heading'],

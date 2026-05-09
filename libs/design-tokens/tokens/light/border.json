@@ -1,18 +1,18 @@
 {
   "border": {
     "primary": {
-      "value": {
+      "$value": {
         "color": "{stroke.primary}",
         "width": "{primitiveBorder.xs}"
       },
-      "type": "border"
+      "$type": "border"
     },
     "disabled": {
-      "value": {
+      "$value": {
         "color": "{stroke.disable}",
         "width": "1"
       },
-      "type": "border"
+      "$type": "border"
     }
   }
 }

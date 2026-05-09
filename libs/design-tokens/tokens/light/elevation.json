@@ -1,32 +1,11 @@
 {
   "elevation": {
-    "0": {
-      "value": "{shadow.none}",
-      "type": "boxShadow"
-    },
-    "1": {
-      "value": "{shadow.xs}",
-      "type": "boxShadow"
-    },
-    "2": {
-      "value": "{shadow.sm}",
-      "type": "boxShadow"
-    },
-    "3": {
-      "value": "{shadow.md}",
-      "type": "boxShadow"
-    },
-    "4": {
-      "value": "{shadow.lg}",
-      "type": "boxShadow"
-    },
-    "5": {
-      "value": "{shadow.xl}",
-      "type": "boxShadow"
-    },
-    "6": {
-      "value": "{shadow.2xl}",
-      "type": "boxShadow"
-    }
+    "0": { "$value": "{shadow.none}", "$type": "boxShadow" },
+    "1": { "$value": "{shadow.xs}", "$type": "boxShadow" },
+    "2": { "$value": "{shadow.sm}", "$type": "boxShadow" },
+    "3": { "$value": "{shadow.md}", "$type": "boxShadow" },
+    "4": { "$value": "{shadow.lg}", "$type": "boxShadow" },
+    "5": { "$value": "{shadow.xl}", "$type": "boxShadow" },
+    "6": { "$value": "{shadow.2xl}", "$type": "boxShadow" }
   }
 }
