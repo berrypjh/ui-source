@@ -19,27 +19,29 @@ import '@berrypjh/react-ui/styles.css';
 ```tsx
 import { Button, TextField, ThemeProvider } from '@berrypjh/react-ui';
 
-<ThemeProvider initialTheme="light">
-  <Button variant="filled" color="primary">확인</Button>
+<ThemeProvider mode="light">
+  <Button variant="contained" color="primary">
+    확인
+  </Button>
   <TextField label="이름" />
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 ## 제공 컴포넌트
 
-| 컴포넌트 | 설명 |
-| --- | --- |
-| `Box` | 기본 레이아웃 컴포넌트 |
-| `Button` | 버튼 (variant, size, color 지원) |
-| `IconButton` | 아이콘 전용 버튼 |
-| `Fab` | Floating Action Button |
-| `BubbleButton` | 버블 스타일 버튼 |
-| `TextField` | 텍스트 입력 필드 |
-| `BoxedInput` / `FilledInput` / `PlainInput` | 스타일 변형 인풋 |
-| `Select` | 셀렉트 박스 |
-| `SearchField` | 검색 필드 |
-| `FormControl` / `InputLabel` / `FormHelperText` | 폼 구성 요소 |
-| `MenuItem` | 메뉴 아이템 |
+| 컴포넌트                                        | 설명                             |
+| ----------------------------------------------- | -------------------------------- |
+| `Box`                                           | 기본 레이아웃 컴포넌트           |
+| `Button`                                        | 버튼 (variant, size, color 지원) |
+| `IconButton`                                    | 아이콘 전용 버튼                 |
+| `Fab`                                           | Floating Action Button           |
+| `BubbleButton`                                  | 버블 스타일 버튼                 |
+| `TextField`                                     | 텍스트 입력 필드                 |
+| `BoxedInput` / `FilledInput` / `PlainInput`     | 스타일 변형 인풋                 |
+| `Select`                                        | 셀렉트 박스                      |
+| `SearchField`                                   | 검색 필드                        |
+| `FormControl` / `InputLabel` / `FormHelperText` | 폼 구성 요소                     |
+| `MenuItem`                                      | 메뉴 아이템                      |
 
 ## 테마와 토큰
 
@@ -63,8 +65,8 @@ export default {
 
 ## Export 경로
 
-| 경로 | 용도 |
-| --- | --- |
-| `@berrypjh/react-ui` | 모든 컴포넌트·테마·토큰·유틸 |
+| 경로                            | 용도                                     |
+| ------------------------------- | ---------------------------------------- |
+| `@berrypjh/react-ui`            | 모든 컴포넌트·테마·토큰·유틸             |
 | `@berrypjh/react-ui/styles.css` | 글로벌 CSS (토큰 변수 + 컴포넌트 스타일) |
-| `@berrypjh/react-ui/tailwind` | Tailwind preset |
+| `@berrypjh/react-ui/tailwind`   | Tailwind preset                          |

@@ -11,8 +11,8 @@ import '@berrypjh/react-ui/styles.css';
 // 2. 컴포넌트 사용
 import { Button, TextField, ThemeProvider } from '@berrypjh/react-ui';
 
-<ThemeProvider initialTheme="light">
-  <Button variant="filled" color="primary">
+<ThemeProvider mode="light">
+  <Button variant="contained" color="primary">
     확인
   </Button>
   <TextField label="이름" />
@@ -50,11 +50,11 @@ export default { presets: [preset] };
 
 ### 테마
 
-| 심볼               | 용도                                                                                     |
-| ------------------ | ---------------------------------------------------------------------------------------- |
-| `ThemeProvider`    | `<html data-theme="...">` 적용. `initialTheme` (기본 light), `mode` controlled prop 지원 |
-| `themes`           | `[{ name: 'light', ... }, ...]` namespace 배열                                           |
-| `ThemeName` (type) | `'light' \| 'dark' \| 'sepia'`                                                           |
+| 심볼               | 용도                                                      |
+| ------------------ | --------------------------------------------------------- |
+| `ThemeProvider`    | `<div data-theme="...">` 적용. `mode` prop (기본 `light`) |
+| `themes`           | `[{ name: 'light', ... }, ...]` namespace 배열            |
+| `ThemeName` (type) | `'light' \| 'dark' \| 'sepia'`                            |
 
 ### 토큰 / 유틸 (정적 객체)
 
