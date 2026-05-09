@@ -180,7 +180,6 @@ jobs:
     needs: [format, lint]
     permissions:
       contents: read
-      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -200,12 +199,14 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
 
-      - name: size-limit (PR comment + limit 검사)
-        uses: andresz1/size-limit-action@v1.8.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          build_script: build:libs
-          package_manager: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Build libs
+        run: pnpm run build:libs
+
+      - name: size-limit
+        run: pnpm run size
 
   a11y:
     name: Accessibility (Storybook + axe)
