@@ -30,29 +30,29 @@ import '@berrypjh/ui-core/css';
 
 ## Export 경로
 
-| 경로 | 용도 |
-| --- | --- |
-| `@berrypjh/ui-core` | 유틸 · 토큰 헬퍼 · 컴포넌트 prop 계약 · design-tokens 패스스루 |
+| 경로                         | 용도                                                             |
+| ---------------------------- | ---------------------------------------------------------------- |
+| `@berrypjh/ui-core`          | 유틸 · 토큰 헬퍼 · 컴포넌트 prop 계약 · design-tokens 패스스루   |
 | `@berrypjh/ui-core/tailwind` | Tailwind preset (default + named export, design-tokens 패스스루) |
-| `@berrypjh/ui-core/css` | CSS 변수 (side-effect import, design-tokens에서 흡수) |
+| `@berrypjh/ui-core/css`      | CSS 변수 (side-effect import, design-tokens에서 흡수)            |
 
 ## Public 표면
 
 **ui-core 자체 기여**
 
-| 카테고리 | 심볼 |
-| --- | --- |
-| 유틸 | `cx`, `isObjectRecord` |
-| 토큰 헬퍼 | `getColor`, `createTheme` |
-| 토큰 타입 | `ColorToken`, `RadiusToken`, `SpacingToken`, `RNTokens`, `Theme<T>`, `ThemeName` |
+| 카테고리           | 심볼                                                                                                                                                                                                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 유틸               | `cx`, `isObjectRecord`                                                                                                                                                                                                                                                 |
+| 토큰 헬퍼          | `getColor`, `createTheme`                                                                                                                                                                                                                                              |
+| 토큰 타입          | `ColorToken`, `RadiusToken`, `SpacingToken`, `RNTokens`, `Theme<T>`, `ThemeName`                                                                                                                                                                                       |
 | 컴포넌트 prop 계약 | `BoxProps`, `BoxRadiusValue`, `BoxSpacingValue` (box) / `ButtonProps`, `ButtonColor`, `ButtonSize`, `ButtonVariant` (button) / `FieldProps`, `FormControlProps`, `InputFieldProps`, `TextFieldProps`, `FieldColor`, `FieldSize`, `FieldVariant`, `FieldMargin` (field) |
 
 **design-tokens 패스스루**
 
-| 심볼 | 종류 |
-| --- | --- |
+| 심볼                      | 종류         |
+| ------------------------- | ------------ |
 | `Web`, `Native`, `themes` | namespace 값 |
-| `ThemeDef` | type |
+| `ThemeDef`                | type         |
 
 ## 디렉토리
 
