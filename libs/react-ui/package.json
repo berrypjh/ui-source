@@ -3,6 +3,7 @@
   "version": "0.0.5",
   "type": "module",
   "sideEffects": [
+    "./src/styles.ts",
     "**/*.css",
     "**/*.scss"
   ],
