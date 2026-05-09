@@ -9,7 +9,7 @@ import { Box, ThemeProvider, useTheme, getColor } from '@berrypjh/react-native-u
 
 function App() {
   return (
-    <ThemeProvider initialTheme="light">
+    <ThemeProvider mode="light">
       <Screen />
     </ThemeProvider>
   );
@@ -17,7 +17,7 @@ function App() {
 
 function Screen() {
   const theme = useTheme();
-  return <Box padding="md" background="surface" />;
+  return <Box p="md" bg="background.surface" radius="md" />;
 }
 ```
 
@@ -39,7 +39,7 @@ function Screen() {
 
 | 심볼               | 용도                                                   |
 | ------------------ | ------------------------------------------------------ |
-| `ThemeProvider`    | RN context 기반 테마. `initialTheme` (기본 light) prop |
+| `ThemeProvider`    | RN context 기반 테마. `mode` prop (기본 `light`)       |
 | `useTheme`         | 현재 theme 객체 반환. `getColor(theme, ...)` 등에 사용 |
 | `themes`           | `[{ name: 'light', ... }, ...]` namespace 배열         |
 | `ThemeName` (type) | `'light' \| 'dark' \| 'sepia'`                         |
@@ -70,9 +70,10 @@ function Screen() {
 
 `Native.*` 트리는 RN-specific transforms 적용된 값:
 
-- `shadow.*` → `{ shadowColor, shadowOffset, shadowOpacity, shadowRadius, elevation }` 객체
-- `borderWidth/Radius` → number (px 단위 stripped)
-- `spacing` → number
+- `spacing`/`radius`/`borderWidth` → number (px 단위 stripped)
+- `typography.{fontSize,lineHeight,letterSpacing,fontWeight}` → number (단독 토큰 + composite 자식 모두)
+- `color.*` → hex string 그대로
+- `shadow.*` 산출물은 leaf로 분해 (`shadow.xs.0.x` 등) — 일반 사용자는 `Native.Light.tokens.shadow` 직접 접근보다 컴포넌트의 elevation prop 권장
 
 Web 토큰을 RN에서 그대로 쓰지 말 것 — `Native` namespace가 호환 형식.
 

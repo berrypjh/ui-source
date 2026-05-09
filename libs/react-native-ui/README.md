@@ -16,16 +16,16 @@ pnpm add @berrypjh/react-native-ui
 ```tsx
 import { Box, ThemeProvider } from '@berrypjh/react-native-ui';
 
-<ThemeProvider initialTheme="light">
-  <Box padding="md" background="surface" />
-</ThemeProvider>
+<ThemeProvider mode="light">
+  <Box p="md" bg="background.surface" radius="md" />
+</ThemeProvider>;
 ```
 
 ## 제공 컴포넌트
 
-| 컴포넌트 | 설명 |
-| --- | --- |
-| `Box` | 기본 레이아웃 컴포넌트 |
+| 컴포넌트 | 설명                   |
+| -------- | ---------------------- |
+| `Box`    | 기본 레이아웃 컴포넌트 |
 
 ## 테마와 토큰
 
@@ -38,6 +38,6 @@ import { Box, ThemeProvider } from '@berrypjh/react-native-ui';
 
 ## Export 경로
 
-| 경로 | 용도 |
-| --- | --- |
+| 경로                        | 용도                         |
+| --------------------------- | ---------------------------- |
 | `@berrypjh/react-native-ui` | 모든 컴포넌트·테마·토큰·유틸 |
