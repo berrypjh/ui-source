@@ -1,0 +1,12 @@
+{
+  "name": "@berrypjh/prettier-config",
+  "projectType": "library",
+  "sourceRoot": "libs/prettier-config",
+  "targets": {
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "options": {}
+    }
+  },
+  "tags": ["scope:internal"]
+}
