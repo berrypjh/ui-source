@@ -1,14 +1,13 @@
-import nx from '@nx/eslint-plugin';
-import jsxA11y from 'eslint-plugin-jsx-a11y';
-import reactHooks from 'eslint-plugin-react-hooks';
-import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import base from '@berrypjh/eslint-config/base';
+import nx from '@berrypjh/eslint-config/nx';
+import react from '@berrypjh/eslint-config/react';
+
 import storybook from 'eslint-plugin-storybook';
-import unusedImports from 'eslint-plugin-unused-imports';
 
 export default [
-  ...nx.configs['flat/base'],
-  ...nx.configs['flat/typescript'],
-  ...nx.configs['flat/javascript'],
+  ...base,
+  ...nx,
+  ...react,
   ...storybook.configs['flat/recommended'],
   {
     ignores: [
@@ -22,24 +21,6 @@ export default [
     ],
   },
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
-    rules: {
-      '@nx/enforce-module-boundaries': [
-        'error',
-        {
-          enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
-          depConstraints: [
-            {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
     files: [
       '**/*.ts',
       '**/*.tsx',
@@ -50,10 +31,6 @@ export default [
       '**/*.cjs',
       '**/*.mjs',
     ],
-    plugins: {
-      'simple-import-sort': simpleImportSort,
-      'unused-imports': unusedImports,
-    },
     rules: {
       'simple-import-sort/imports': [
         'error',
@@ -80,36 +57,11 @@ export default [
           ],
         },
       ],
-      'simple-import-sort/exports': 'error',
-      'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
-      'unused-imports/no-unused-imports': 'error',
-      'unused-imports/no-unused-vars': [
-        'warn',
-        {
-          vars: 'all',
-          varsIgnorePattern: '^_',
-          args: 'after-used',
-          argsIgnorePattern: '^_',
-        },
-      ],
-    },
-  },
-  {
-    files: ['**/*.ts', '**/*.tsx', '**/*.cts', '**/*.mts'],
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'error',
     },
   },
   {
     files: ['**/*.jsx', '**/*.tsx'],
-    plugins: {
-      'react-hooks': reactHooks,
-      'jsx-a11y': jsxA11y,
-    },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      ...jsxA11y.flatConfigs.recommended.rules,
       // 커스텀 컴포넌트가 autoFocus prop을 forward 하는 패턴은 호출자 책임이므로 제외
       'jsx-a11y/no-autofocus': ['error', { ignoreNonDOM: true }],
     },

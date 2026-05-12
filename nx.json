@@ -121,7 +121,11 @@
       "@berrypjh/react-ui",
       "@berrypjh/ui-core",
       "@berrypjh/design-tokens",
-      "@berrypjh/react-native-ui"
+      "@berrypjh/react-native-ui",
+      "@berrypjh/commitlint-config",
+      "@berrypjh/prettier-config",
+      "@berrypjh/tsconfig",
+      "@berrypjh/eslint-config"
     ],
     "projectsRelationship": "fixed",
     "releaseTagPattern": "v{version}",
