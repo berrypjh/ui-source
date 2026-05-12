@@ -1,0 +1,12 @@
+{
+  "name": "@berrypjh/eslint-config",
+  "projectType": "library",
+  "sourceRoot": "libs/eslint-config",
+  "targets": {
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "options": {}
+    }
+  },
+  "tags": ["scope:internal"]
+}
