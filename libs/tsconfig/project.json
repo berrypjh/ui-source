@@ -1,0 +1,12 @@
+{
+  "name": "@berrypjh/tsconfig",
+  "projectType": "library",
+  "sourceRoot": "libs/tsconfig",
+  "targets": {
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "options": {}
+    }
+  },
+  "tags": ["scope:internal"]
+}
