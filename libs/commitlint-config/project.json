@@ -1,0 +1,12 @@
+{
+  "name": "@berrypjh/commitlint-config",
+  "projectType": "library",
+  "sourceRoot": "libs/commitlint-config",
+  "targets": {
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "options": {}
+    }
+  },
+  "tags": ["scope:internal"]
+}
