@@ -1,4 +1,4 @@
-# @berrypjh/ui-source
+# @berrypjh/shared-stack
 
 > **Note**
 > GitHub Packages 비공개 배포 라이브러리입니다. 설치 전 `.npmrc` 설정이 필요합니다.
