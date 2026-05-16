@@ -64,7 +64,7 @@ export const HomePage = () => {
           <Button
             variant="outlined"
             size="lg"
-            onClick={() => window.open('https://github.com/berrypjh/ui-source', '_blank')}
+            onClick={() => window.open('https://github.com/berrypjh/shared-stack', '_blank')}
             style={{ borderColor: 'rgba(255,255,255,0.4)', color: '#ffffff' }}
           >
             View on GitHub
