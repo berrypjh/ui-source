@@ -2,10 +2,8 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
-import { cx } from '@berrypjh/ui-core';
-
 import {
-  assignRef,
+  cx,
   getFirstEnabledIndex,
   getInitialHighlightedIndex,
   getLastEnabledIndex,
@@ -14,7 +12,9 @@ import {
   isOptionSelected,
   isValueEqual,
   stringifyValue,
-} from '../../utils';
+} from '@berrypjh/ui-core';
+
+import { assignRef } from '../../utils';
 import { useFormControl } from '../form-control';
 
 import { selectClasses } from './Select.constants';

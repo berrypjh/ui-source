@@ -1,8 +1,8 @@
 import { Children, Fragment, isValidElement, type ReactNode } from 'react';
 
-import { cx } from '@berrypjh/ui-core';
+import { cx, hasDisplayValue, stringifyValue } from '@berrypjh/ui-core';
 
-import { getNodeText, hasDisplayValue, stringifyValue } from '../../utils';
+import { getNodeText } from '../../utils';
 
 import { selectClasses } from './Select.constants';
 import type { SelectChangeEvent, SelectLikeChildProps, SelectOptionElement } from './Select.types';
