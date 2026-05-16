@@ -2,7 +2,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { writeAgents } from './lib/genAgents';
 import { writeTokensJson } from './lib/genCatalog';
 import { writeCss } from './lib/genCss';
 import { writeTailwindPreset } from './lib/genTailwind';
@@ -16,15 +15,13 @@ const TOKENS_DIR = path.join(ROOT, 'tokens');
 const DIST_DIR = path.join(ROOT, 'dist');
 const DIST_CSS_DIR = path.join(DIST_DIR, 'css');
 const DIST_CATALOG = path.join(DIST_DIR, 'tokens.json');
-const DIST_AGENTS = path.join(DIST_DIR, 'AGENTS.md');
 const GENERATED_DIR = path.join(ROOT, 'src', '.generated');
 
-/** 산출물 디렉터리를 비우고 SD 사전 → CSS / Web TS / RN TS / Tailwind preset / catalog / AGENTS 를 차례로 생성한다. */
+/** 산출물 디렉터리를 비우고 SD 사전 → CSS / Web TS / RN TS / Tailwind preset / catalog 를 차례로 생성한다. */
 const main = async (): Promise<void> => {
   await fs.rm(GENERATED_DIR, { recursive: true, force: true });
   await fs.rm(DIST_CSS_DIR, { recursive: true, force: true });
   await fs.rm(DIST_CATALOG, { force: true });
-  await fs.rm(DIST_AGENTS, { force: true });
   await fs.mkdir(DIST_DIR, { recursive: true });
 
   const builds = await buildThemeDictionaries(themes, TOKENS_DIR);
@@ -32,7 +29,6 @@ const main = async (): Promise<void> => {
   await writeTsTokens(builds, GENERATED_DIR);
   await writeTailwindPreset(builds, path.join(GENERATED_DIR, 'tailwind', 'preset.ts'));
   await writeTokensJson(builds, DIST_CATALOG);
-  await writeAgents(builds, DIST_AGENTS);
 };
 
 main().catch((e) => {
