@@ -2,9 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { cx } from '@berrypjh/ui-core';
+import { cx, hasFormValue } from '@berrypjh/ui-core';
 
-import { hasFormValue } from '../../utils';
 import { useFormControl } from '../form-control';
 
 import { inputBaseClasses } from './InputBase.constants';

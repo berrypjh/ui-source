@@ -2,7 +2,7 @@
 
 import { useId, useMemo, useRef, useState } from 'react';
 
-import { cx } from '@berrypjh/ui-core';
+import { cx, toInputString } from '@berrypjh/ui-core';
 
 import type { FocusEventHandler } from 'react';
 
@@ -11,7 +11,7 @@ import type {
   InputLikeElement,
   InputLikeFocusEventHandler,
 } from '../../types';
-import { assignRef, toInputString } from '../../utils';
+import { assignRef } from '../../utils';
 import { getTextFieldInputComponent } from '../text-field';
 
 import { searchFieldClasses } from './SearchField.constants';
