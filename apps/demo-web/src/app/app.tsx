@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 
 import { Layout } from './components/Layout';
-import { BubbleButtonPage } from './pages/BubbleButtonPage';
 import { ButtonPage } from './pages/ButtonPage';
 import { FabPage } from './pages/FabPage';
 import { HomePage } from './pages/HomePage';
@@ -25,7 +24,6 @@ export const App = () => {
         <Route path="/components/search-field" element={<SearchFieldPage />} />
         <Route path="/components/fab" element={<FabPage />} />
         <Route path="/components/icon-button" element={<IconButtonPage />} />
-        <Route path="/components/bubble-button" element={<BubbleButtonPage />} />
       </Routes>
     </Layout>
   );
