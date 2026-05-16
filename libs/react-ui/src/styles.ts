@@ -9,7 +9,6 @@ import './components/input-base/input-base.scss';
 // 2. 나머지 컴포넌트 (알파벳 순)
 import './components/box/box.scss';
 import './components/boxed-input/boxed-input.scss';
-import './components/bubble-button/bubble-button.scss';
 import './components/button/button.scss';
 import './components/fab/fab.scss';
 import './components/filled-input/filled-input.scss';

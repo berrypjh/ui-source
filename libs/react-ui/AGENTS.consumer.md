@@ -41,7 +41,7 @@ export default { presets: [preset] };
 | 카테고리 | 심볼                                                                               |
 | -------- | ---------------------------------------------------------------------------------- |
 | 레이아웃 | `Box`                                                                              |
-| 버튼     | `Button`, `IconButton`, `Fab`, `BubbleButton`, `ButtonBase`                        |
+| 버튼     | `Button`, `IconButton`, `Fab`, `ButtonBase`                                        |
 | 입력     | `TextField`, `BoxedInput`, `FilledInput`, `PlainInput`, `InputBase`, `SearchField` |
 | 선택     | `Select`, `MenuItem`                                                               |
 | 폼 구성  | `FormControl`, `InputLabel`, `FormHelperText`                                      |
