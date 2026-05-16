@@ -8,8 +8,6 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    // TODO(a11y): 위반 수정 후 disable 제거
-    a11y: { disable: true },
   },
   args: {
     placeholder: 'Placeholder',
@@ -20,6 +18,7 @@ const meta = {
     fullWidth: false,
     readOnly: false,
     multiline: false,
+    'aria-label': 'Input',
   },
   argTypes: {
     size: {
@@ -68,14 +67,15 @@ export const Playground: Story = {
 export const Default: Story = {
   args: {
     placeholder: 'Enter text',
+    'aria-label': 'Text',
   },
 };
 
 export const AllSizes: Story = {
   render: () => (
     <div style={columnStyle}>
-      <BoxedInput size="sm" placeholder="Small" />
-      <BoxedInput size="md" placeholder="Medium" />
+      <BoxedInput size="sm" placeholder="Small" aria-label="Small input" />
+      <BoxedInput size="md" placeholder="Medium" aria-label="Medium input" />
     </div>
   ),
 };
@@ -83,8 +83,8 @@ export const AllSizes: Story = {
 export const AllColors: Story = {
   render: () => (
     <div style={columnStyle}>
-      <BoxedInput color="primary" placeholder="Primary" />
-      <BoxedInput color="secondary" placeholder="Secondary" />
+      <BoxedInput color="primary" placeholder="Primary" aria-label="Primary color input" />
+      <BoxedInput color="secondary" placeholder="Secondary" aria-label="Secondary color input" />
     </div>
   ),
 };
@@ -94,6 +94,7 @@ export const Disabled: Story = {
     disabled: true,
     value: 'Disabled value',
     placeholder: 'Disabled',
+    'aria-label': 'Disabled input',
   },
 };
 
@@ -102,6 +103,8 @@ export const Error: Story = {
     error: true,
     value: 'invalid',
     placeholder: 'Email address',
+    'aria-label': 'Email address',
+    'aria-invalid': 'true',
   },
 };
 
@@ -109,13 +112,19 @@ export const ReadOnly: Story = {
   args: {
     readOnly: true,
     defaultValue: 'Read-only content',
+    'aria-label': 'Read-only input',
   },
 };
 
 export const Required: Story = {
   render: () => (
     <div style={columnStyle}>
-      <BoxedInput required placeholder="Required field" id="required-field" />
+      <BoxedInput
+        required
+        placeholder="Required field"
+        id="required-field"
+        aria-label="Required field"
+      />
     </div>
   ),
 };
@@ -123,8 +132,18 @@ export const Required: Story = {
 export const Multiline: Story = {
   render: () => (
     <div style={columnStyle}>
-      <BoxedInput multiline rows={3} placeholder="Write a short description" />
-      <BoxedInput multiline rows={5} placeholder="Write a longer message" />
+      <BoxedInput
+        multiline
+        rows={3}
+        placeholder="Write a short description"
+        aria-label="Short description"
+      />
+      <BoxedInput
+        multiline
+        rows={5}
+        placeholder="Write a longer message"
+        aria-label="Long message"
+      />
     </div>
   ),
 };
@@ -135,8 +154,14 @@ export const FullWidth: Story = {
   },
   render: () => (
     <div style={columnStyle}>
-      <BoxedInput fullWidth placeholder="Full width input" />
-      <BoxedInput fullWidth placeholder="Full width with error" error />
+      <BoxedInput fullWidth placeholder="Full width input" aria-label="Full width input" />
+      <BoxedInput
+        fullWidth
+        placeholder="Full width with error"
+        error
+        aria-label="Full width input with error"
+        aria-invalid="true"
+      />
     </div>
   ),
 };
@@ -144,12 +169,21 @@ export const FullWidth: Story = {
 export const WithAdornments: Story = {
   render: () => (
     <div style={columnStyle}>
-      <BoxedInput startAdornment={<span>$</span>} placeholder="Amount" />
-      <BoxedInput endAdornment={<span>kg</span>} placeholder="Weight" />
       <BoxedInput
-        startAdornment={<span>@</span>}
-        endAdornment={<span>.com</span>}
+        startAdornment={<span aria-hidden="true">$</span>}
+        placeholder="Amount"
+        aria-label="Amount in USD"
+      />
+      <BoxedInput
+        endAdornment={<span aria-hidden="true">kg</span>}
+        placeholder="Weight"
+        aria-label="Weight in kilograms"
+      />
+      <BoxedInput
+        startAdornment={<span aria-hidden="true">@</span>}
+        endAdornment={<span aria-hidden="true">.com</span>}
         placeholder="username"
+        aria-label="Username"
       />
     </div>
   ),
@@ -161,12 +195,14 @@ export const WithLongText: Story = {
       <BoxedInput
         defaultValue="This is a very long input value that might overflow or truncate depending on the container width"
         style={{ width: '240px' }}
+        aria-label="Long single-line value"
       />
       <BoxedInput
         multiline
         rows={3}
         defaultValue="This is a long multiline text that spans multiple lines to demonstrate how the component handles extended content gracefully."
         style={{ width: '320px' }}
+        aria-label="Long multiline value"
       />
     </div>
   ),
@@ -203,7 +239,4 @@ export const A11y: Story = {
       </div>
     </div>
   ),
-  parameters: {
-    a11y: { disable: false },
-  },
 };

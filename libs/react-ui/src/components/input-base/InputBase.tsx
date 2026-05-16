@@ -29,6 +29,9 @@ import {
 
 export const InputBase = ({
   'aria-describedby': ariaDescribedby,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
+  'aria-invalid': ariaInvalid,
   autoComplete,
   autoFocus = false,
   children,
@@ -228,6 +231,9 @@ export const InputBase = ({
 
   const commonInputProps = getCommonInputProps({
     ariaDescribedby,
+    ariaLabel,
+    ariaLabelledby,
+    ariaInvalid,
     autoComplete,
     autoFocus,
     disabled: resolvedDisabled,

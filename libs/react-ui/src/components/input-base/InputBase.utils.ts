@@ -154,6 +154,9 @@ export const getResolvedDefaultValue = (value: unknown): InputDomValue => {
  */
 export const getCommonInputProps = ({
   ariaDescribedby,
+  ariaLabel,
+  ariaLabelledby,
+  ariaInvalid,
   autoComplete,
   autoFocus,
   disabled,
@@ -172,8 +175,16 @@ export const getCommonInputProps = ({
   | 'placeholder'
   | 'readOnly'
   | 'required'
-> & { ariaDescribedby?: string }) => ({
+> & {
+  ariaDescribedby?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
+  ariaInvalid?: boolean | 'true' | 'false' | 'grammar' | 'spelling';
+}) => ({
   'aria-describedby': ariaDescribedby,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
+  'aria-invalid': ariaInvalid,
   autoComplete,
   autoFocus,
   disabled,

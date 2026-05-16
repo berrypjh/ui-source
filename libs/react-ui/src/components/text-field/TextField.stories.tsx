@@ -10,8 +10,6 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    // TODO(a11y): 위반 수정 후 disable 제거
-    a11y: { disable: true },
   },
   args: {
     label: 'Label',
@@ -330,8 +328,4 @@ export const A11y: Story = {
       </TextField>
     </div>
   ),
-  parameters: {
-    // TODO(a11y): A11y smoke-test 위반 수정 후 disable 제거
-    a11y: { disable: true },
-  },
 };
