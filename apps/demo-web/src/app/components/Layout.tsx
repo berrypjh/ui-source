@@ -50,7 +50,6 @@ const NAV_GROUPS = [
       { label: 'SearchField', path: '/components/search-field' },
       { label: 'FAB', path: '/components/fab' },
       { label: 'IconButton', path: '/components/icon-button' },
-      { label: 'BubbleButton', path: '/components/bubble-button' },
     ],
   },
 ];
