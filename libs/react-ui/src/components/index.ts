@@ -1,6 +1,5 @@
 export * from './box';
 export * from './boxed-input';
-export * from './bubble-button';
 export * from './button';
 export * from './button-base';
 export * from './fab';

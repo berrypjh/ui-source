@@ -35,7 +35,6 @@ import { Button, TextField, ThemeProvider } from '@berrypjh/react-ui';
 | `Button`                                        | 버튼 (variant, size, color 지원) |
 | `IconButton`                                    | 아이콘 전용 버튼                 |
 | `Fab`                                           | Floating Action Button           |
-| `BubbleButton`                                  | 버블 스타일 버튼                 |
 | `TextField`                                     | 텍스트 입력 필드                 |
 | `BoxedInput` / `FilledInput` / `PlainInput`     | 스타일 변형 인풋                 |
 | `Select`                                        | 셀렉트 박스                      |
