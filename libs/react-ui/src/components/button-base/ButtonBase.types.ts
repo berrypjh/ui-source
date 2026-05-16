@@ -10,7 +10,7 @@ import type {
 
 import type { PolymorphicComponentPropsWithRef, PropsOf } from '../../types/polymorphic';
 
-export type ButtonBaseOwnProps = CoreButtonProps & {
+export type ButtonBaseOwnProps = Omit<CoreButtonProps, 'loading' | 'loadingPosition'> & {
   className?: string;
   children?: ReactNode;
 };

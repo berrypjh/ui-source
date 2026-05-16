@@ -1,8 +1,7 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react';
 
 import type {
-  FieldColor,
-  FieldSize,
+  InputFieldProps,
   InputLikeChangeEventHandler,
   InputLikeElement,
   InputLikeFocusEventHandler,
@@ -40,32 +39,23 @@ export type NativeTextareaChangeHandler = NonNullable<
 
 export type InputDomValue = string | number | readonly string[] | undefined;
 
-export type InputBaseOwnProps = {
+export type InputBaseOwnProps = Omit<InputFieldProps, 'variant'> & {
   'aria-describedby'?: string;
   autoComplete?: string;
-  autoFocus?: boolean;
   children?: ReactNode;
-  color?: FieldColor;
   defaultValue?: unknown;
-  disabled?: boolean;
   endAdornment?: ReactNode;
-  error?: boolean;
-  fullWidth?: boolean;
   id?: string;
   inputClassName?: string;
   inputProps?: NativeInputProps;
   textareaProps?: NativeTextareaProps;
   inputRef?: unknown;
-  multiline?: boolean;
   name?: string;
   onBlur?: InputLikeFocusEventHandler;
   onChange?: InputLikeChangeEventHandler;
   onFocus?: InputLikeFocusEventHandler;
   placeholder?: string;
-  readOnly?: boolean;
-  required?: boolean;
   rows?: number;
-  size?: FieldSize;
   startAdornment?: ReactNode;
   type?: string;
   value?: unknown;

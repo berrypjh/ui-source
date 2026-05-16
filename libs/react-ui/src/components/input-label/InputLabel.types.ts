@@ -1,15 +1,13 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react';
 
-import type { FieldColor, FieldSize } from '../../types';
+import type { FieldProps } from '../../types';
 
-export type InputLabelOwnProps = {
+export type InputLabelOwnProps = Pick<
+  FieldProps,
+  'color' | 'disabled' | 'error' | 'required' | 'size'
+> & {
   children?: ReactNode;
-  color?: FieldColor;
-  disabled?: boolean;
-  error?: boolean;
   focused?: boolean;
-  required?: boolean;
-  size?: FieldSize;
 };
 
 export type InputLabelProps = Omit<ComponentPropsWithRef<'label'>, 'children'> & InputLabelOwnProps;

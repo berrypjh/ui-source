@@ -1,15 +1,15 @@
+import type { ButtonLoadingPosition, ButtonProps as CoreButtonProps } from '@berrypjh/ui-core';
+
 import type { ElementType, ReactNode } from 'react';
 
 import type { ButtonBaseAutoAnchorProps, ButtonBaseProps } from '../button-base';
 
-export type ButtonLoadingPosition = 'start' | 'center' | 'end';
+export type { ButtonLoadingPosition };
 
-export type ButtonExtraProps = {
+export type ButtonExtraProps = Pick<CoreButtonProps, 'loading' | 'loadingPosition'> & {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
-  loading?: boolean;
   loadingIndicator?: ReactNode;
-  loadingPosition?: ButtonLoadingPosition;
 };
 
 export type ButtonProps<C extends ElementType = 'button'> = ButtonBaseProps<C> & ButtonExtraProps;

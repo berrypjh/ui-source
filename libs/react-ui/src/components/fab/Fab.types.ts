@@ -1,17 +1,14 @@
-import type { ButtonColor, ButtonSize } from '@berrypjh/ui-core';
+import type { FabProps as CoreFabProps, FabShape } from '@berrypjh/ui-core';
 
 import type { ElementType, ReactNode } from 'react';
 
 import type { ButtonBaseAutoAnchorProps, ButtonBaseProps } from '../button-base';
 
-export type FabShape = 'circular' | 'extended';
+export type { FabShape };
 
-export type FabOwnProps = {
+export type FabOwnProps = CoreFabProps & {
   children?: ReactNode;
   className?: string;
-  color?: ButtonColor;
-  size?: ButtonSize;
-  shape?: FabShape;
   icon?: ReactNode;
 };
 
