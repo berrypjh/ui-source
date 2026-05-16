@@ -9,8 +9,6 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    // TODO(a11y): 위반 수정 후 disable 제거
-    a11y: { disable: true },
   },
   args: {
     placeholder: 'Search',
@@ -22,6 +20,7 @@ const meta = {
     error: false,
     readOnly: false,
     fullWidth: false,
+    'aria-label': 'Search',
   },
   argTypes: {
     variant: {
@@ -99,7 +98,7 @@ export const Playground: Story = {
 export const Default: Story = {
   render: () => (
     <div style={{ minWidth: '320px' }}>
-      <SearchField placeholder="Search projects..." />
+      <SearchField placeholder="Search projects..." aria-label="Search projects" />
     </div>
   ),
 };
@@ -107,9 +106,9 @@ export const Default: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div style={columnStyle}>
-      <SearchField variant="plain" placeholder="Plain variant" />
-      <SearchField variant="filled" placeholder="Filled variant" />
-      <SearchField variant="boxed" placeholder="Boxed variant" />
+      <SearchField variant="plain" placeholder="Plain variant" aria-label="Search (plain)" />
+      <SearchField variant="filled" placeholder="Filled variant" aria-label="Search (filled)" />
+      <SearchField variant="boxed" placeholder="Boxed variant" aria-label="Search (boxed)" />
     </div>
   ),
 };
@@ -117,8 +116,8 @@ export const AllVariants: Story = {
 export const AllSizes: Story = {
   render: () => (
     <div style={columnStyle}>
-      <SearchField size="sm" placeholder="Small (sm)" />
-      <SearchField size="md" placeholder="Medium (md)" />
+      <SearchField size="sm" placeholder="Small (sm)" aria-label="Small search" />
+      <SearchField size="md" placeholder="Medium (md)" aria-label="Medium search" />
     </div>
   ),
 };
@@ -126,8 +125,12 @@ export const AllSizes: Story = {
 export const AllColors: Story = {
   render: () => (
     <div style={columnStyle}>
-      <SearchField color="primary" placeholder="Primary color" />
-      <SearchField color="secondary" placeholder="Secondary color" />
+      <SearchField color="primary" placeholder="Primary color" aria-label="Primary color search" />
+      <SearchField
+        color="secondary"
+        placeholder="Secondary color"
+        aria-label="Secondary color search"
+      />
     </div>
   ),
 };
@@ -135,7 +138,12 @@ export const AllColors: Story = {
 export const Disabled: Story = {
   render: () => (
     <div style={{ minWidth: '320px' }}>
-      <SearchField disabled placeholder="Search is disabled" />
+      <SearchField
+        disabled
+        placeholder="Search is disabled"
+        aria-label="Search (disabled)"
+        aria-disabled="true"
+      />
     </div>
   ),
 };
@@ -143,7 +151,13 @@ export const Disabled: Story = {
 export const Error: Story = {
   render: () => (
     <div style={{ minWidth: '320px' }}>
-      <SearchField error defaultValue="invalid??query" placeholder="Search" />
+      <SearchField
+        error
+        defaultValue="invalid??query"
+        placeholder="Search"
+        aria-label="Search"
+        aria-invalid="true"
+      />
     </div>
   ),
 };
@@ -151,7 +165,7 @@ export const Error: Story = {
 export const ReadOnly: Story = {
   render: () => (
     <div style={{ minWidth: '320px' }}>
-      <SearchField readOnly value="TypeScript" />
+      <SearchField readOnly value="TypeScript" aria-label="Read-only search" />
     </div>
   ),
 };
@@ -159,11 +173,19 @@ export const ReadOnly: Story = {
 export const WithSuggestions: Story = {
   render: () => (
     <div style={{ minWidth: '320px' }}>
-      <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px', marginTop: 0 }}>
+      <p
+        style={{
+          fontSize: '12px',
+          color: 'var(--ds-text-light)',
+          marginBottom: '8px',
+          marginTop: 0,
+        }}
+      >
         Click or focus the input to see suggestions.
       </p>
       <SearchField
         placeholder="Search pages..."
+        aria-label="Search pages"
         suggestions={simpleSuggestions}
         onSuggestionSelect={(s) => console.log('selected', s)}
       />
@@ -174,11 +196,19 @@ export const WithSuggestions: Story = {
 export const WithDescriptions: Story = {
   render: () => (
     <div style={{ minWidth: '320px' }}>
-      <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px', marginTop: 0 }}>
+      <p
+        style={{
+          fontSize: '12px',
+          color: 'var(--ds-text-light)',
+          marginBottom: '8px',
+          marginTop: 0,
+        }}
+      >
         Click or focus the input to see suggestions with descriptions.
       </p>
       <SearchField
         placeholder="Search features..."
+        aria-label="Search features"
         suggestions={projectSuggestions}
         onSuggestionSelect={(s) => console.log('selected', s)}
       />
@@ -189,11 +219,19 @@ export const WithDescriptions: Story = {
 export const WithDisabledSuggestion: Story = {
   render: () => (
     <div style={{ minWidth: '320px' }}>
-      <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px', marginTop: 0 }}>
+      <p
+        style={{
+          fontSize: '12px',
+          color: 'var(--ds-text-light)',
+          marginBottom: '8px',
+          marginTop: 0,
+        }}
+      >
         Some suggestions are disabled and cannot be selected.
       </p>
       <SearchField
         placeholder="Search projects..."
+        aria-label="Search projects"
         suggestions={suggestionsWithDisabled}
         onSuggestionSelect={(s) => console.log('selected', s)}
       />
@@ -204,10 +242,22 @@ export const WithDisabledSuggestion: Story = {
 export const WithNoSuggestionsText: Story = {
   render: () => (
     <div style={{ minWidth: '320px' }}>
-      <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px', marginTop: 0 }}>
+      <p
+        style={{
+          fontSize: '12px',
+          color: 'var(--ds-text-light)',
+          marginBottom: '8px',
+          marginTop: 0,
+        }}
+      >
         Focus the input to see the empty state message.
       </p>
-      <SearchField placeholder="Search..." suggestions={[]} noSuggestionsText="No results found" />
+      <SearchField
+        placeholder="Search..."
+        aria-label="Search"
+        suggestions={[]}
+        noSuggestionsText="No results found"
+      />
     </div>
   ),
 };
@@ -218,11 +268,12 @@ export const FullWidth: Story = {
   },
   render: () => (
     <div style={{ display: 'grid', gap: '12px', width: '480px' }}>
-      <SearchField fullWidth placeholder="Full width search" />
+      <SearchField fullWidth placeholder="Full width search" aria-label="Full width search" />
       <SearchField
         fullWidth
         size="sm"
         placeholder="Full width small"
+        aria-label="Full width small search"
         suggestions={simpleSuggestions}
       />
     </div>
@@ -235,9 +286,11 @@ export const WithLongText: Story = {
       <SearchField
         defaultValue="This is a very long search query that tests overflow handling in single line mode"
         placeholder="Search..."
+        aria-label="Long search query"
       />
       <SearchField
         placeholder="Search across all projects, workspaces, and team members..."
+        aria-label="Search across projects, workspaces, and team members"
         suggestions={projectSuggestions}
       />
     </div>
@@ -271,7 +324,4 @@ export const A11y: Story = {
       />
     </div>
   ),
-  parameters: {
-    a11y: { disable: false },
-  },
 };
