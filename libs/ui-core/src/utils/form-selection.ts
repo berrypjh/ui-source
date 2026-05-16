@@ -1,6 +1,5 @@
-import { isObjectRecord } from '@berrypjh/ui-core';
-
-import { stringifyValue } from './value';
+import { stringifyValue } from './form-value';
+import { isObjectRecord } from './object';
 
 /**
  * 두 값을 선택 비교용 기준으로 비교합니다.
