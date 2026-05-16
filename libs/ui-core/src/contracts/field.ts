@@ -20,10 +20,11 @@ export interface FormControlProps extends FieldProps {
 }
 
 export interface InputFieldProps extends FieldProps {
+  autoFocus?: boolean;
   readOnly?: boolean;
+  multiline?: boolean;
 }
 
 export interface TextFieldProps extends InputFieldProps {
   margin?: FieldMargin;
-  multiline?: boolean;
 }

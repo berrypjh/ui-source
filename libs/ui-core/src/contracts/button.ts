@@ -1,6 +1,7 @@
 export type ButtonVariant = 'contained' | 'outlined' | 'text';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonColor = 'primary' | 'secondary';
+export type ButtonLoadingPosition = 'start' | 'center' | 'end';
 
 export interface ButtonProps {
   variant?: ButtonVariant;
@@ -9,4 +10,7 @@ export interface ButtonProps {
 
   disabled?: boolean;
   fullWidth?: boolean;
+
+  loading?: boolean;
+  loadingPosition?: ButtonLoadingPosition;
 }
