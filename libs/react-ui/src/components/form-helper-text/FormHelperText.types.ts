@@ -1,12 +1,9 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react';
 
-import type { FieldSize } from '../../types';
+import type { FieldProps } from '../../types';
 
-export type FormHelperTextOwnProps = {
+export type FormHelperTextOwnProps = Pick<FieldProps, 'disabled' | 'error' | 'size'> & {
   children?: ReactNode;
-  disabled?: boolean;
-  error?: boolean;
-  size?: FieldSize;
 };
 
 export type FormHelperTextProps = Omit<ComponentPropsWithRef<'p'>, 'children'> &
