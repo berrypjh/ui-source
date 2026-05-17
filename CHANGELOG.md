@@ -1,3 +1,18 @@
+# 1.0.0 (2026-05-17)
+
+### 🚀 Features
+
+- **commitlint-config:** 워크스페이스 공통 commitlint 설정 패키지 신규 추가 ([0079edc](https://github.com/berrypjh/shared-stack/commit/0079edc))
+- **eslint-config:** 워크스페이스 공통 eslint flat config 패키지 신규 추가 ([e7b0a7a](https://github.com/berrypjh/shared-stack/commit/e7b0a7a))
+- **prettier-config:** 워크스페이스 공통 prettier 설정 패키지 신규 추가 ([834e82e](https://github.com/berrypjh/shared-stack/commit/834e82e))
+- **tsconfig:** 워크스페이스 공통 tsconfig 베이스 패키지 신규 추가 ([6400c6b](https://github.com/berrypjh/shared-stack/commit/6400c6b))
+- **ui-core:** button, field, fab, icon-button, menu-item 보편 계약 확장 ([d83303c](https://github.com/berrypjh/shared-stack/commit/d83303c))
+
+### 🩹 Fixes
+
+- **design-tokens:** light 테마 텍스트 토큰 WCAG AA 대비 충족 ([e0b2360](https://github.com/berrypjh/shared-stack/commit/e0b2360))
+- **react-ui:** Input 계열 stories a11y 위반 해소 및 InputBase aria 속성 forward ([6c98f63](https://github.com/berrypjh/shared-stack/commit/6c98f63))
+
 ## 0.0.6 (2026-05-09)
 
 ### 🚀 Features
