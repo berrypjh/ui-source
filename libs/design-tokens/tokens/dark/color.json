@@ -33,7 +33,7 @@
     "default": { "$value": "{neutral.ne100}", "$type": "color" },
     "light": { "$value": "{neutral.ne400}", "$type": "color" },
     "placeholder": { "$value": "{neutral.ne500}", "$type": "color" },
-    "disable": { "$value": "{neutral.ne600}", "$type": "color" },
+    "disable": { "$value": "{neutral.ne500}", "$type": "color" },
     "primary": { "$value": "{primary.pr400}", "$type": "color" },
     "secondary": { "$value": "{secondary.se400}", "$type": "color" },
     "error": { "$value": "{error.er400}", "$type": "color" },
