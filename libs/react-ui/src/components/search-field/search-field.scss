@@ -43,7 +43,7 @@
   right: 0;
   z-index: 10;
   margin: 0;
-  padding: var(--ds-spacing-xxsm) 0;
+  padding: var(--ds-spacing-xs) 0;
   list-style: none;
   border: var(--ds-border-primary-width) solid var(--ds-neutral-ne300);
   border-radius: var(--ds-radius-xl);
@@ -61,7 +61,7 @@
   align-items: center;
   gap: var(--ds-spacing-sm);
   width: 100%;
-  padding: var(--ds-spacing-sm) var(--ds-spacing-mdl);
+  padding: var(--ds-spacing-sm) var(--ds-spacing-lg);
   border: 0;
   background: transparent;
   color: var(--ds-text-default);

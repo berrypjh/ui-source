@@ -1,7 +1,7 @@
 .ui-input-base {
   --ui-input-radius: var(--ds-radius-md);
-  --ui-input-padding-inline: var(--ds-spacing-mdl);
-  --ui-input-padding-block: var(--ds-spacing-sm);
+  --ui-input-padding-inline: var(--ds-spacing-lg);
+  --ui-input-padding-block: var(--ds-spacing-md);
   --ui-input-bg: transparent;
   --ui-input-fg: var(--ds-text-default);
   --ui-input-placeholder: var(--ds-text-placeholder);
@@ -42,14 +42,14 @@
 }
 
 .ui-input-base--size-sm {
-  --ui-input-padding-inline: var(--ds-spacing-sml);
-  --ui-input-padding-block: var(--ds-spacing-xsm);
+  --ui-input-padding-inline: var(--ds-spacing-md);
+  --ui-input-padding-block: var(--ds-spacing-sm);
   --ui-input-min-height: 40px;
 }
 
 .ui-input-base--size-md {
-  --ui-input-padding-inline: var(--ds-spacing-mdl);
-  --ui-input-padding-block: var(--ds-spacing-sm);
+  --ui-input-padding-inline: var(--ds-spacing-lg);
+  --ui-input-padding-block: var(--ds-spacing-md);
   --ui-input-min-height: 52px;
 }
 
@@ -75,7 +75,7 @@
   font-size: var(--ds-body-medium-font-size);
   font-weight: var(--ds-body-medium-font-weight);
   letter-spacing: var(--ds-body-medium-letter-spacing);
-  line-height: calc(var(--ds-body-medium-line-height) * 1px);
+  line-height: var(--ds-body-medium-line-height);
 }
 
 .ui-input-base__input--size-sm {
@@ -83,12 +83,12 @@
   font-size: var(--ds-body-small-font-size);
   font-weight: var(--ds-body-small-font-weight);
   letter-spacing: var(--ds-body-small-letter-spacing);
-  line-height: calc(var(--ds-body-small-line-height) * 1px);
+  line-height: var(--ds-body-small-line-height);
 }
 
 .ui-input-base__input--hidden-label {
-  padding-block-start: var(--ds-spacing-xsm);
-  padding-block-end: var(--ds-spacing-xsm);
+  padding-block-start: var(--ds-spacing-md);
+  padding-block-end: var(--ds-spacing-md);
 }
 
 .ui-input-base__input::placeholder {
@@ -109,19 +109,19 @@
 }
 
 .ui-input-base__start-adornment {
-  margin-inline-start: var(--ds-spacing-mdl);
+  margin-inline-start: var(--ds-spacing-lg);
 }
 
 .ui-input-base__end-adornment {
-  margin-inline-end: var(--ds-spacing-mdl);
+  margin-inline-end: var(--ds-spacing-lg);
 }
 
 .ui-input-base--adorned-start .ui-input-base__input {
-  padding-inline-start: var(--ds-spacing-sm);
+  padding-inline-start: var(--ds-spacing-md);
 }
 
 .ui-input-base--adorned-end .ui-input-base__input {
-  padding-inline-end: var(--ds-spacing-sm);
+  padding-inline-end: var(--ds-spacing-md);
 }
 
 .ui-input-base--multiline {

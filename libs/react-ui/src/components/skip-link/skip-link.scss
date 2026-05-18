@@ -1,0 +1,50 @@
+.ui-skip-link {
+  --ui-skip-link-bg: var(--ds-background-primary);
+  --ui-skip-link-fg: var(--ds-text-contrast-text);
+  --ui-skip-link-offset: var(--ds-spacing-lg);
+  --ui-skip-link-radius: var(--ds-radius-md);
+  --ui-skip-link-padding-block: var(--ds-spacing-sm);
+  --ui-skip-link-padding-inline: var(--ds-spacing-lg);
+
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.ui-skip-link:focus,
+.ui-skip-link:focus-visible {
+  position: absolute;
+  z-index: 50;
+  inset-inline-start: var(--ui-skip-link-offset);
+  inset-block-start: var(--ui-skip-link-offset);
+  inline-size: auto;
+  block-size: auto;
+  padding: var(--ui-skip-link-padding-block) var(--ui-skip-link-padding-inline);
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  border-radius: var(--ui-skip-link-radius);
+  background-color: var(--ui-skip-link-bg);
+  color: var(--ui-skip-link-fg);
+  font-family: var(--ds-body-small-strong-font-family);
+  font-size: var(--ds-body-small-strong-font-size);
+  font-weight: var(--ds-body-small-strong-font-weight);
+  line-height: var(--ds-body-small-strong-line-height);
+  letter-spacing: var(--ds-body-small-strong-letter-spacing);
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow:
+    var(--ds-shadow-lg-1-offset-x) var(--ds-shadow-lg-1-offset-y) var(--ds-shadow-lg-1-blur)
+      var(--ds-shadow-lg-1-spread) var(--ds-shadow-lg-1-color),
+    var(--ds-shadow-lg-2-offset-x) var(--ds-shadow-lg-2-offset-y) var(--ds-shadow-lg-2-blur)
+      var(--ds-shadow-lg-2-spread) var(--ds-shadow-lg-2-color);
+  outline: none;
+}

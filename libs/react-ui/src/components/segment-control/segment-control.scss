@@ -1,0 +1,49 @@
+.ui-segment-control {
+  display: inline-flex;
+  inline-size: 100%;
+  gap: var(--ds-spacing-xs);
+  padding: var(--ds-spacing-2xs);
+  border-radius: var(--ds-radius-xs);
+  background-color: rgb(var(--ds-background-grey-rgb) / 0.15);
+  font-family: var(--ds-body-small-strong-font-family);
+  font-size: var(--ds-body-small-strong-font-size);
+  font-weight: var(--ds-body-small-strong-font-weight);
+  letter-spacing: var(--ds-body-small-strong-letter-spacing);
+}
+
+.ui-segment-control__option {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  padding-block: var(--ds-spacing-xs);
+  padding-inline: var(--ds-spacing-sm);
+  border: 0;
+  border-radius: var(--ds-radius-xs);
+  background: transparent;
+  color: var(--ds-text-light);
+  cursor: pointer;
+  text-align: center;
+  font: inherit;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.ui-segment-control__option:hover:not(.is-active):not(:disabled) {
+  background-color: rgb(var(--ds-background-grey-rgb) / 0.15);
+  color: var(--ds-text-default);
+}
+
+.ui-segment-control__option:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--ds-semantic-border-focus) var(--ds-stroke-primary);
+}
+
+.ui-segment-control__option:disabled {
+  color: var(--ds-text-disable);
+  cursor: not-allowed;
+}
+
+.ui-segment-control__option.is-active {
+  background-color: var(--ds-background-primary);
+  color: var(--ds-text-contrast-text);
+}

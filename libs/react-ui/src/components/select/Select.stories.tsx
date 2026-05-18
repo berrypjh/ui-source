@@ -10,10 +10,9 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    // TODO(a11y): 위반 수정 후 disable 제거
-    a11y: { disable: true },
   },
   args: {
+    'aria-label': 'Select an option',
     variant: 'boxed',
     size: 'md',
     color: 'primary',
@@ -80,7 +79,7 @@ export const Playground: Story = {
 
 export const Default: Story = {
   render: () => (
-    <Select defaultValue="monthly">
+    <Select aria-label="Period" defaultValue="monthly">
       <MenuItem value="daily">Daily</MenuItem>
       <MenuItem value="weekly">Weekly</MenuItem>
       <MenuItem value="monthly">Monthly</MenuItem>
@@ -92,15 +91,15 @@ export const Default: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div style={columnStyle}>
-      <Select variant="plain" defaultValue="option1">
+      <Select aria-label="Plain variant" variant="plain" defaultValue="option1">
         <MenuItem value="option1">Plain variant</MenuItem>
         <MenuItem value="option2">Option 2</MenuItem>
       </Select>
-      <Select variant="filled" defaultValue="option1">
+      <Select aria-label="Filled variant" variant="filled" defaultValue="option1">
         <MenuItem value="option1">Filled variant</MenuItem>
         <MenuItem value="option2">Option 2</MenuItem>
       </Select>
-      <Select variant="boxed" defaultValue="option1">
+      <Select aria-label="Boxed variant" variant="boxed" defaultValue="option1">
         <MenuItem value="option1">Boxed variant</MenuItem>
         <MenuItem value="option2">Option 2</MenuItem>
       </Select>
@@ -111,11 +110,11 @@ export const AllVariants: Story = {
 export const AllSizes: Story = {
   render: () => (
     <div style={columnStyle}>
-      <Select size="sm" defaultValue="option1">
+      <Select aria-label="Small size" size="sm" defaultValue="option1">
         <MenuItem value="option1">Small (sm)</MenuItem>
         <MenuItem value="option2">Option 2</MenuItem>
       </Select>
-      <Select size="md" defaultValue="option1">
+      <Select aria-label="Medium size" size="md" defaultValue="option1">
         <MenuItem value="option1">Medium (md)</MenuItem>
         <MenuItem value="option2">Option 2</MenuItem>
       </Select>
@@ -126,11 +125,11 @@ export const AllSizes: Story = {
 export const AllColors: Story = {
   render: () => (
     <div style={columnStyle}>
-      <Select color="primary" defaultValue="option1">
+      <Select aria-label="Primary color" color="primary" defaultValue="option1">
         <MenuItem value="option1">Primary color</MenuItem>
         <MenuItem value="option2">Option 2</MenuItem>
       </Select>
-      <Select color="secondary" defaultValue="option1">
+      <Select aria-label="Secondary color" color="secondary" defaultValue="option1">
         <MenuItem value="option1">Secondary color</MenuItem>
         <MenuItem value="option2">Option 2</MenuItem>
       </Select>
@@ -140,7 +139,7 @@ export const AllColors: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <Select disabled defaultValue="weekly">
+    <Select aria-label="Period (disabled)" disabled defaultValue="weekly">
       <MenuItem value="daily">Daily</MenuItem>
       <MenuItem value="weekly">Weekly</MenuItem>
       <MenuItem value="monthly">Monthly</MenuItem>
@@ -151,12 +150,12 @@ export const Disabled: Story = {
 export const Error: Story = {
   render: () => (
     <div style={columnStyle}>
-      <Select error defaultValue="">
+      <Select aria-label="Role" error defaultValue="">
         <MenuItem value="">Select a role</MenuItem>
         <MenuItem value="admin">Admin</MenuItem>
         <MenuItem value="member">Member</MenuItem>
       </Select>
-      <Select error defaultValue="invalid">
+      <Select aria-label="Status" error defaultValue="invalid">
         <MenuItem value="active">Active</MenuItem>
         <MenuItem value="inactive">Inactive</MenuItem>
       </Select>
@@ -166,7 +165,7 @@ export const Error: Story = {
 
 export const Required: Story = {
   render: () => (
-    <Select required defaultValue="">
+    <Select aria-label="Timezone" required defaultValue="">
       <MenuItem value="">Select a timezone</MenuItem>
       <MenuItem value="utc">UTC</MenuItem>
       <MenuItem value="est">Eastern (EST)</MenuItem>
@@ -181,7 +180,7 @@ export const Multiple: Story = {
       <p style={{ fontSize: '12px', color: '#888', margin: 0 }}>
         Multiple selection — click items to toggle.
       </p>
-      <Select multiple defaultValue={['react', 'typescript']}>
+      <Select aria-label="Skills" multiple defaultValue={['react', 'typescript']}>
         <MenuItem value="react">React</MenuItem>
         <MenuItem value="typescript">TypeScript</MenuItem>
         <MenuItem value="graphql">GraphQL</MenuItem>
@@ -195,13 +194,13 @@ export const Multiple: Story = {
 export const WithPlaceholder: Story = {
   render: () => (
     <div style={columnStyle}>
-      <Select placeholder="Select a country">
+      <Select aria-label="Country" placeholder="Select a country">
         <MenuItem value="kr">South Korea</MenuItem>
         <MenuItem value="us">United States</MenuItem>
         <MenuItem value="jp">Japan</MenuItem>
         <MenuItem value="de">Germany</MenuItem>
       </Select>
-      <Select displayEmpty defaultValue="">
+      <Select aria-label="Category" displayEmpty defaultValue="">
         <MenuItem value="">All categories</MenuItem>
         <MenuItem value="frontend">Frontend</MenuItem>
         <MenuItem value="backend">Backend</MenuItem>
@@ -213,7 +212,7 @@ export const WithPlaceholder: Story = {
 
 export const WithDisabledOptions: Story = {
   render: () => (
-    <Select defaultValue="active">
+    <Select aria-label="Account status" defaultValue="active">
       <MenuItem value="active">Active</MenuItem>
       <MenuItem value="pending">Pending</MenuItem>
       <MenuItem value="suspended" disabled>
@@ -233,6 +232,7 @@ export const WithRenderValue: Story = {
   render: () => (
     <div style={columnStyle}>
       <Select
+        aria-label="Role"
         defaultValue="admin"
         renderValue={(value) => (
           <span>
@@ -245,6 +245,7 @@ export const WithRenderValue: Story = {
         <MenuItem value="viewer">Viewer</MenuItem>
       </Select>
       <Select
+        aria-label="Selected skills"
         multiple
         defaultValue={['react', 'typescript']}
         renderValue={(value) => (Array.isArray(value) ? `${value.length} selected` : String(value))}
@@ -264,12 +265,12 @@ export const FullWidth: Story = {
   },
   render: () => (
     <div style={{ display: 'grid', gap: '12px', width: '480px' }}>
-      <Select fullWidth defaultValue="monthly">
+      <Select aria-label="Period" fullWidth defaultValue="monthly">
         <MenuItem value="daily">Daily</MenuItem>
         <MenuItem value="weekly">Weekly</MenuItem>
         <MenuItem value="monthly">Monthly</MenuItem>
       </Select>
-      <Select fullWidth size="sm" defaultValue="frontend">
+      <Select aria-label="Department" fullWidth size="sm" defaultValue="frontend">
         <MenuItem value="frontend">Frontend</MenuItem>
         <MenuItem value="backend">Backend</MenuItem>
         <MenuItem value="design">Design</MenuItem>
@@ -281,7 +282,7 @@ export const FullWidth: Story = {
 export const WithLongText: Story = {
   render: () => (
     <div style={columnStyle}>
-      <Select defaultValue="very-long">
+      <Select aria-label="Option" defaultValue="very-long">
         <MenuItem value="short">Short</MenuItem>
         <MenuItem value="very-long">
           This is a very long option label that tests overflow handling
@@ -289,6 +290,7 @@ export const WithLongText: Story = {
         <MenuItem value="another">Another option</MenuItem>
       </Select>
       <Select
+        aria-label="Multi-select skills"
         multiple
         defaultValue={['react', 'typescript', 'graphql', 'docker']}
         renderValue={(value) => (Array.isArray(value) ? value.join(', ') : String(value))}
@@ -377,8 +379,4 @@ export const A11y: Story = {
       </div>
     </div>
   ),
-  parameters: {
-    // TODO(a11y): A11y smoke-test 위반 수정 후 disable 제거
-    a11y: { disable: true },
-  },
 };

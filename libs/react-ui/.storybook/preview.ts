@@ -4,8 +4,15 @@ import '../src/styles';
 import { createElement } from 'react';
 
 import type { Preview } from '@storybook/react';
+import { INITIAL_VIEWPORTS } from 'storybook/viewport';
 
 import { ThemeProvider } from '../src/theme/ThemeProvider';
+
+const dsViewports = {
+  mobile: { name: 'Mobile', styles: { width: '375px', height: '812px' }, type: 'mobile' },
+  tablet: { name: 'Tablet', styles: { width: '768px', height: '1024px' }, type: 'tablet' },
+  desktop: { name: 'Desktop', styles: { width: '1440px', height: '900px' }, type: 'desktop' },
+} as const;
 
 const preview: Preview = {
   parameters: {
@@ -16,6 +23,12 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    viewport: {
+      options: { ...dsViewports, ...INITIAL_VIEWPORTS },
+    },
+  },
+  initialGlobals: {
+    viewport: { value: 'responsive' },
   },
   tags: ['autodocs'],
   globalTypes: {

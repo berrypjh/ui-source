@@ -5,8 +5,8 @@
 ========================= */
 $sizes: (
   sm: (
-    px: var(--ds-spacing-sml),
-    py: var(--ds-spacing-xsm),
+    px: var(--ds-spacing-md),
+    py: var(--ds-spacing-sm),
     radius: var(--ds-radius-sm),
     ff: var(--ds-body-small-strong-font-family),
     fs: var(--ds-body-small-strong-font-size),
@@ -15,7 +15,7 @@ $sizes: (
     lh: var(--ds-body-small-strong-line-height),
   ),
   md: (
-    px: var(--ds-spacing-xlg),
+    px: var(--ds-spacing-xl),
     py: var(--ds-spacing-sm),
     radius: var(--ds-radius-md),
     ff: var(--ds-body-medium-strong-font-family),
@@ -25,8 +25,8 @@ $sizes: (
     lh: var(--ds-body-medium-strong-line-height),
   ),
   lg: (
-    px: var(--ds-spacing-xxl),
-    py: var(--ds-spacing-sml),
+    px: var(--ds-spacing-2xl),
+    py: var(--ds-spacing-md),
     radius: var(--ds-radius-lg),
     ff: var(--ds-body-large-strong-font-family),
     fs: var(--ds-body-large-strong-font-size),
@@ -96,7 +96,7 @@ $colors: (
   --ui-btn-font-size: #{map.get($s, fs)};
   --ui-btn-font-weight: #{map.get($s, fw)};
   --ui-btn-letter-spacing: #{map.get($s, ls)};
-  --ui-btn-line-height: calc(#{map.get($s, lh)} * 1px);
+  --ui-btn-line-height: #{map.get($s, lh)};
 }
 
 @mixin define-color-palette($color-key) {
@@ -125,17 +125,17 @@ $colors: (
 
 .ui-button {
   /* shape / spacing */
-  --ui-btn-px: var(--ds-spacing-xlg);
+  --ui-btn-px: var(--ds-spacing-xl);
   --ui-btn-py: var(--ds-spacing-sm);
   --ui-btn-radius: var(--ds-radius-md);
-  --ui-btn-gap: var(--ds-spacing-xsm);
+  --ui-btn-gap: var(--ds-spacing-sm);
 
   /* typography (default = md strong) */
   --ui-btn-font-family: var(--ds-body-medium-strong-font-family);
   --ui-btn-font-size: var(--ds-body-medium-strong-font-size);
   --ui-btn-font-weight: var(--ds-body-medium-strong-font-weight);
   --ui-btn-letter-spacing: var(--ds-body-medium-strong-letter-spacing);
-  --ui-btn-line-height: calc(var(--ds-body-medium-strong-line-height) * 1px);
+  --ui-btn-line-height: var(--ds-body-medium-strong-line-height);
 
   /* interactive */
   --ui-btn-bg: transparent;
@@ -154,7 +154,7 @@ $colors: (
   --ui-btn-focus-halo-color: var(--ds-primary-btn-focus-ripple);
   --ui-btn-focus-width: var(--ds-semantic-border-focus);
   --ui-btn-focus-outline-width: var(--ds-border-primary-width);
-  --ui-btn-focus-offset: var(--ds-spacing-xxsm);
+  --ui-btn-focus-offset: var(--ds-spacing-xs);
 
   display: inline-flex;
   align-items: center;
