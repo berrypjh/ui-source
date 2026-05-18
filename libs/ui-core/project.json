@@ -6,6 +6,7 @@
     "build": {
       "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist"],
+      "dependsOn": ["@berrypjh/design-tokens:build"],
       "options": {
         "commands": [
           "nx run @berrypjh/ui-core:build-js",
