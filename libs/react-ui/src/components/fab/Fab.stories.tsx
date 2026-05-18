@@ -8,10 +8,9 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    // TODO(a11y): 위반 수정 후 disable 제거
-    a11y: { disable: true },
   },
   args: {
+    'aria-label': 'Action',
     color: 'primary',
     size: 'lg',
     shape: 'circular',

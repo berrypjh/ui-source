@@ -3,7 +3,7 @@
   align-items: center;
   align-self: flex-start;
   max-width: 100%;
-  margin: 0 0 var(--ds-spacing-xxsm);
+  margin: 0 0 var(--ds-spacing-xs);
   color: var(--ds-text-default);
   pointer-events: auto;
   cursor: pointer;
@@ -13,7 +13,7 @@
   font-size: var(--ds-body-small-strong-font-size);
   font-weight: var(--ds-body-small-strong-font-weight);
   letter-spacing: var(--ds-body-small-strong-letter-spacing);
-  line-height: calc(var(--ds-body-small-strong-line-height) * 1px);
+  line-height: var(--ds-body-small-strong-line-height);
 }
 
 .ui-input-label--form-control {
@@ -25,7 +25,7 @@
   font-size: var(--ds-body-tiny-strong-font-size);
   font-weight: var(--ds-body-tiny-strong-font-weight);
   letter-spacing: var(--ds-body-tiny-strong-letter-spacing);
-  line-height: calc(var(--ds-body-tiny-strong-line-height) * 1px);
+  line-height: var(--ds-body-tiny-strong-line-height);
 }
 
 .ui-input-label--size-md {
@@ -33,7 +33,7 @@
   font-size: var(--ds-body-small-strong-font-size);
   font-weight: var(--ds-body-small-strong-font-weight);
   letter-spacing: var(--ds-body-small-strong-letter-spacing);
-  line-height: calc(var(--ds-body-small-strong-line-height) * 1px);
+  line-height: var(--ds-body-small-strong-line-height);
 }
 
 .ui-input-label--focused.ui-input-label--color-primary {

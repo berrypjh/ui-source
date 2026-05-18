@@ -2,7 +2,7 @@
   --ui-fab-size: var(--ds-font-size-7xl);
   --ui-fab-padding-inline: 0;
   --ui-fab-min-inline-size: var(--ui-fab-size);
-  --ui-fab-gap: var(--ds-spacing-xsm);
+  --ui-fab-gap: var(--ds-spacing-sm);
   --ui-fab-icon-size: var(--ds-font-size-xl);
 
   --ui-fab-shadow:
@@ -93,8 +93,8 @@
 }
 
 .ui-fab--extended {
-  --ui-fab-padding-inline: var(--ds-spacing-xlg);
-  --ui-fab-min-inline-size: var(--ds-spacing-5xl);
+  --ui-fab-padding-inline: var(--ds-spacing-xl);
+  --ui-fab-min-inline-size: var(--ds-spacing-4xl);
 
   inline-size: auto;
 }
@@ -102,28 +102,28 @@
 .ui-fab--extended.ui-fab--size-sm {
   --ui-fab-padding-inline: var(--ds-spacing-sm);
   --ui-fab-min-inline-size: calc(
-    var(--ds-spacing-xxl) + var(--ds-spacing-xxsm) - var(--ds-primitive-border-sm)
+    var(--ds-spacing-2xl) + var(--ds-spacing-xs) - var(--ds-primitive-border-sm)
   );
 }
 
 .ui-fab--extended.ui-fab--size-md {
-  --ui-fab-padding-inline: var(--ds-spacing-xlg);
-  --ui-fab-min-inline-size: var(--ds-spacing-4xl);
+  --ui-fab-padding-inline: var(--ds-spacing-xl);
+  --ui-fab-min-inline-size: var(--ds-spacing-3xl);
 }
 
 .ui-fab--extended.ui-fab--size-lg {
-  --ui-fab-padding-inline: var(--ds-spacing-xlg);
-  --ui-fab-min-inline-size: var(--ds-spacing-5xl);
+  --ui-fab-padding-inline: var(--ds-spacing-xl);
+  --ui-fab-min-inline-size: var(--ds-spacing-4xl);
 }
 
 /* size */
 .ui-fab--size-sm {
-  --ui-fab-size: var(--ds-spacing-4xl);
+  --ui-fab-size: var(--ds-spacing-3xl);
   --ui-fab-icon-size: var(--ds-font-size-md);
 }
 
 .ui-fab--size-md {
-  --ui-fab-size: var(--ds-spacing-5xl);
+  --ui-fab-size: var(--ds-spacing-4xl);
   --ui-fab-icon-size: var(--ds-font-size-lg);
 }
 

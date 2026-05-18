@@ -85,7 +85,7 @@
 
 .ui-icon-button--size-sm {
   --ui-icon-button-font-size: var(--ds-font-size-md);
-  --ui-icon-button-padding: var(--ds-spacing-xsm);
+  --ui-icon-button-padding: var(--ds-spacing-sm);
 }
 
 .ui-icon-button--size-md {
@@ -95,23 +95,23 @@
 
 .ui-icon-button--size-lg {
   --ui-icon-button-font-size: var(--ds-font-size-xxl);
-  --ui-icon-button-padding: var(--ds-spacing-sml);
+  --ui-icon-button-padding: var(--ds-spacing-md);
 }
 
 .ui-icon-button--edge-start {
-  margin-inline-start: calc(var(--ds-spacing-sml) * -1);
+  margin-inline-start: calc(var(--ds-spacing-md) * -1);
 }
 
 .ui-icon-button--size-sm.ui-icon-button--edge-start {
-  margin-inline-start: calc(var(--ds-spacing-xxsm) * -1);
+  margin-inline-start: calc(var(--ds-spacing-xs) * -1);
 }
 
 .ui-icon-button--edge-end {
-  margin-inline-end: calc(var(--ds-spacing-sml) * -1);
+  margin-inline-end: calc(var(--ds-spacing-md) * -1);
 }
 
 .ui-icon-button--size-sm.ui-icon-button--edge-end {
-  margin-inline-end: calc(var(--ds-spacing-xxsm) * -1);
+  margin-inline-end: calc(var(--ds-spacing-xs) * -1);
 }
 
 .ui-icon-button--color-primary {

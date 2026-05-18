@@ -1,0 +1,16 @@
+.ui-popover-panel {
+  background-color: var(--ds-background-surface);
+  border: var(--ds-border-primary-width) solid var(--ds-stroke-default);
+  border-radius: var(--ds-radius-md);
+  padding: var(--ds-spacing-md);
+  color: var(--ds-text-default);
+  box-shadow:
+    var(--ds-shadow-lg-1-offset-x) var(--ds-shadow-lg-1-offset-y) var(--ds-shadow-lg-1-blur)
+      var(--ds-shadow-lg-1-spread) var(--ds-shadow-lg-1-color),
+    var(--ds-shadow-lg-2-offset-x) var(--ds-shadow-lg-2-offset-y) var(--ds-shadow-lg-2-blur)
+      var(--ds-shadow-lg-2-spread) var(--ds-shadow-lg-2-color);
+}
+
+.ui-popover-panel:focus-visible {
+  outline: none;
+}

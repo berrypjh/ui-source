@@ -8,8 +8,6 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    // TODO(a11y): 위반 수정 후 disable 제거
-    a11y: { disable: true },
   },
   args: {
     children: '박스 내용',
@@ -107,19 +105,19 @@ export const WithBackground: Story = {
     <div style={rowStyle}>
       {(
         [
-          'background.primary',
-          'background.secondary',
-          'background.success',
-          'background.error',
-          'background.warning',
-          'background.grey',
+          { token: 'background.primary', fg: '#fff' },
+          { token: 'background.secondary', fg: '#fff' },
+          { token: 'background.success', fg: '#fff' },
+          { token: 'background.error', fg: '#fff' },
+          { token: 'background.warning', fg: '#fff' },
+          { token: 'background.grey', fg: 'var(--ds-text-default)' },
         ] as const
-      ).map((token) => (
+      ).map(({ token, fg }) => (
         <Box
           key={token}
           bg={token}
           p="md"
-          style={{ borderRadius: '6px', color: '#fff', fontSize: '12px', whiteSpace: 'nowrap' }}
+          style={{ borderRadius: '6px', color: fg, fontSize: '12px', whiteSpace: 'nowrap' }}
         >
           {token}
         </Box>

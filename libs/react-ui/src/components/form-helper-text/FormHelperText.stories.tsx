@@ -8,8 +8,6 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    // TODO(a11y): 위반 수정 후 disable 제거
-    a11y: { disable: true },
   },
   args: {
     children: 'Helper text',
@@ -122,6 +120,9 @@ export const A11y: Story = {
     <div style={columnStyle}>
       {/* id로 연결해 aria-describedby에서 참조 */}
       <div>
+        <label htmlFor="a11y-email" style={{ display: 'block', marginBottom: '4px' }}>
+          Email address
+        </label>
         <input
           id="a11y-email"
           type="email"
@@ -134,6 +135,9 @@ export const A11y: Story = {
         </FormHelperText>
       </div>
       <div>
+        <label htmlFor="a11y-password" style={{ display: 'block', marginBottom: '4px' }}>
+          Password
+        </label>
         <input
           id="a11y-password"
           type="password"
@@ -148,8 +152,4 @@ export const A11y: Story = {
       </div>
     </div>
   ),
-  parameters: {
-    // TODO(a11y): A11y smoke-test 위반 수정 후 disable 제거
-    a11y: { disable: true },
-  },
 };
