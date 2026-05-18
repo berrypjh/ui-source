@@ -88,11 +88,11 @@ export const DisabledWithError: Story = {
 export const Empty: Story = {
   render: () => (
     <div style={columnStyle}>
-      <p style={{ fontSize: '12px', color: '#888', margin: 0 }}>
+      <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>
         Space character renders a zero-width space (preserves layout height):
       </p>
       <FormHelperText> </FormHelperText>
-      <p style={{ fontSize: '12px', color: '#888', margin: 0 }}>
+      <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>
         Normal helper text for comparison:
       </p>
       <FormHelperText>Normal helper text</FormHelperText>

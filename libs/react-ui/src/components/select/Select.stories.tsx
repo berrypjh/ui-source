@@ -177,7 +177,7 @@ export const Required: Story = {
 export const Multiple: Story = {
   render: () => (
     <div style={columnStyle}>
-      <p style={{ fontSize: '12px', color: '#888', margin: 0 }}>
+      <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>
         Multiple selection — click items to toggle.
       </p>
       <Select aria-label="Skills" multiple defaultValue={['react', 'typescript']}>
@@ -338,7 +338,7 @@ export const A11y: Story = {
           style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}
         >
           Timezone{' '}
-          <span aria-hidden="true" style={{ color: 'red' }}>
+          <span aria-hidden="true" style={{ color: '#c00' }}>
             *
           </span>
         </label>
@@ -373,7 +373,7 @@ export const A11y: Story = {
           <MenuItem value="active">Active</MenuItem>
           <MenuItem value="inactive">Inactive</MenuItem>
         </Select>
-        <p id="a11y-status-error" style={{ fontSize: '12px', color: 'red', margin: '4px 0 0' }}>
+        <p id="a11y-status-error" style={{ fontSize: '12px', color: '#c00', margin: '4px 0 0' }}>
           Please select a valid status.
         </p>
       </div>

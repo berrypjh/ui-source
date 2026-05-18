@@ -265,7 +265,7 @@ export const A11y: Story = {
     <div style={columnStyle}>
       <FormControl required>
         <InputLabel htmlFor="a11y-name">Full name</InputLabel>
-        <FilledInput id="a11y-name" placeholder="Jane Smith" aria-required="true" />
+        <FilledInput id="a11y-name" placeholder="Jane Smith" />
         <FormHelperText id="a11y-name-helper">Enter your legal full name.</FormHelperText>
       </FormControl>
       <FormControl error>

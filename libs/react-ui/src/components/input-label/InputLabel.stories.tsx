@@ -189,7 +189,7 @@ export const A11y: Story = {
           aria-describedby="a11y-password-error"
           style={{ display: 'block', marginTop: '4px' }}
         />
-        <p id="a11y-password-error" style={{ fontSize: '12px', color: 'red', margin: '4px 0 0' }}>
+        <p id="a11y-password-error" style={{ fontSize: '12px', color: '#c00', margin: '4px 0 0' }}>
           Password must be at least 8 characters.
         </p>
       </div>
