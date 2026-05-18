@@ -27,6 +27,16 @@ const RN_NUMERIC_TYPES = new Set([
   'fontWeight',
 ]);
 
+/**
+ * Web rem 변환 대상 토큰 타입.
+ * tokens-studio align-types preprocessor가 spacing/borderRadius/borderWidth를 `dimension`으로 정규화하므로
+ * `dimension`을 포함시켜야 spacing/radius/border-width가 px → rem 변환된다.
+ */
+const WEB_REM_TYPES = new Set(['dimension', 'fontSize', 'lineHeight']);
+
+/** rem 변환 base. CSS 표준 16px. */
+const REM_BASE_PX = 16;
+
 /** 배열·객체가 아닌 평범한 record 객체인지 검사. */
 const isPlainObj = (v: unknown): v is Record<string, unknown> =>
   !!v && typeof v === 'object' && !Array.isArray(v);
@@ -59,6 +69,42 @@ const rnNumberTransform: Transform = {
   transform: (t: TransformedToken) => coerceNum(getTokenValue(t)),
 };
 
+/**
+ * Web용 rem 변환 transform. spacing/fontSize/lineHeight 값을 px → rem으로 변환.
+ * html font-size override에 반응하도록 unitless/px 값을 rem 기반으로 노출.
+ */
+const webRemTransform: Transform = {
+  name: 'ds/web/rem',
+  type: 'value',
+  transitive: true,
+  filter: (t) => {
+    const type = getTokenType(t);
+    return typeof type === 'string' && WEB_REM_TYPES.has(type);
+  },
+  transform: (t: TransformedToken) => {
+    const v = getTokenValue(t);
+    const n = toNumeric(v);
+    if (n === null) return v;
+    return `${stripTrailingZeros(n / REM_BASE_PX)}rem`;
+  },
+};
+
+/** 숫자 또는 숫자 문자열을 number로 변환. 단위가 붙어 있으면 null. */
+const toNumeric = (v: unknown): number | null => {
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+  if (typeof v !== 'string') return null;
+  const s = v.trim();
+  if (!/^-?\d+(\.\d+)?$/.test(s)) return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+};
+
+/** 부동소수점 표기에서 불필요한 trailing 0 제거. `0.1250000` → `0.125`. */
+const stripTrailingZeros = (n: number): string => {
+  const s = n.toFixed(6);
+  return s.replace(/\.?0+$/, '');
+};
+
 let registered = false;
 
 /** Tokens Studio + 자체 transform을 SD에 1회만 등록. 중복 호출 안전. */
@@ -67,6 +113,7 @@ const registerOnce = () => {
   registered = true;
   registerTokensStudio(StyleDictionary);
   StyleDictionary.registerTransform(rnNumberTransform);
+  StyleDictionary.registerTransform(webRemTransform);
 };
 
 /** `arr`에서 `rm`에 포함된 항목을 제거한 새 배열을 반환. */
@@ -79,7 +126,11 @@ const baseTransforms = getTransforms({ platform: 'css' })
   .filter((t): t is string => typeof t === 'string')
   .filter((t) => !t.startsWith('name/'));
 
-const WEB_TRANSFORMS = [...without(baseTransforms, ['ts/color/css/hexrgba']), 'name/kebab'];
+const WEB_TRANSFORMS = [
+  ...without(baseTransforms, ['ts/color/css/hexrgba', 'ts/size/px']),
+  'ds/web/rem',
+  'name/kebab',
+];
 
 const RN_TRANSFORMS = [
   ...without(baseTransforms, ['ts/size/px', 'ts/size/css/letterspacing', 'ts/color/css/hexrgba']),
