@@ -1,3 +1,15 @@
+## 1.0.1 (2026-05-18)
+
+### 🚀 Features
+
+- **design-tokens:** web rem 변환 transform 추가 및 spacing/color 토큰 정비 ([3be3f78](https://github.com/berrypjh/shared-stack/commit/3be3f78))
+- **react-ui:** popover/segment-control/skip-link 추가 및 spacing 토큰 정비 ([240ba69](https://github.com/berrypjh/shared-stack/commit/240ba69))
+
+### 🩹 Fixes
+
+- **design-tokens:** text.disable을 ne500으로 복원해 WCAG AA 대비 충족 ([8ed3170](https://github.com/berrypjh/shared-stack/commit/8ed3170))
+- **react-ui:** a11y CI 위반 해소 (Select aria 전달, Fab secondary 대비, stories 색상) ([#888](https://github.com/berrypjh/shared-stack/issues/888), [#666](https://github.com/berrypjh/shared-stack/issues/666))
+
 # 1.0.0 (2026-05-17)
 
 ### 🚀 Features
