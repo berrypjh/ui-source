@@ -31,6 +31,8 @@ import {
 
 export const Select = ({
   'aria-describedby': ariaDescribedby,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
   autoFocus = false,
   children,
   className,
@@ -468,7 +470,8 @@ export const Select = ({
         aria-expanded={open ? 'true' : 'false'}
         aria-haspopup="listbox"
         aria-invalid={resolvedError ? 'true' : undefined}
-        aria-labelledby={labelId}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledby ?? labelId}
         aria-required={resolvedRequired ? 'true' : undefined}
         className={selectClasses.trigger}
         disabled={resolvedDisabled}

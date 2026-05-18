@@ -152,19 +152,19 @@ export const Loading: Story = {
   render: () => (
     <div style={columnStyle}>
       <div style={rowStyle}>
-        <span style={{ fontSize: '12px', color: '#888', minWidth: '120px' }}>loading: null</span>
+        <span style={{ fontSize: '12px', color: '#666', minWidth: '120px' }}>loading: null</span>
         <IconButton loading={null} aria-label="Search">
           <SearchIcon />
         </IconButton>
       </div>
       <div style={rowStyle}>
-        <span style={{ fontSize: '12px', color: '#888', minWidth: '120px' }}>loading: false</span>
+        <span style={{ fontSize: '12px', color: '#666', minWidth: '120px' }}>loading: false</span>
         <IconButton loading={false} aria-label="Search">
           <SearchIcon />
         </IconButton>
       </div>
       <div style={rowStyle}>
-        <span style={{ fontSize: '12px', color: '#888', minWidth: '120px' }}>loading: true</span>
+        <span style={{ fontSize: '12px', color: '#666', minWidth: '120px' }}>loading: true</span>
         <IconButton loading={true} aria-label="Saving...">
           <BookmarkIcon />
         </IconButton>
