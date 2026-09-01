@@ -29,6 +29,10 @@ Agents must optimize for:
 - `libs/ui-core`: platform-agnostic contracts, shared logic, and foundational utilities
 - `libs/react-ui`: React web UI component library
 - `libs/react-native-ui`: React Native UI component library
+- `libs/{eslint,prettier,tsconfig,commitlint}-config`: shared configuration packages consumed by downstream repositories
+- `plugins/berry-commit`: Claude Code plugin (`commit-scope` skill + `commit-mcp` MCP server), distributed through `.claude-plugin/marketplace.json`
+
+When editing the plugin, load it with `claude --plugin-dir ./plugins/berry-commit` — a local plugin directory takes precedence over the installed copy. `plugins/*/dist` is a committed build artifact: rebuild with `pnpm build:mcp:commit` and commit it alongside any `src/` change.
 
 ---
 

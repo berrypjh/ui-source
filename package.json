@@ -10,7 +10,7 @@
     "build:libs": "nx run-many -t build --projects=@berrypjh/design-tokens,@berrypjh/ui-core,@berrypjh/react-ui,@berrypjh/react-native-ui",
     "build:libs:web": "nx run-many -t build --projects=@berrypjh/design-tokens,@berrypjh/ui-core,@berrypjh/react-ui",
     "build:apps": "nx run-many -t build --projects=@berrypjh/demo-web,@berrypjh/demo-mobile",
-    "build:commit-mcp": "nx run commit-mcp:build",
+    "build:mcp:commit": "nx run commit-mcp:build",
     "build-storybook": "nx build-storybook @berrypjh/react-ui",
     "storybook:a11y": "concurrently -k -s first -n SB,A11Y \"http-server libs/react-ui/storybook-static -p 6006 --silent\" \"wait-on tcp:6006 && test-storybook --url http://localhost:6006 --config-dir libs/react-ui/.storybook\"",
     "tokens:gen": "nx run @berrypjh/design-tokens:build:tokens",
@@ -165,11 +165,6 @@
     "*.{json,jsonc,css,scss,md,mdx,yaml,yml}": [
       "prettier --write"
     ]
-  },
-  "pnpm": {
-    "overrides": {
-      "@swc/core": "^1.15.0"
-    }
   },
   "nx": {
     "includedScripts": [],

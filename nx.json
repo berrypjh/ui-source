@@ -17,6 +17,10 @@
       "!{projectRoot}/playwright.config.[jt]s"
     ],
     "sharedGlobals": [
+      "{workspaceRoot}/tsconfig.base.json",
+      "{workspaceRoot}/package.json",
+      "{workspaceRoot}/eslint.config.mjs",
+      "{workspaceRoot}/babel.config.json",
       "{workspaceRoot}/.github/workflows/pr-check.yml",
       "{workspaceRoot}/.github/workflows/release.yml",
       "{workspaceRoot}/.github/workflows/chromatic.yml"
@@ -56,7 +60,7 @@
       "options": {
         "testTargetName": "test",
         "ciTargetName": "test-ci",
-        "testMode": "watch"
+        "testMode": "run"
       }
     },
     {
@@ -177,7 +181,6 @@
     },
     "lint": {
       "cache": true,
-      "dependsOn": ["^build"],
       "inputs": ["default", "^default"]
     },
     "e2e": {

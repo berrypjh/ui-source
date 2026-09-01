@@ -30,10 +30,14 @@ apps/
 ├── demo-web-e2e/         # 웹 E2E 테스트 (Playwright)
 └── demo-mobile/          # 모바일 라이브러리 데모 (Expo)
 
+plugins/
+└── berry-commit/         # Claude Code 플러그인 (commit-scope skill + commit-mcp 서버)
+
 tools/
-├── scripts/              # 측정·트리셰이킹·릴리즈 자동화 스크립트
-└── mcp/                  # mcp 도구
+└── scripts/              # 측정·트리셰이킹·릴리즈 자동화 스크립트
 ```
+
+`.claude-plugin/marketplace.json`이 이 저장소를 플러그인 마켓플레이스 `berrypjh`로 노출합니다. 소비하는 저장소는 [plugins/berry-commit/README.md](plugins/berry-commit/README.md)의 설정 두 키만 넣으면 됩니다.
 
 ## 시작하기
 
