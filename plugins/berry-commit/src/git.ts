@@ -8,9 +8,14 @@ import type {
   GitCommandResult,
 } from './types.js';
 
-const runGit = (args: string[]): GitCommandResult => {
+// git diff는 커밋된 번들처럼 큰 파일에서 기본 1MB 버퍼를 넘긴다.
+const MAX_BUFFER = 64 * 1024 * 1024;
+
+const runGit = (args: string[], input?: string): GitCommandResult => {
   const result = spawnSync('git', args, {
     encoding: 'utf8',
+    maxBuffer: MAX_BUFFER,
+    ...(input === undefined ? {} : { input }),
   });
 
   return {
@@ -26,6 +31,7 @@ export const getStagedFilesWithStatus = (): FileStatus[] => {
   try {
     output = execSync('git diff --cached --name-status --find-renames --find-copies', {
       encoding: 'utf8',
+      maxBuffer: MAX_BUFFER,
     });
   } catch {
     throw new Error(
@@ -157,7 +163,18 @@ export const commitScope = (
     stderr: extra.stderr,
   });
 
+  let stagedPatch = '';
+
   if (otherPaths.length > 0) {
+    const patch = runGit(['diff', '--cached', '--binary', '--', ...otherPaths]);
+    if (patch.status !== 0) {
+      return buildResult(false, {
+        stdout: patch.stdout,
+        stderr: `다른 scope 파일의 staged 상태를 저장하는데 실패했습니다.\n${patch.stderr}`,
+      });
+    }
+    stagedPatch = patch.stdout;
+
     const reset = runGit(['reset', 'HEAD', '--', ...otherPaths]);
     if (reset.status !== 0) {
       return buildResult(false, {
@@ -170,10 +187,10 @@ export const commitScope = (
   const commitResult = runGit(args);
 
   let restoreError = '';
-  if (otherPaths.length > 0) {
-    const restage = runGit(['add', '-A', '--', ...otherPaths]);
-    if (restage.status !== 0) {
-      restoreError = `\n[경고] 다른 scope 파일 재스테이지 실패. 수동 확인 필요.\n${restage.stderr}`;
+  if (stagedPatch.trim()) {
+    const restore = runGit(['apply', '--cached', '-'], stagedPatch);
+    if (restore.status !== 0) {
+      restoreError = `\n[경고] 다른 scope 파일의 staged 상태 복원 실패. 수동 확인 필요.\n${restore.stderr}`;
     }
   }
 

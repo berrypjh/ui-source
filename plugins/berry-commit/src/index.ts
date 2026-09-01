@@ -9,7 +9,7 @@ import type { CommitExecutionResult, ScopeDetails, ScopeSummary } from './types.
 
 const server = new McpServer(
   {
-    name: 'ai-commit',
+    name: 'commit-mcp',
     version: '0.1.0',
   },
   {
@@ -57,7 +57,7 @@ server.registerTool(
   {
     title: 'List staged scopes',
     description:
-      '현재 staged 변경을 scope별로 그룹핑해서 보여준다. scope는 root 또는 apps/*, libs/* 의 두 번째 경로 세그먼트다.',
+      '현재 staged 변경을 scope별로 그룹핑해서 보여준다. scope는 apps/*, libs/*, tools/*, plugins/* 의 두 번째 경로 세그먼트이고, 그 밖은 root다.',
     inputSchema: z.object({}),
     annotations: {
       readOnlyHint: true,

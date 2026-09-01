@@ -1,9 +1,11 @@
 import type { FileStatus, ScopeGroups } from './types.js';
 
+const SCOPED_ROOTS = new Set(['apps', 'libs', 'tools', 'plugins']);
+
 export const getScopeFromFilePath = (filePath: string): string => {
   const [first, second] = filePath.split('/');
 
-  if ((first === 'apps' || first === 'libs' || first === 'tools') && second) {
+  if (first && second && SCOPED_ROOTS.has(first)) {
     return second;
   }
 

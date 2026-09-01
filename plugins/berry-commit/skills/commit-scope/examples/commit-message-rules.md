@@ -1,4 +1,4 @@
-# ai-commit message rules
+# commit-scope message rules
 
 ## 기본 형식
 
@@ -10,17 +10,19 @@
 
 ## 권장 type 선택 기준
 
+type 목록은 `@berrypjh/commitlint-config`가 강제한다. 아래 11종 외에는 commit이 차단된다.
+
 - `feat`: 사용자 관점의 새 기능 추가
 - `fix`: 버그 수정
 - `refactor`: 동작 변화 없이 구조 개선
 - `docs`: 문서 수정
-- `design`: 시각적 디자인/스타일 토큰 변경 (프로젝트 허용 type)
+- `design`: 시각적 디자인 / 스타일 토큰 변경
 - `style`: 포맷/스타일만 수정
 - `test`: 테스트 추가/수정
 - `chore`: 설정, 스크립트, 유지보수성 변경
 - `build`: 빌드 관련 변경
 - `ci`: CI/CD 관련 변경
-- `revert`: 이전 commit revert (프로젝트 허용 type)
+- `revert`: 이전 commit revert
 
 ## 길이 제한 (commitlint hard limit)
 
@@ -30,8 +32,8 @@
 | ---------------- | --------------------------------------- | --------------------------------------------------- |
 | title (header)   | 100자 이내                              | `header-max-length` (config-conventional 기본)      |
 | footer 각 줄     | 100자 이내                              | `footer-max-line-length` (config-conventional 기본) |
-| body 각 줄       | 제한 없음 (가독성 위해 100자 이내 권장) | 프로젝트 override (`body-max-line-length: 0`)       |
-| header `!:` 표기 | 금지 — `feat!:` 사용 X                  | 프로젝트 custom rule `no-header-bang`               |
+| body 각 줄       | 제한 없음 (가독성 위해 100자 이내 권장) | `body-max-line-length: 0` (공유 config override)    |
+| header `!:` 표기 | 금지 — `feat!:` 사용 X                  | 공유 config의 custom rule `no-header-bang`          |
 | type/scope case  | lower-case 필수                         | config-conventional 기본                            |
 
 특히 BREAKING CHANGE footer 본문은 한 줄에 길게 쓰면 commitlint가 차단한다. 한국어 한 글자도 1자로 카운트되므로 마이그레이션 가이드 본문은 적절히 줄바꿈해야 한다.
@@ -45,14 +47,14 @@
 
 좋은 예:
 
-- `feat(main-web): 접근성 가이드 랜딩 섹션 추가`
+- `feat(web): 이미지 업로드 진입 화면 추가`
 - `fix(react-ui): ButtonBase 비네이티브 키보드 클릭 처리 수정`
 - `refactor(ui-core): form control 상태 계산 로직 분리`
 - `docs(root): AGENTS 문서 구조 정리`
 
 아쉬운 예:
 
-- `feat(main-web): 전체 리뉴얼`
+- `feat(web): 전체 리뉴얼`
 - `fix(react-ui): 여러 문제 해결`
 - `chore(root): 이것저것 수정`
 
@@ -105,13 +107,13 @@ body
 - "최적화", "개선", "정리"만 있고 대상이 없는 제목
 - scope 임의 변경
 
-## BREAKING CHANGE 표기 (`/ai-commit major` 사용 시에만)
+## BREAKING CHANGE 표기 (`/commit-scope major` 사용 시에만)
 
-- 평소에는 절대 추가하지 않는다. 사용자가 `major` 인자로 명시적으로 요청하고, **scope가 published library(`libs/*`)일 때만** 처리한다.
-- `root`, `apps/*`, `scripts` 등 비-library scope는 `major` 인자가 있어도 일반 흐름으로 commit한다.
+- 평소에는 절대 추가하지 않는다. 사용자가 `major` 인자로 명시적으로 요청하고, **scope가 published library일 때만** 처리한다.
+- published library scope = `nx.json`의 `release.projects`에 있고 `package.json`에 `private: true`가 없는 프로젝트의 scope. 그 외(`root` · `apps/*` · `tools/*`)는 `major` 인자가 있어도 일반 흐름으로 commit한다.
 - title은 일반 conventional commit 그대로 사용한다. `feat!:`, `fix!:` 등 헤더 `!` 표기는 commitlint가 차단하므로 사용하지 않는다.
 - body 마지막 단락에 빈 줄 한 행을 둔 뒤 `BREAKING CHANGE: <마이그레이션 가이드>` footer를 작성한다.
-- footer 본문은 사용자가 제공한 텍스트를 그대로 사용한다. LLM이 추측해서 작성하지 않는다.
+- footer 본문은 사용자가 제공한 텍스트를 그대로 사용한다. 모델이 추측해서 작성하지 않는다.
 
 좋은 예:
 

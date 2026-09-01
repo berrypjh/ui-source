@@ -11,11 +11,11 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "isolatedModules": true,
-    "importHelpers": true,
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "types": ["node"],
+    "noEmit": true
   },
-  "files": [],
-  "include": [],
-  "references": [{ "path": "./tsconfig.build.json" }]
+  "include": ["src/**/*.ts"]
 }
