@@ -57,6 +57,9 @@ importers:
       '@berrypjh/commitlint-config':
         specifier: workspace:^
         version: link:libs/commitlint-config
+      '@berrypjh/design-tokens':
+        specifier: workspace:*
+        version: link:libs/design-tokens
       '@berrypjh/eslint-config':
         specifier: workspace:^
         version: link:libs/eslint-config
