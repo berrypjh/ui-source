@@ -2,8 +2,8 @@ import fs from 'node:fs/promises';
 
 import type { TransformedToken } from 'style-dictionary/types';
 
-import type { ThemeBuild } from './sd';
-import { classifyTokenPath, cssVarName, getTokenValue } from './tokens';
+import type { ThemeBuild } from './sd.js';
+import { classifyTokenPath, cssVarName, getTokenValue } from './tokens.js';
 
 const PREFIX = 'ds';
 

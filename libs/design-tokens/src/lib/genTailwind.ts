@@ -3,10 +3,10 @@ import path from 'node:path';
 
 import type { TransformedToken } from 'style-dictionary/types';
 
-import { baseTheme } from '../themes';
+import { baseTheme } from '../themes.js';
 
-import type { ThemeBuild } from './sd';
-import { cssVarName, getTokenType } from './tokens';
+import type { ThemeBuild } from './sd.js';
+import { cssVarName, getTokenType } from './tokens.js';
 
 const PREFIX = 'ds';
 

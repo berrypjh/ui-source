@@ -8,9 +8,10 @@ import {
 import StyleDictionary from 'style-dictionary';
 import type { Dictionary, Transform, TransformedToken } from 'style-dictionary/types';
 
-import type { ThemeDef } from '../themes';
+import type { ThemeDef } from '../themes.js';
 
-import { getTokenType, getTokenValue } from './tokens';
+import { toRnNumeric, toWebRem } from './platformValue.js';
+import { getTokenType, getTokenValue } from './tokens.js';
 
 export type ThemeBuild = {
   theme: string;
@@ -34,29 +35,6 @@ const RN_NUMERIC_TYPES = new Set([
  */
 const WEB_REM_TYPES = new Set(['dimension', 'fontSize', 'lineHeight']);
 
-/** rem 변환 base. CSS 표준 16px. */
-const REM_BASE_PX = 16;
-
-/** 배열·객체가 아닌 평범한 record 객체인지 검사. */
-const isPlainObj = (v: unknown): v is Record<string, unknown> =>
-  !!v && typeof v === 'object' && !Array.isArray(v);
-
-/** 숫자/숫자 문자열을 number로 강제 변환. 객체·배열은 재귀 적용. 그 외는 원본. */
-const coerceNum = (v: unknown): unknown => {
-  if (typeof v === 'number') return v;
-  if (typeof v === 'string') {
-    const s = v.trim();
-    return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : v;
-  }
-  if (Array.isArray(v)) return v.map(coerceNum);
-  if (isPlainObj(v)) {
-    const o: Record<string, unknown> = {};
-    for (const [k, x] of Object.entries(v)) o[k] = coerceNum(x);
-    return o;
-  }
-  return v;
-};
-
 /** RN용 숫자형 토큰(spacing/radius/fontSize 등) 값을 number로 변환하는 SD transform. */
 const rnNumberTransform: Transform = {
   name: 'ds/rn/number',
@@ -66,7 +44,7 @@ const rnNumberTransform: Transform = {
     const type = getTokenType(t);
     return typeof type === 'string' && RN_NUMERIC_TYPES.has(type);
   },
-  transform: (t: TransformedToken) => coerceNum(getTokenValue(t)),
+  transform: (t: TransformedToken) => toRnNumeric(getTokenValue(t)),
 };
 
 /**
@@ -81,28 +59,7 @@ const webRemTransform: Transform = {
     const type = getTokenType(t);
     return typeof type === 'string' && WEB_REM_TYPES.has(type);
   },
-  transform: (t: TransformedToken) => {
-    const v = getTokenValue(t);
-    const n = toNumeric(v);
-    if (n === null) return v;
-    return `${stripTrailingZeros(n / REM_BASE_PX)}rem`;
-  },
-};
-
-/** 숫자 또는 숫자 문자열을 number로 변환. 단위가 붙어 있으면 null. */
-const toNumeric = (v: unknown): number | null => {
-  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
-  if (typeof v !== 'string') return null;
-  const s = v.trim();
-  if (!/^-?\d+(\.\d+)?$/.test(s)) return null;
-  const n = Number(s);
-  return Number.isFinite(n) ? n : null;
-};
-
-/** 부동소수점 표기에서 불필요한 trailing 0 제거. `0.1250000` → `0.125`. */
-const stripTrailingZeros = (n: number): string => {
-  const s = n.toFixed(6);
-  return s.replace(/\.?0+$/, '');
+  transform: (t: TransformedToken) => toWebRem(getTokenValue(t)),
 };
 
 let registered = false;

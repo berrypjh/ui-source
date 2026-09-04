@@ -3,10 +3,10 @@ import path from 'node:path';
 
 import type { TransformedToken } from 'style-dictionary/types';
 
-import { baseTheme } from '../themes';
+import { baseTheme } from '../themes.js';
 
-import type { ThemeBuild } from './sd';
-import { colorToRgbChannels, cssVarName, getTokenType, getTokenValue } from './tokens';
+import type { ThemeBuild } from './sd.js';
+import { colorToRgbChannels, cssVarName, getTokenType, getTokenValue } from './tokens.js';
 
 const PREFIX = 'ds';
 
@@ -18,14 +18,26 @@ const stringify = (v: unknown): string => {
   return JSON.stringify(v);
 };
 
-type Decl = { name: string; value: string };
+export type Decl = { name: string; value: string };
 
-/** 한 테마 dict → 정렬된 CSS 선언 목록(`--ds-...: value;`). color는 추가로 `-rgb` 채널 선언을 함께 만든다. */
-const declsFromDict = (tokens: TransformedToken[]): Decl[] => {
+/**
+ * 토큰의 값을 읽는 방법. 기본은 사전에 담긴 값이고,
+ * Consumer compiler는 합성된 값을 돌려주는 reader를 넘긴다.
+ */
+export type ReadValue = (token: TransformedToken) => unknown;
+
+/**
+ * 한 테마 dict → 정렬된 CSS 선언 목록(`--ds-...: value;`). color는 추가로 `-rgb` 채널 선언을 함께 만든다.
+ * Shared 빌드와 Consumer delta가 같은 구현을 쓴다 — RGB 파생도 한 곳에서만 일어난다.
+ */
+export const declsFromDict = (
+  tokens: TransformedToken[],
+  readValue: ReadValue = getTokenValue,
+): Decl[] => {
   const decls: Decl[] = [];
   for (const t of tokens) {
     const name = cssVarName(PREFIX, t.path);
-    const v = getTokenValue(t);
+    const v = readValue(t);
     decls.push({ name, value: stringify(v) });
 
     if (getTokenType(t) === 'color') {
@@ -37,7 +49,7 @@ const declsFromDict = (tokens: TransformedToken[]): Decl[] => {
 };
 
 /** `selector { --x: y; ... }` 형태의 CSS 룰 블록 문자열을 생성. */
-const block = (selector: string, decls: Decl[]): string => {
+export const block = (selector: string, decls: Decl[]): string => {
   const lines = decls.map((d) => `  ${d.name}: ${d.value};`).join('\n');
   return `${selector} {\n${lines}\n}\n`;
 };
