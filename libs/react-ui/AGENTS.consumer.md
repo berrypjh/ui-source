@@ -26,6 +26,41 @@ import preset from '@berrypjh/react-ui/tailwind';
 export default { presets: [preset] };
 ```
 
+## 찾는 순서
+
+넓은 것부터 좁혀 들어간다. 위 단계로 해결되면 아래로 내려가지 않는다.
+
+1. **플랫폼** — 어느 플랫폼 작업인가. 설치된 `@berrypjh` UI 패키지가 1차 근거이고,
+   요구가 설치 상태와 어긋나면 추측하지 말고 되묻는다.
+2. **패키지** — 웹은 `@berrypjh/react-ui`, React Native는 `@berrypjh/react-native-ui`.
+   `@berrypjh/ui-core`와 `@berrypjh/design-tokens`는 private이다. 소비자가 직접 import하지 않는다 —
+   필요한 토큰·유틸(`cx`, `getColor`, `createTheme`, `themes`, `Web`, `Native`)은
+   플랫폼 패키지가 전부 re-export한다.
+3. **후보 심볼** — `llm-catalog.json`의 `symbols` 키를 훑어 후보를 좁힌다.
+4. **정확한 API** — 그 심볼 하나의 항목만 읽는다 (`kind`, `importFrom`, `props`).
+5. **토큰** — `tokens.json`에서 필요한 경로/접두사만 찾는다. 파일 전체를 컨텍스트에 넣지 않는다.
+6. **번들 `.d.ts`** — 위로 부족할 때. DOM/RN 상속 prop이 필요하면 여기다.
+7. **라이브러리 source** — 마지막 수단. 공개 API로 답이 안 나오는 구현·디버깅 질문에만.
+
+| 단계                               | 읽을 것                   | 크기 감각              |
+| ---------------------------------- | ------------------------- | ---------------------- |
+| 사용 규칙 · 플랫폼 의미 · 함정     | 이 문서                   | 작음                   |
+| 정확한 public export · 심볼 · prop | `llm-catalog.json`        | 중간                   |
+| 정확한 토큰                        | `tokens.json` (표적 조회) | 조회는 작음, 전체는 큼 |
+| 상속 prop 포함 전체 타입           | `dist/types/index.d.ts`   | 큼                     |
+| 구현 세부                          | source                    | 큼                     |
+
+필요한 부분만 뽑고 싶으면 패키지에 동봉된 CLI를 쓴다 — 파일 전체를 컨텍스트에 넣지 않아도 된다.
+
+```bash
+npx @berrypjh/react-ui find button      # 심볼 후보
+npx @berrypjh/react-ui api Button       # 그 심볼의 prop 계약만
+npx @berrypjh/react-ui token color.primary
+```
+
+`llm-catalog.json`은 빌드가 번들 declaration에서 생성한다. 이 문서는 심볼 목록을
+중복 관리하지 않는다 — 정확한 개수·이름·prop은 항상 카탈로그가 정답이다.
+
 ## Export 경로
 
 | 경로                            | 용도                                                          |
@@ -36,17 +71,14 @@ export default { presets: [preset] };
 
 ## Public 표면
 
-### 컴포넌트 (17개)
+### 컴포넌트
 
-| 카테고리 | 심볼                                                                               |
-| -------- | ---------------------------------------------------------------------------------- |
-| 레이아웃 | `Box`                                                                              |
-| 버튼     | `Button`, `IconButton`, `Fab`, `ButtonBase`                                        |
-| 입력     | `TextField`, `BoxedInput`, `FilledInput`, `PlainInput`, `InputBase`, `SearchField` |
-| 선택     | `Select`, `MenuItem`                                                               |
-| 폼 구성  | `FormControl`, `InputLabel`, `FormHelperText`                                      |
+카테고리: 레이아웃 · 버튼 · 입력 · 선택 · 폼 구성 · 오버레이 · 내비게이션.
 
-각 컴포넌트는 `<Name>Props` 타입을 함께 export. 대부분 `component` prop으로 polymorphic — `<Button component="a" href="...">`처럼 다른 element로 렌더 가능.
+정확한 컴포넌트 목록과 prop은 `llm-catalog.json`의 `symbols`에서 읽는다
+(`kind: "component"`). 각 컴포넌트는 `<Name>Props` 타입을 함께 export하며,
+대부분 `component` prop으로 polymorphic이다 — `<Button component="a" href="...">`처럼
+다른 element로 렌더할 수 있다.
 
 ### 테마
 
@@ -88,7 +120,31 @@ export default { presets: [preset] };
 
 `@config`는 v3 호환 directive — IDE의 "Unknown at rule" 경고는 무시 가능 (PostCSS 빌드는 정상).
 
-## 카탈로그 (`dist/tokens.json`)
+## 카탈로그 (`dist/llm-catalog.json`, `dist/tokens.json`)
+
+### API 카탈로그 — `llm-catalog.json`
+
+빌드가 번들 declaration에서 생성한 정확한 public API 사실.
+
+```json
+{
+  "package": "@berrypjh/react-ui",
+  "platform": "web",
+  "exports": { ".": "@berrypjh/react-ui" },
+  "symbols": {
+    "Button": {
+      "kind": "component",
+      "importFrom": "@berrypjh/react-ui",
+      "props": { "loading": { "type": "boolean", "required": false } }
+    }
+  }
+}
+```
+
+`props`에는 이 라이브러리가 선언한 prop만 담긴다. DOM 상속 prop은 제외된다 —
+그쪽이 필요하면 번들 `.d.ts`를 본다. 리터럴 union이 크면 값 대신 `valueCount`만 남는다.
+
+### 토큰 카탈로그 — `tokens.json`
 
 빌드 산출물에 토큰 카탈로그가 포함됨. flat 형태:
 

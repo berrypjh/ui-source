@@ -21,7 +21,7 @@ src/
     <name>/<Name>.utils.ts cx/이벤트 헬퍼 (있을 때만)
     <name>/<name>.scss     스타일
     <name>/index.ts        feature export
-    index.ts               전체 aggregator (17개 컴포넌트)
+    index.ts               전체 aggregator (정확한 목록은 dist/llm-catalog.json)
   theme/
     ThemeProvider.tsx      <html data-theme=...> 적용
     ThemeProvider.types.ts
@@ -49,13 +49,13 @@ src/
 ## 빌드 / 테스트
 
 ```bash
-pnpm nx build @berrypjh/react-ui          # rollup(JS) + dts-bundle-generator(d.ts) + cp(tailwind/css)
-pnpm nx test @berrypjh/react-ui           # vitest (424 tests, jsdom)
+pnpm nx build @berrypjh/react-ui          # rollup(JS) + dts-bundle-generator(d.ts) + cp(tailwind/css) + llm-catalog
+pnpm nx test @berrypjh/react-ui           # vitest (jsdom)
 pnpm nx storybook @berrypjh/react-ui      # storybook
 pnpm build-storybook @berrypjh/react-ui   # static storybook
 ```
 
-빌드 산출물: `dist/{index.esm.js, index.css, types/index.d.ts, tailwind.{js,d.ts}, AGENTS.md, tokens.json, README.md}`. d.ts는 `dts-bundle-generator`로 단일 파일, ui-core/design-tokens 타입을 inline.
+빌드 산출물: `dist/{index.esm.js, index.css, types/index.d.ts, tailwind.{js,d.ts}, AGENTS.md, tokens.json, llm-catalog.json, README.md}`. d.ts는 `dts-bundle-generator`로 단일 파일, ui-core/design-tokens 타입을 inline. `llm-catalog.json`은 declaration 생성 뒤 `generate-catalog` target이 만든다 (`tools/scripts/generate-consumer-catalog`).
 
 ## Gotcha
 
