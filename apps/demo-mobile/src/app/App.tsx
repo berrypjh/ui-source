@@ -10,7 +10,88 @@ import {
   useTheme,
 } from '@berrypjh/react-native-ui';
 
+import { tokensByMode as sampleTokensByMode } from '../_generated/sample-consumer/rn';
+
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/**
+ * Consumer profile. `default`는 ThemeProvider에 `tokensByMode`를 **주지 않는** 기존 경로이고,
+ * `sample`은 컴파일러가 만든 완전한 레코드를 그대로 넘긴다.
+ * 새 theme runtime 없이 기존 prop 하나만 쓴다.
+ */
+type Profile = 'default' | 'sample';
+
+const ProfileToggle = ({
+  profile,
+  onChange,
+}: {
+  profile: Profile;
+  onChange: (p: Profile) => void;
+}) => (
+  <View style={styles.toggleRow}>
+    {(['default', 'sample'] as const).map((p) => {
+      const active = profile === p;
+      return (
+        <Pressable
+          key={p}
+          onPress={() => onChange(p)}
+          style={[styles.toggleButton, active && styles.toggleButtonActive]}
+        >
+          <Text style={[styles.toggleText, active && styles.toggleTextActive]}>
+            {capitalize(p)}
+          </Text>
+        </Pressable>
+      );
+    })}
+  </View>
+);
+
+/**
+ * Consumer extension이 실제로 적용됐는지 보여주는 구역.
+ * override한 semantic color는 profile에 따라 바뀌고,
+ * override하지 않은 spacing/radius는 두 profile에서 같아야 한다.
+ */
+const ConsumerProfileDemo = ({ profile }: { profile: Profile }) => {
+  const theme = useTheme();
+  const { color, spacing, radius } = theme.tokens;
+
+  const rows: [string, string][] = [
+    ['color.background.primary', color.background.primary],
+    ['color.background.surface', color.background.surface],
+    ['color.text.default', color.text.default],
+    ['color.primaryBtn.default', color.primaryBtn.default],
+    ['color.background.secondary (not overridden)', color.background.secondary],
+  ];
+
+  return (
+    <View>
+      <Text style={styles.sectionLabel}>resolved via useTheme() — profile: {profile}</Text>
+
+      {rows.map(([label, value]) => (
+        <View key={label} style={styles.tokenRow}>
+          <View style={[styles.tokenChip, { backgroundColor: value }]} />
+          <Text style={[styles.tokenLabel, { color: color.text.default }]}>
+            {label} = {value}
+          </Text>
+        </View>
+      ))}
+
+      <Text style={styles.sectionLabel}>overridden semantic background</Text>
+      <Box bg="background.primary" radius="md" p="lg" m="sm">
+        <Text style={{ color: color.text.contrastText }}>
+          Box bg=&quot;background.primary&quot; p=&quot;lg&quot; radius=&quot;md&quot;
+        </Text>
+      </Box>
+
+      <Text style={styles.sectionLabel}>
+        non-overridden scale — spacing.md={spacing.md} radius.lg={radius.lg}
+      </Text>
+      <Box bg="background.secondary" radius="lg" p="md" m="sm">
+        <Text style={{ color: color.text.contrastText }}>spacing/radius must match Default</Text>
+      </Box>
+    </View>
+  );
+};
 
 const ThemeToggle = ({ mode, onChange }: { mode: ThemeName; onChange: (m: ThemeName) => void }) => (
   <View style={styles.toggleRow}>
@@ -132,7 +213,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </View>
 );
 
-const Body = ({ mode }: { mode: ThemeName }) => {
+const Body = ({ mode, profile }: { mode: ThemeName; profile: Profile }) => {
   const theme = useTheme();
   const bg = theme.tokens.color.background.dark;
   const fg = theme.tokens.color.text.default;
@@ -155,6 +236,9 @@ const Body = ({ mode }: { mode: ThemeName }) => {
       <Section title="Box 컴포넌트">
         <BoxDemo />
       </Section>
+      <Section title="Consumer Profile (Default vs Sample)">
+        <ConsumerProfileDemo profile={profile} />
+      </Section>
 
       <View style={styles.footerSpace} />
     </ScrollView>
@@ -163,15 +247,22 @@ const Body = ({ mode }: { mode: ThemeName }) => {
 
 export const App = () => {
   const [mode, setMode] = useState<ThemeName>('light');
+  const [profile, setProfile] = useState<Profile>('default');
 
   return (
-    <ThemeProvider mode={mode}>
+    // Default는 `tokensByMode`를 넘기지 않는다 — 기존 기본 경로가 그대로 동작함을 증명한다.
+    <ThemeProvider
+      mode={mode}
+      {...(profile === 'sample' ? { tokensByMode: sampleTokensByMode } : {})}
+    >
       <View style={styles.appRoot}>
         <StatusBar barStyle={mode === 'light' ? 'dark-content' : 'light-content'} />
         <View style={styles.toggleBar}>
           <ThemeToggle mode={mode} onChange={setMode} />
+          <View style={styles.toggleSpacer} />
+          <ProfileToggle profile={profile} onChange={setProfile} />
         </View>
-        <Body mode={mode} />
+        <Body mode={mode} profile={profile} />
       </View>
     </ThemeProvider>
   );
@@ -194,6 +285,10 @@ const styles = StyleSheet.create({
   },
   toggleButton: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 6 },
   toggleButtonActive: { backgroundColor: '#f8fafc' },
+  toggleSpacer: { height: 8 },
+  tokenRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
+  tokenChip: { width: 28, height: 28, borderRadius: 6, marginRight: 10 },
+  tokenLabel: { fontSize: 13 },
   toggleText: { color: '#cbd5e1', fontSize: 13, fontWeight: '500' },
   toggleTextActive: { color: '#0f172a' },
 

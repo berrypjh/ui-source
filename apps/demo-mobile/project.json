@@ -11,15 +11,26 @@
       "options": {
         "command": "expo export",
         "cwd": "apps/demo-mobile"
-      }
+      },
+      "dependsOn": ["^build", "compile-sample-consumer"]
     },
     "typecheck": {
       "executor": "nx:run-commands",
-      "dependsOn": ["^build", "^typecheck"],
+      "dependsOn": ["^build", "^typecheck", "compile-sample-consumer"],
       "options": {
         "command": "tsc --noEmit -p tsconfig.app.json",
         "cwd": "apps/demo-mobile"
       }
+    },
+    "compile-sample-consumer": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/src/_generated/sample-consumer"],
+      "options": {
+        "command": "tsx tools/scripts/compile-sample-consumer/index.ts --target=native"
+      }
+    },
+    "start": {
+      "dependsOn": ["compile-sample-consumer"]
     }
   }
 }
