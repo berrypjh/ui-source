@@ -40,12 +40,12 @@ import '@berrypjh/ui-core/css';
 
 **ui-core 자체 기여**
 
-| 카테고리           | 심볼                                                                                                                                                                                                                                                                   |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 유틸               | `cx`, `isObjectRecord`                                                                                                                                                                                                                                                 |
-| 토큰 헬퍼          | `getColor`, `createTheme`                                                                                                                                                                                                                                              |
-| 토큰 타입          | `ColorToken`, `RadiusToken`, `SpacingToken`, `RNTokens`, `Theme<T>`, `ThemeName`                                                                                                                                                                                       |
-| 컴포넌트 prop 계약 | `BoxProps`, `BoxRadiusValue`, `BoxSpacingValue` (box) / `ButtonProps`, `ButtonColor`, `ButtonSize`, `ButtonVariant` (button) / `FieldProps`, `FormControlProps`, `InputFieldProps`, `TextFieldProps`, `FieldColor`, `FieldSize`, `FieldVariant`, `FieldMargin` (field) |
+| 카테고리           | 심볼                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 유틸               | `cx`, `isObjectRecord` / 폼 헬퍼: `getFirstEnabledIndex`, `getLastEnabledIndex`, `getSelectedIndex`, `getInitialHighlightedIndex`, `getNextEnabledIndex`, `isValueEqual`, `isOptionSelected`, `hasFormValue`, `hasDisplayValue`, `stringifyValue`, `toInputString`                                                                                                                                               |
+| 토큰 헬퍼          | `getColor`, `createTheme`                                                                                                                                                                                                                                                                                                                                                                                        |
+| 토큰 타입          | `ColorToken`, `RadiusToken`, `SpacingToken`, `RNTokens`, `Theme<T>`, `ThemeName`                                                                                                                                                                                                                                                                                                                                 |
+| 컴포넌트 prop 계약 | `BoxProps`, `BoxRadiusValue`, `BoxSpacingValue` (box) / `ButtonProps`, `ButtonColor`, `ButtonSize`, `ButtonVariant`, `ButtonLoadingPosition` (button) / `FabProps`, `FabShape` (fab) / `IconButtonProps`, `IconButtonEdge` (icon-button) / `MenuItemProps` (menu-item) / `FieldProps`, `FormControlProps`, `InputFieldProps`, `TextFieldProps`, `FieldColor`, `FieldSize`, `FieldVariant`, `FieldMargin` (field) |
 
 **design-tokens 패스스루**
 
@@ -61,7 +61,7 @@ src/
 ├── index.ts                    public re-export
 ├── tailwind.ts                 design-tokens/tailwind 패스스루
 ├── contracts/                  컴포넌트 prop 계약
-│   ├── box.ts, button.ts, field.ts, index.ts
+│   ├── box.ts, button.ts, fab.ts, field.ts, icon-button.ts, menu-item.ts, index.ts
 ├── tokens/                     토큰 타입·접근 헬퍼
 │   ├── types.ts                ColorToken, SpacingToken, RadiusToken, RNTokens, Theme, ThemeName
 │   ├── path.ts                 LeafDotPath, PathValue (internal generic)
@@ -69,8 +69,8 @@ src/
 │   ├── getters.ts              getColor (1개)
 │   ├── theme.ts                createTheme
 │   └── index.ts
-└── utils/                      cx, isObjectRecord
-    ├── cx.ts, object.ts, index.ts
+└── utils/                      cx, object, 폼/입력 헬퍼
+    ├── cx.ts, object.ts, form-navigation.ts, form-selection.ts, form-value.ts, input-value.ts, index.ts
 ```
 
 ## 빌드 / 테스트

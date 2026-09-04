@@ -16,7 +16,10 @@ src/
   contracts/
     box.ts          BoxProps, BoxSpacingValue, BoxRadiusValue
     button.ts       ButtonProps, ButtonColor, ButtonSize, ButtonVariant
+    fab.ts          FabProps, FabShape
     field.ts        FieldProps, FormControlProps, InputFieldProps, TextFieldProps + 4 enums
+    icon-button.ts  IconButtonProps, IconButtonEdge
+    menu-item.ts    MenuItemProps
     index.ts
   tokens/
     types.ts        ColorToken, SpacingToken, RadiusToken, RNTokens, Theme<T>, ThemeName
@@ -26,8 +29,12 @@ src/
     theme.ts        createTheme
     index.ts        + design-tokens 패스스루 (Web, Native, themes, ThemeDef)
   utils/
-    cx.ts           className 결합 (다운스트림 ~16곳에서 사용)
-    object.ts       isObjectRecord
+    cx.ts               className 결합
+    form-navigation.ts  키보드 이동 헬퍼
+    form-selection.ts   선택 상태 헬퍼
+    form-value.ts       폼 값 정규화
+    input-value.ts      입력 값 정규화
+    object.ts           isObjectRecord
     index.ts
 ```
 
@@ -52,7 +59,7 @@ pnpm nx typecheck @berrypjh/ui-core     # tsc --noEmit
 pnpm nx lint @berrypjh/ui-core          # eslint
 ```
 
-빌드 산출물: `dist/index.{js,d.ts}` + `dist/tailwind.{js,d.ts}` + `dist/css/index.css`. d.ts는 `vite-plugin-dts`의 `rollupTypes: true` + `bundledPackages: ['@berrypjh/design-tokens']`로 단일 파일 번들.
+빌드 산출물: `dist/index.{js,d.ts}` + `dist/tailwind.{js,d.ts}` + `dist/css/index.css` + `dist/tokens.json`(design-tokens에서 복사). d.ts는 `vite-plugin-dts`의 `rollupTypes: true` + `bundledPackages: ['@berrypjh/design-tokens']`로 단일 파일 번들.
 
 ## Gotcha
 
