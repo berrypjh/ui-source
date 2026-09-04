@@ -1,7 +1,7 @@
 import { discover, getApi, packageSummary } from './catalog';
 import { resolvePackages } from './packages';
 import { resolvePlatform } from './platform';
-import { loadCatalogs, loadTokenSource } from './repo-source';
+import { loadCatalogs, loadContractSource, loadTokenSource } from './repo-source';
 import { lookupTokens } from './tokens';
 
 /**
@@ -66,7 +66,13 @@ const main = async (): Promise<void> => {
   const token = str(args, 'token');
   if (token !== null) {
     const limit = str(args, 'limit');
-    emit(lookupTokens(await loadTokenSource(), token, limit ? { limit: Number(limit) } : {}));
+    const contract = await loadContractSource();
+    emit(
+      lookupTokens(await loadTokenSource(), token, {
+        ...(limit ? { limit: Number(limit) } : {}),
+        ...(contract ? { contract } : {}),
+      }),
+    );
     return;
   }
 

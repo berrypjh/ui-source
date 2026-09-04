@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import type { Catalog } from '../scripts/generate-consumer-catalog/schema';
 
 import { type CatalogSet, discover, getApi, packageSummary } from './catalog';
-import { lookupTokens, type TokenSource } from './tokens';
+import { type ContractSource, lookupTokens, type TokenSource } from './tokens';
 
 /**
  * 패키지에 동봉되어 배포되는 조회 CLI.
@@ -34,6 +34,17 @@ const loadCatalog = (): Promise<Catalog> =>
 
 const loadTokens = (): Promise<TokenSource> =>
   readJson<TokenSource>('tokens.json', 'reinstall the package or report an issue.');
+
+/** contract sidecar는 선택 사항이다 — 없는 패키지에서도 토큰 조회는 그대로 동작한다. */
+const loadContract = async (): Promise<ContractSource | undefined> => {
+  try {
+    return JSON.parse(
+      await fs.readFile(path.join(HERE, 'contract.json'), 'utf8'),
+    ) as ContractSource;
+  } catch {
+    return undefined;
+  }
+};
 
 const usage = (name: string): string =>
   [
@@ -64,7 +75,13 @@ const main = async (): Promise<void> => {
   if (command === 'token') {
     const query = positional[0];
     if (!query) throw new Error('token needs a path, prefix or category');
-    emit(lookupTokens(await loadTokens(), query, flags.limit ? { limit: flags.limit } : {}));
+    const contract = await loadContract();
+    emit(
+      lookupTokens(await loadTokens(), query, {
+        ...(flags.limit ? { limit: flags.limit } : {}),
+        ...(contract ? { contract } : {}),
+      }),
+    );
     return;
   }
 

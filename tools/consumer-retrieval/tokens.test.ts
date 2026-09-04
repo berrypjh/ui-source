@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { loadTokenSource } from './repo-source';
-import { lookupTokens } from './tokens';
+import { type ContractSource, lookupTokens, type TokenSource } from './tokens';
 
 const source = await loadTokenSource();
 
@@ -58,5 +58,84 @@ describe('token lookup', () => {
     expect(JSON.stringify(lookupTokens(source, 'color.primary.pr500')).length).toBeLessThan(
       whole / 100,
     );
+  });
+});
+
+describe('contract governance annotation', () => {
+  const contract = {
+    schema: 'contract[path] = [type, visibility, overridable, stability, deprecatedReplacement]',
+    contractVersion: 1,
+    internalPrimitiveRoots: ['color.primary', 'borderWidth.primitive'],
+    tokens: {
+      'color.text.default': ['color', 'public', true, 'stable', null],
+      'color.text.link': ['color', 'public', true, 'experimental', 'color.text.primary'],
+    },
+  } satisfies ContractSource;
+
+  const source: TokenSource = {
+    schema: 'tokens[path] = [cssVar, ...valuesInThemesOrder]',
+    themes: ['light', 'dark'],
+    categories: ['color'],
+    tokens: {
+      'color.text.default': ['--ds-text-default', '#101828', '#F2F4F7'],
+      'color.text.link': ['--ds-text-link', '#2563EB', '#60A5FA'],
+      'color.primary.pr700': ['--ds-primary-pr700', '#047857', '#136F47'],
+      'spacing.md': ['--ds-spacing-md', '0.75rem', '0.75rem'],
+    },
+  };
+
+  it('omits governance entirely when no contract is supplied', () => {
+    const result = lookupTokens(source, 'color.text.default');
+    expect(result.matches[0]).not.toHaveProperty('governance');
+    expect(result.matches[0].values).toEqual({ light: '#101828', dark: '#F2F4F7' });
+  });
+
+  it('marks a public overridable token', () => {
+    const [match] = lookupTokens(source, 'color.text.default', { contract }).matches;
+    expect(match.governance).toEqual({
+      visibility: 'public',
+      overridable: true,
+      stability: 'stable',
+    });
+  });
+
+  it('marks a deprecated token with its replacement', () => {
+    const [match] = lookupTokens(source, 'color.text.link', { contract }).matches;
+    expect(match.governance).toMatchObject({
+      deprecated: true,
+      replacement: 'color.text.primary',
+    });
+  });
+
+  it('marks an internal primitive as non-overridable and says why', () => {
+    const [match] = lookupTokens(source, 'color.primary.pr700', { contract }).matches;
+    expect(match.governance).toEqual({
+      visibility: 'internal',
+      overridable: false,
+      reason: 'internal-primitive',
+    });
+  });
+
+  it('marks a token outside the contract as non-overridable', () => {
+    const [match] = lookupTokens(source, 'spacing.md', { contract }).matches;
+    expect(match.governance).toEqual({
+      visibility: 'internal',
+      overridable: false,
+      reason: 'not-in-contract',
+    });
+  });
+
+  it('annotates prefix lookups too', () => {
+    const result = lookupTokens(source, 'color.text', { contract });
+    expect(result.mode).toBe('prefix');
+    expect(result.matches.every((m) => m.governance?.visibility === 'public')).toBe(true);
+  });
+
+  it('leaves the token lookup shape otherwise unchanged', () => {
+    const withContract = lookupTokens(source, 'color.text.default', { contract });
+    const without = lookupTokens(source, 'color.text.default');
+    const { governance, ...rest } = withContract.matches[0];
+    expect(governance).toBeDefined();
+    expect(rest).toEqual(without.matches[0]);
   });
 });
