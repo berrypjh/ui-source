@@ -30296,8 +30296,8 @@ ${restore.stderr}`;
 // src/scope.ts
 var SCOPED_ROOTS = /* @__PURE__ */ new Set(["apps", "libs", "tools", "plugins"]);
 var getScopeFromFilePath = (filePath) => {
-  const [first, second] = filePath.split("/");
-  if (first && second && SCOPED_ROOTS.has(first)) {
+  const [first, second, ...rest] = filePath.split("/");
+  if (first && second && rest.length > 0 && SCOPED_ROOTS.has(first)) {
     return second;
   }
   return "root";

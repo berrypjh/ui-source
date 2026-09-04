@@ -2,10 +2,11 @@ import type { FileStatus, ScopeGroups } from './types.js';
 
 const SCOPED_ROOTS = new Set(['apps', 'libs', 'tools', 'plugins']);
 
+/** `libs/react-ui/index.ts` -> `react-ui`. scoped root 바로 아래 파일은 project가 아니므로 `root`. */
 export const getScopeFromFilePath = (filePath: string): string => {
-  const [first, second] = filePath.split('/');
+  const [first, second, ...rest] = filePath.split('/');
 
-  if (first && second && SCOPED_ROOTS.has(first)) {
+  if (first && second && rest.length > 0 && SCOPED_ROOTS.has(first)) {
     return second;
   }
 
