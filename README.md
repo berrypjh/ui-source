@@ -34,10 +34,13 @@ plugins/
 └── berry-commit/         # Claude Code 플러그인 (commit-scope skill + commit-mcp 서버)
 
 tools/
-└── scripts/              # 측정·트리셰이킹·릴리즈 자동화 스크립트
+├── lib/                  # 도구 공용 헬퍼
+├── scripts/              # 측정·릴리즈·카탈로그 생성
+├── consumer-retrieval/   # 조회 모듈
+└── evals/consumer/       # 평가 도구
 ```
 
-`.claude-plugin/marketplace.json`이 이 저장소를 플러그인 마켓플레이스 `berrypjh`로 노출합니다. 소비하는 저장소는 [plugins/berry-commit/README.md](plugins/berry-commit/README.md)의 설정 두 키만 넣으면 됩니다.
+플러그인 설치 방법은 [Claude Code 플러그인](#claude-code-플러그인) 참조.
 
 ## 시작하기
 
@@ -57,15 +60,20 @@ pnpm storybook
 
 ## 주요 명령어
 
-| 명령어               | 설명                                                                          |
-| -------------------- | ----------------------------------------------------------------------------- |
-| `pnpm build`         | 전체 빌드                                                                     |
-| `pnpm build:libs`    | 라이브러리만 빌드 (`design-tokens`, `ui-core`, `react-ui`, `react-native-ui`) |
-| `pnpm tokens:build`  | 디자인 토큰 빌드                                                              |
-| `pnpm test`          | 전체 테스트 실행                                                              |
-| `pnpm lint`          | 전체 린트                                                                     |
-| `pnpm typecheck`     | 전체 타입 체크                                                                |
-| `pnpm release:local` | 로컬 레지스트리로 릴리즈                                                      |
+| 명령어               | 설명                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| `pnpm build`         | 전체 빌드                                                                                  |
+| `pnpm build:libs`    | 라이브러리만 빌드 (`design-tokens`, `ui-core`, `react-ui`, `react-native-ui`)              |
+| `pnpm tokens:build`  | 디자인 토큰 빌드                                                                           |
+| `pnpm test`          | 전체 테스트 실행                                                                           |
+| `pnpm lint`          | 전체 린트                                                                                  |
+| `pnpm typecheck`     | 전체 타입 체크                                                                             |
+| `pnpm release:local` | 로컬 레지스트리로 릴리즈                                                                   |
+| `pnpm tools:check`   | `tools/` 타입 체크 + 테스트 (Nx affected가 닿지 않는 영역)                                 |
+| `pnpm catalog:gen`   | 소비자 API 카탈로그(`dist/llm-catalog.json`) 생성 — 각 lib build가 자동 호출               |
+| `pnpm ui:lookup`     | 플랫폼·심볼·토큰 조회 CLI ([tools/consumer-retrieval](tools/consumer-retrieval/README.md)) |
+
+LLM 평가 도구 명령은 [tools/evals/consumer/README.md](tools/evals/consumer/README.md) 참조.
 
 ## 사용 (설치)
 
@@ -80,6 +88,36 @@ GitHub Packages 비공개 배포로 제공됩니다. 설치 전 `.npmrc`에 레�
 pnpm add @berrypjh/react-ui
 pnpm add @berrypjh/react-native-ui
 ```
+
+## Claude Code 플러그인
+
+`.claude-plugin/marketplace.json`이 이 저장소를 마켓플레이스 `berrypjh`로 노출합니다.
+현재 `berry-commit` 플러그인(`/berry-commit:commit-scope` skill + `commit-mcp` MCP 서버)을 배포합니다.
+
+소비하는 저장소의 `.claude/settings.json`에 두 키를 넣으면 팀원 전체가 같은 설정을 공유합니다.
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "berrypjh": {
+      "source": { "source": "github", "repo": "berrypjh/shared-stack" }
+    }
+  },
+  "enabledPlugins": {
+    "berry-commit@berrypjh": true
+  }
+}
+```
+
+개인 환경에만 넣으려면:
+
+```bash
+claude plugin marketplace add berrypjh/shared-stack
+claude plugin install berry-commit@berrypjh
+```
+
+설치 후 skill은 `/berry-commit:commit-scope`로 호출합니다.
+인자와 메시지 규칙은 [plugins/berry-commit/README.md](plugins/berry-commit/README.md) 참조.
 
 ## 라이선스
 
