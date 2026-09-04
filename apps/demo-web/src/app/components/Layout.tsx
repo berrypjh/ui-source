@@ -6,6 +6,51 @@ import { NavLink, useLocation } from 'react-router-dom';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
+/**
+ * Consumer profile. `default`는 extension이 없는 Shared 기본 경로이고,
+ * `sample`은 컴파일된 CSS가 `[data-profile="sample"]` 아래에서 적용된다.
+ * mode(light/dark/sepia)와 독립적으로 고른다.
+ */
+type Profile = 'default' | 'sample';
+
+const PROFILES: { value: Profile; label: string }[] = [
+  { value: 'default', label: 'Default' },
+  { value: 'sample', label: 'Sample' },
+];
+
+const segmentClass = (isActive: boolean) =>
+  isActive
+    ? 'px-3 py-1.5 text-xs font-medium border-0 cursor-pointer transition-all bg-primary-pr500 text-text-contrastText'
+    : 'px-3 py-1.5 text-xs font-medium border-0 cursor-pointer transition-all bg-transparent text-text-light';
+
+const ProfileToggle = ({
+  profile,
+  onChange,
+}: {
+  profile: Profile;
+  onChange: (p: Profile) => void;
+}) => (
+  <div
+    role="group"
+    aria-label="Consumer profile"
+    data-testid="profile-toggle"
+    className="inline-flex border border-stroke-default rounded-lg overflow-hidden bg-background-surface"
+  >
+    {PROFILES.map((p) => (
+      <button
+        key={p.value}
+        type="button"
+        onClick={() => onChange(p.value)}
+        aria-pressed={profile === p.value}
+        data-testid={`profile-${p.value}`}
+        className={segmentClass(profile === p.value)}
+      >
+        {p.label}
+      </button>
+    ))}
+  </div>
+);
+
 const ThemeToggle = ({ mode, onChange }: { mode: ThemeName; onChange: (m: ThemeName) => void }) => (
   <div
     role="group"
@@ -20,11 +65,8 @@ const ThemeToggle = ({ mode, onChange }: { mode: ThemeName; onChange: (m: ThemeN
           type="button"
           onClick={() => onChange(t.name)}
           aria-pressed={isActive}
-          className={
-            isActive
-              ? 'px-3 py-1.5 text-xs font-medium border-0 cursor-pointer transition-all bg-primary-pr500 text-text-contrastText'
-              : 'px-3 py-1.5 text-xs font-medium border-0 cursor-pointer transition-all bg-transparent text-text-light'
-          }
+          data-testid={`theme-${t.name}`}
+          className={segmentClass(isActive)}
         >
           {capitalize(t.name)}
         </button>
@@ -39,6 +81,7 @@ const NAV_GROUPS = [
     items: [
       { label: 'Home', path: '/' },
       { label: 'Design Tokens', path: '/tokens' },
+      { label: 'Consumer Profile', path: '/consumer-profile' },
     ],
   },
   {
@@ -57,10 +100,15 @@ const NAV_GROUPS = [
 export const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const [mode, setMode] = useState<ThemeName>('light');
+  const [profile, setProfile] = useState<Profile>('default');
 
   return (
+    // `data-profile`은 ThemeProvider가 rest props로 그대로 넘긴다 —
+    // 컴파일된 Sample CSS가 이 attribute를 scope로 쓴다. JS 스타일 주입은 없다.
     <ThemeProvider
       mode={mode}
+      data-profile={profile}
+      data-testid="theme-root"
       style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
     >
       <div
@@ -179,7 +227,10 @@ export const Layout = ({ children }: { children: ReactNode }) => {
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (c) => c.toUpperCase())}
             </span>
-            <ThemeToggle mode={mode} onChange={setMode} />
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <ProfileToggle profile={profile} onChange={setProfile} />
+              <ThemeToggle mode={mode} onChange={setMode} />
+            </div>
           </header>
 
           {/* Content — 페이지 메인 배경. Tailwind 클래스로 토큰 사용. light/dark/sepia에서 자동 변환 */}

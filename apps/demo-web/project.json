@@ -7,11 +7,27 @@
   "targets": {
     "typecheck": {
       "executor": "nx:run-commands",
-      "dependsOn": ["^build", "^typecheck"],
+      "dependsOn": ["^build", "^typecheck", "compile-sample-consumer"],
       "options": {
         "command": "tsc --noEmit -p tsconfig.app.json",
         "cwd": "apps/demo-web"
       }
+    },
+    "compile-sample-consumer": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/src/_generated/sample-consumer"],
+      "options": {
+        "command": "tsx tools/scripts/compile-sample-consumer/index.ts --target=web"
+      }
+    },
+    "build": {
+      "dependsOn": ["^build", "compile-sample-consumer"]
+    },
+    "serve": {
+      "dependsOn": ["^build", "compile-sample-consumer"]
+    },
+    "test": {
+      "dependsOn": ["^build", "compile-sample-consumer"]
     }
   }
 }
