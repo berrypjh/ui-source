@@ -21,6 +21,41 @@ function Screen() {
 }
 ```
 
+## 찾는 순서
+
+넓은 것부터 좁혀 들어간다. 위 단계로 해결되면 아래로 내려가지 않는다.
+
+1. **플랫폼** — 어느 플랫폼 작업인가. 설치된 `@berrypjh` UI 패키지가 1차 근거이고,
+   요구가 설치 상태와 어긋나면 추측하지 말고 되묻는다.
+2. **패키지** — 웹은 `@berrypjh/react-ui`, React Native는 `@berrypjh/react-native-ui`.
+   `@berrypjh/ui-core`와 `@berrypjh/design-tokens`는 private이다. 소비자가 직접 import하지 않는다 —
+   필요한 토큰·유틸(`cx`, `getColor`, `createTheme`, `themes`, `Web`, `Native`)은
+   플랫폼 패키지가 전부 re-export한다.
+3. **후보 심볼** — `llm-catalog.json`의 `symbols` 키를 훑어 후보를 좁힌다.
+4. **정확한 API** — 그 심볼 하나의 항목만 읽는다 (`kind`, `importFrom`, `props`).
+5. **토큰** — `tokens.json`에서 필요한 경로/접두사만 찾는다. 파일 전체를 컨텍스트에 넣지 않는다.
+6. **번들 `.d.ts`** — 위로 부족할 때. DOM/RN 상속 prop이 필요하면 여기다.
+7. **라이브러리 source** — 마지막 수단. 공개 API로 답이 안 나오는 구현·디버깅 질문에만.
+
+| 단계                               | 읽을 것                   | 크기 감각              |
+| ---------------------------------- | ------------------------- | ---------------------- |
+| 사용 규칙 · 플랫폼 의미 · 함정     | 이 문서                   | 작음                   |
+| 정확한 public export · 심볼 · prop | `llm-catalog.json`        | 중간                   |
+| 정확한 토큰                        | `tokens.json` (표적 조회) | 조회는 작음, 전체는 큼 |
+| 상속 prop 포함 전체 타입           | `dist/index.d.ts`         | 큼                     |
+| 구현 세부                          | source                    | 큼                     |
+
+필요한 부분만 뽑고 싶으면 패키지에 동봉된 CLI를 쓴다 — 파일 전체를 컨텍스트에 넣지 않아도 된다.
+
+```bash
+npx @berrypjh/react-native-ui find button      # 심볼 후보
+npx @berrypjh/react-native-ui api Button       # 그 심볼의 prop 계약만
+npx @berrypjh/react-native-ui token color.primary
+```
+
+`llm-catalog.json`은 빌드가 번들 declaration에서 생성한다. 이 문서는 심볼 목록을
+중복 관리하지 않는다 — 정확한 개수·이름·prop은 항상 카탈로그가 정답이다.
+
 ## Export 경로
 
 | 경로                        | 용도                         |
@@ -31,9 +66,9 @@ function Screen() {
 
 ### 컴포넌트
 
-| 심볼  | 설명                                                                   |
-| ----- | ---------------------------------------------------------------------- |
-| `Box` | 기본 레이아웃 컴포넌트 (padding, background, border 등 토큰 기반 prop) |
+정확한 컴포넌트 목록과 prop은 `llm-catalog.json`의 `symbols`에서 읽는다
+(`kind: "component"`). `Box`가 토큰 기반 레이아웃 prop(padding/margin/background/radius)을
+받는 기본 컴포넌트다.
 
 ### 테마
 
@@ -77,7 +112,30 @@ function Screen() {
 
 Web 토큰을 RN에서 그대로 쓰지 말 것 — `Native` namespace가 호환 형식.
 
-## 카탈로그 (`dist/tokens.json`)
+## 카탈로그 (`dist/llm-catalog.json`, `dist/tokens.json`)
+
+### API 카탈로그 — `llm-catalog.json`
+
+빌드가 번들 declaration에서 생성한 정확한 public API 사실.
+
+```json
+{
+  "package": "@berrypjh/react-native-ui",
+  "platform": "react-native",
+  "symbols": {
+    "Box": {
+      "kind": "component",
+      "importFrom": "@berrypjh/react-native-ui",
+      "props": { "p": { "type": "BoxSpacingValue", "required": false } }
+    }
+  }
+}
+```
+
+`props`에는 이 라이브러리가 선언한 prop만 담긴다. RN `ViewProps` 상속 prop은 제외된다 —
+그쪽이 필요하면 번들 `.d.ts`를 본다.
+
+### 토큰 카탈로그 — `tokens.json`
 
 빌드 산출물에 토큰 카탈로그가 포함됨. flat 형태:
 

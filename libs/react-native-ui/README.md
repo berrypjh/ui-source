@@ -5,6 +5,24 @@
 
 React Native 모바일 UI 컴포넌트 라이브러리. 디자인 토큰 기반의 일관된 컴포넌트 세트를 제공합니다.
 
+> **AI 에이전트용** — 소스나 번들 `.d.ts`를 열기 전에 아래를 먼저 읽으세요.
+> 전부 이 패키지 안에 있고, 네트워크가 필요 없습니다.
+>
+> | 필요한 것            | 파일                    | 해석 가능한 경로                    |
+> | -------------------- | ----------------------- | ----------------------------------- |
+> | 사용 규칙 · 함정     | `dist/AGENTS.md`        | `@berrypjh/react-native-ui/agents`  |
+> | 정확한 export · prop | `dist/llm-catalog.json` | `@berrypjh/react-native-ui/catalog` |
+> | 정확한 토큰          | `dist/tokens.json`      | `@berrypjh/react-native-ui/tokens`  |
+>
+> 또는 설치된 패키지의 CLI로 필요한 부분만 조회할 수 있습니다.
+>
+> ```bash
+> npx @berrypjh/react-native-ui summary          # 패키지 지형
+> npx @berrypjh/react-native-ui find button      # 심볼 검색
+> npx @berrypjh/react-native-ui api Button       # 정확한 prop 계약
+> npx @berrypjh/react-native-ui token color.primary
+> ```
+
 ## 설치
 
 ```bash
@@ -23,9 +41,11 @@ import { Box, ThemeProvider } from '@berrypjh/react-native-ui';
 
 ## 제공 컴포넌트
 
-| 컴포넌트 | 설명                   |
-| -------- | ---------------------- |
-| `Box`    | 기본 레이아웃 컴포넌트 |
+| 컴포넌트 | 설명                                                      |
+| -------- | --------------------------------------------------------- |
+| `Box`    | 기본 레이아웃 컴포넌트 (padding·margin·background·radius) |
+
+> 정확한 심볼·prop 목록은 빌드 산출물 `dist/llm-catalog.json`이 정답입니다.
 
 ## 테마와 토큰
 

@@ -23,7 +23,10 @@ src/
     index.ts
 ```
 
-`*.test.tsx`는 같은 폴더 (현재 없음 — 추가 가능). storybook 없음.
+`*.test.tsx`는 같은 폴더 (현재 없음). storybook 없음.
+
+RN 컴포넌트 테스트는 jsdom에서 돌지 않는다 — `react-native`가 트랜스파일되지 않은 소스를
+배포해서 vite가 파싱하지 못한다. 테스트를 추가하려면 RN babel preset을 태운 러너가 먼저 필요하다.
 
 ## 작업 매트릭스
 
@@ -37,11 +40,12 @@ src/
 ## 빌드 / 테스트
 
 ```bash
-pnpm nx build @berrypjh/react-native-ui          # rollup(JS) + dts-bundle-generator(d.ts)
-pnpm nx test @berrypjh/react-native-ui           # vitest (현재 없음)
+pnpm nx build @berrypjh/react-native-ui          # rollup(JS) + dts-bundle-generator(d.ts) + llm-catalog
 ```
 
-빌드 산출물: `dist/{index.esm.js, index.d.ts, AGENTS.md, tokens.json, README.md}`. d.ts는 `dts-bundle-generator`로 단일 파일, ui-core/design-tokens 타입을 inline.
+`test` target은 **없다** — 테스트 파일도 vitest 설정도 아직 없어서 `pnpm nx test @berrypjh/react-native-ui`는 실행되지 않는다. typecheck는 `tsc -p libs/react-native-ui/tsconfig.lib.json`으로 가능.
+
+빌드 산출물: `dist/{index.esm.js, index.d.ts, AGENTS.md, tokens.json, llm-catalog.json, README.md}`. d.ts는 `dts-bundle-generator`로 단일 파일, ui-core/design-tokens 타입을 inline. `llm-catalog.json`은 build 마지막 단계가 만든다 (`tools/scripts/generate-consumer-catalog`).
 
 ## Gotcha
 

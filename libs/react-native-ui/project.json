@@ -15,7 +15,9 @@
           "nx run @berrypjh/react-native-ui:build-types",
           "cp libs/ui-core/dist/tokens.json libs/react-native-ui/dist/tokens.json",
           "cp libs/react-native-ui/AGENTS.consumer.md libs/react-native-ui/dist/AGENTS.md",
-          "node -e \"const fs=require('fs'); const p='libs/react-native-ui/dist/package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); delete j.exports; delete j.devDependencies; fs.writeFileSync(p, JSON.stringify(j,null,2));\""
+          "node -e \"const fs=require('fs'); const p='libs/react-native-ui/dist/package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); delete j.exports; delete j.devDependencies; fs.writeFileSync(p, JSON.stringify(j,null,2));\"",
+          "tsx tools/scripts/generate-consumer-catalog/index.ts --target=react-native-ui",
+          "esbuild tools/consumer-retrieval/package-cli.ts --bundle --platform=node --format=esm --target=node20 --outfile=libs/react-native-ui/dist/cli.mjs --banner:js='#!/usr/bin/env node'"
         ]
       }
     },
