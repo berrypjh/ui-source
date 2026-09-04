@@ -11,7 +11,8 @@
         "commands": [
           "nx run @berrypjh/ui-core:build-js",
           "mkdir -p libs/ui-core/dist/css && cp libs/design-tokens/dist/css/variables.css libs/ui-core/dist/css/index.css",
-          "cp libs/design-tokens/dist/tokens.json libs/ui-core/dist/tokens.json"
+          "cp libs/design-tokens/dist/tokens.json libs/ui-core/dist/tokens.json",
+          "cp libs/design-tokens/dist/contract.json libs/ui-core/dist/contract.json"
         ],
         "parallel": false
       }
