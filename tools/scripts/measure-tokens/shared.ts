@@ -48,6 +48,9 @@ const TARGETS = {
       'agents-only': ['dist/AGENTS.md'],
       'agents+tokens': ['dist/AGENTS.md', 'dist/tokens.json'],
       'tokens-only': ['dist/tokens.json'],
+      // Command 02 — 생성 API 카탈로그. 기존 시나리오 의미는 그대로 둔다.
+      'agents+api-catalog': ['dist/AGENTS.md', 'dist/llm-catalog.json'],
+      'api-catalog-only': ['dist/llm-catalog.json'],
     } as Record<string, string[]>,
   },
   'react-native-ui': {
@@ -58,6 +61,9 @@ const TARGETS = {
       'agents-only': ['dist/AGENTS.md'],
       'agents+tokens': ['dist/AGENTS.md', 'dist/tokens.json'],
       'tokens-only': ['dist/tokens.json'],
+      // Command 02 — 생성 API 카탈로그. 기존 시나리오 의미는 그대로 둔다.
+      'agents+api-catalog': ['dist/AGENTS.md', 'dist/llm-catalog.json'],
+      'api-catalog-only': ['dist/llm-catalog.json'],
     } as Record<string, string[]>,
   },
 } as const satisfies Record<string, { pkg: string; scenarios: Record<string, string[]> }>;

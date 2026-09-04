@@ -1,0 +1,208 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+import { describe, expect, it } from 'vitest';
+
+import { publicSpecifiers } from '../../lib/package-exports';
+
+import { REPO_ROOT, TARGETS } from './config';
+import { buildCatalog } from './generate';
+import { type Catalog, catalogSchema, evidenceIdsOf, serializeCatalog } from './schema';
+
+/**
+ * 실제 빌드 산출물(dist declaration)에 대해 돈다.
+ * dist가 없으면 generator가 명확한 메시지로 실패한다 — 조용히 통과하지 않는다.
+ */
+
+const web = await buildCatalog(TARGETS['react-ui']);
+const native = await buildCatalog(TARGETS['react-native-ui']);
+
+const readPkg = async (root: string) =>
+  JSON.parse(await fs.readFile(path.join(REPO_ROOT, root, 'package.json'), 'utf8'));
+
+/** source barrel에서 재export되는 심볼 이름 — catalog와의 drift를 잡는 독립 기준. */
+const barrelExports = async (globDir: string): Promise<string[]> => {
+  const dir = path.join(REPO_ROOT, globDir);
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const names: string[] = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const file = path.join(dir, entry.name, 'index.ts');
+    const text = await fs.readFile(file, 'utf8').catch(() => '');
+    for (const m of text.matchAll(/export (?:type )?\{([^}]*)\}/g)) {
+      for (const raw of m[1].split(',')) {
+        const name = raw
+          .trim()
+          .split(/\s+as\s+/)
+          .pop()
+          ?.trim();
+        if (name) names.push(name);
+      }
+    }
+  }
+  return [...new Set(names)].sort();
+};
+
+const declarationText = async (target: (typeof TARGETS)[string]) =>
+  fs.readFile(path.join(REPO_ROOT, target.packageRoot, target.declarationFile), 'utf8');
+
+describe.each([
+  ['web', web, TARGETS['react-ui']],
+  ['react-native', native, TARGETS['react-native-ui']],
+] as const)('%s catalog', (_label, catalog, target) => {
+  it('validates against the schema', () => {
+    expect(catalogSchema.safeParse(catalog).success).toBe(true);
+    expect(catalog.platform).toBe(target.platform);
+  });
+
+  it('is deterministic across regeneration', async () => {
+    const again = await buildCatalog(target);
+    expect(serializeCatalog(again)).toBe(serializeCatalog(catalog));
+    expect(again).toEqual(catalog);
+  });
+
+  it('matches the catalog the package build wrote to dist', async () => {
+    const onDisk = await fs.readFile(
+      path.join(REPO_ROOT, target.packageRoot, target.outputFile),
+      'utf8',
+    );
+    expect(serializeCatalog(catalog)).toBe(onDisk);
+  });
+
+  it('derives exports from package.json rather than hardcoding them', async () => {
+    const pkg = await readPkg(target.packageRoot);
+    expect(catalog.package).toBe(pkg.name);
+    expect(Object.values(catalog.exports).sort()).toEqual(
+      publicSpecifiers(pkg.name, pkg.exports).sort(),
+    );
+  });
+
+  it('gives every symbol a public importFrom', () => {
+    const allowed = new Set(Object.values(catalog.exports));
+    for (const symbol of Object.values(catalog.symbols)) {
+      expect(allowed.has(symbol.importFrom)).toBe(true);
+    }
+  });
+
+  it('contains no symbol that is absent from the built declaration', async () => {
+    const text = await declarationText(target);
+    const missing = Object.keys(catalog.symbols).filter(
+      (name) => !new RegExp(`\\b${name}\\b`).test(text),
+    );
+    expect(missing).toEqual([]);
+  });
+
+  it('points at the token catalog instead of copying tokens', () => {
+    expect(catalog.tokenCatalog).toBe('tokens.json');
+    expect(JSON.stringify(catalog)).not.toContain('--ds-');
+  });
+
+  it('emits evidence ids in the Command 01 convention', () => {
+    const ids = evidenceIdsOf(catalog);
+    expect(ids).toContain(`package:${catalog.package}`);
+    expect(ids.every((id) => /^(package|component|export|prop):/.test(id))).toBe(true);
+  });
+});
+
+describe('web catalog contents', () => {
+  it('covers every symbol re-exported from the source component barrels', async () => {
+    const declared = await barrelExports('libs/react-ui/src/components');
+    const missing = declared.filter((name) => !(name in web.symbols));
+    expect(missing).toEqual([]);
+  });
+
+  it('exposes the components the handwritten doc had drifted away from', () => {
+    for (const name of [
+      'Popover',
+      'PopoverPanel',
+      'PopoverTrigger',
+      'SegmentControl',
+      'SkipLink',
+    ]) {
+      expect(web.symbols[name]?.kind).toBe('component');
+    }
+  });
+
+  it('extracts library props and literal unions for a complex component', () => {
+    const button = web.symbols.Button;
+    expect(button.kind).toBe('component');
+    expect(button.propsUnion).toBe(true);
+    expect(Object.keys(button.props ?? {})).toEqual(
+      expect.arrayContaining([
+        'variant',
+        'size',
+        'color',
+        'loading',
+        'loadingPosition',
+        'component',
+      ]),
+    );
+    expect(button.props?.variant?.values).toEqual(['contained', 'outlined', 'text']);
+    expect(button.props?.loading).toMatchObject({ type: 'boolean', required: false });
+  });
+
+  it('drops DOM props inherited from React typings', () => {
+    const props = Object.keys(web.symbols.Button.props ?? {});
+    for (const inherited of ['onClick', 'aria-label', 'id', 'tabIndex', 'onKeyDown', 'style']) {
+      expect(props).not.toContain(inherited);
+    }
+    expect(props.length).toBeLessThan(40);
+  });
+
+  it('records a large literal union as a count instead of inlining it', () => {
+    const bg = web.symbols.Box.props?.bg;
+    expect(bg?.values).toBeUndefined();
+    expect(bg?.valueCount).toBeGreaterThan(50);
+  });
+
+  it('marks a props type that is not publicly exported as null', () => {
+    expect(web.symbols.TextField.propsType).toBeNull();
+    expect(Object.keys(web.symbols.TextField.props ?? {})).toContain('helperText');
+  });
+
+  it('classifies non-component exports', () => {
+    expect(web.symbols.cx.kind).toBe('function');
+    expect(web.symbols.useFormControl.kind).toBe('hook');
+    expect(web.symbols.Web.kind).toBe('namespace');
+    expect(web.symbols.ThemeName.kind).toBe('type');
+  });
+
+  it('states an omitted type explicitly rather than emitting a fake one', () => {
+    expect(web.symbols.themes).toMatchObject({ type: null, typeOmitted: true });
+  });
+});
+
+describe('react-native catalog contents', () => {
+  it('covers the source component and theme barrels', async () => {
+    const declared = await barrelExports('libs/react-native-ui/src/components');
+    expect(declared.filter((name) => !(name in native.symbols))).toEqual([]);
+    for (const name of ['ThemeProvider', 'useTheme']) {
+      expect(native.symbols[name]).toBeDefined();
+    }
+  });
+
+  it('extracts token-based Box props without React Native ViewProps', () => {
+    const props = Object.keys(native.symbols.Box.props ?? {});
+    expect(props).toEqual(expect.arrayContaining(['p', 'bg', 'radius', 'style']));
+    for (const inherited of ['onLayout', 'accessible', 'testID', 'pointerEvents']) {
+      expect(props).not.toContain(inherited);
+    }
+  });
+
+  it('extracts theme symbols with their literal modes', () => {
+    expect(native.symbols.ThemeProvider.props?.mode?.values).toEqual(['dark', 'light', 'sepia']);
+    expect(native.symbols.ThemeProvider.props?.children?.required).toBe(true);
+    expect(native.symbols.useTheme.kind).toBe('hook');
+    expect(native.symbols.getColor.kind).toBe('function');
+  });
+});
+
+describe('catalog is smaller than the declaration it is derived from', () => {
+  it.each([
+    ['react-ui', web, TARGETS['react-ui']],
+    ['react-native-ui', native, TARGETS['react-native-ui']],
+  ] as const)('%s', async (_id, catalog: Catalog, target) => {
+    const declaration = await declarationText(target);
+    expect(serializeCatalog(catalog).length).toBeLessThan(declaration.length);
+  });
+});
