@@ -28,6 +28,7 @@
           "cp libs/ui-core/dist/tailwind.js libs/react-ui/dist/tailwind.js",
           "cp libs/ui-core/dist/tailwind.d.ts libs/react-ui/dist/tailwind.d.ts",
           "cp libs/ui-core/dist/tokens.json libs/react-ui/dist/tokens.json",
+          "cp libs/ui-core/dist/contract.json libs/react-ui/dist/contract.json",
           "cp libs/react-ui/AGENTS.consumer.md libs/react-ui/dist/AGENTS.md",
           "node -e \"const fs=require('fs'); const p='libs/react-ui/dist/package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); delete j.exports; delete j.devDependencies; fs.writeFileSync(p, JSON.stringify(j,null,2));\""
         ],
