@@ -47,13 +47,14 @@ import preset from '@berrypjh/design-tokens/tailwind';
 
 `type` 필드는 path[0]이 곧 카테고리이므로 생략. 토큰 한 줄 = JSON 한 라인 형식으로 직렬화해 구두점·줄바꿈 최소화.
 
-`dist/AGENTS.md`도 함께 생성된다 — npm 소비자(AI 에이전트 포함)용 짧은 사용 안내. 라이브러리 상태(테마·카테고리 목록)에서 자동 추출되므로 동기화 부담 없음.
+이 패키지는 `private: true`이고 소비자용 `AGENTS.md`를 만들지 않는다 — AI 에이전트용 사용 안내는
+이 토큰을 재노출하는 `@berrypjh/react-ui` / `@berrypjh/react-native-ui`의 `dist/AGENTS.md`가 담당한다.
 
 ## 파이프라인
 
 ```
 tokens/{theme}/{category}.json
-        │   pnpm build:tokens
+        │   pnpm tokens:gen
         ▼
 [Style Dictionary in-memory dict] ──▶ [generators]
                                           │
@@ -81,7 +82,6 @@ src/
     genTsTokens.ts          Web/RN TS 토큰 + namespace 인덱스 생성
     genTailwind.ts          Tailwind preset 생성
     genCatalog.ts           dist/tokens.json (슬림 카탈로그)
-    genAgents.ts            dist/AGENTS.md (npm 소비자용)
 tokens/
   light/                    base 풀세트
   dark/, sepia/, ...        light을 덮어쓰는 토큰만
@@ -111,7 +111,7 @@ tokens/
    { name: 'sepia', selector: '[data-theme="sepia"]', sourceDirs: ['light', 'sepia'] }
    ```
    `sourceDirs`는 deep-merge 순서 (뒤가 우선). base가 아닌 테마는 보통 `['light', '<name>']`.
-3. `pnpm build:tokens` — namespace 진입점 (`src/.generated/{web,rn}/index.ts`)이 자동 갱신된다.
+3. `pnpm tokens:gen` — namespace 진입점 (`src/.generated/{web,rn}/index.ts`)이 자동 갱신된다.
 
 첫 번째 항목이 base 테마. 풀세트 토큰을 가져야 한다.
 
@@ -144,7 +144,6 @@ tertiary: ['color', 'tertiary'],
 | `pnpm tokens:gen`   | 토큰 JSON → CSS / Web / RN / Tailwind (compile 없음, 가장 빠름) |
 | `pnpm tokens:build` | 풀 빌드 (gen + tsc → dist)                                      |
 | `pnpm tokens:watch` | `tokens/**/*.json` 변경 시 자동 regen                           |
-| `pnpm tokens:lint`  | design-tokens lint                                              |
 | `pnpm tokens:clean` | `dist/`, `src/.generated/`, `tsbuildinfo` 정리                  |
 
 ## Publish

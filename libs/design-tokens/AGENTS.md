@@ -23,7 +23,6 @@ src/
     genTsTokens.ts  writeTsTokens → src/.generated/{web,rn}/themes/<t>/tokens.ts + index.ts
     genTailwind.ts  writeTailwindPreset → src/.generated/tailwind/preset.ts
     genCatalog.ts   writeTokensJson → dist/tokens.json (슬림 평탄 카탈로그)
-    genAgents.ts    writeAgents → dist/AGENTS.md (npm 소비자용)
 tokens/
   light/   base 풀세트 (color/typography/spacing/radius/borderWidth/border/shadow/elevation/component)
   dark/, sepia/   light 위 override
@@ -64,6 +63,13 @@ pnpm nx run @berrypjh/design-tokens:build          # 둘 다
 - `libs/ui-core/src/tokens/*` — `Web.Light.*` 타입을 주축으로 ColorToken, SpacingToken 등을 도출. 구조 변경 시 ui-core 영향 큼.
 - `apps/demo-web/src/app/pages/TokensPage.tsx` — `Web.Light.tokens.color/typography/spacing/radius/borderWidth/shadow` 트리를 직접 순회. 카테고리 키 이름 변경 시 깨짐.
 - 런타임 테마 전환: 다운스트림은 CSS 변수 (`var(--ds-*)`)에 의존하므로 `tokens.color.x`는 base 테마 값으로 고정 노출되어도 OK.
+
+## 소비자 문서 없음
+
+design-tokens는 `private: true`이고 `AGENTS.consumer.md`도 `dist/AGENTS.md`도 만들지 않는다.
+소비자 대상 문서는 `react-ui`/`react-native-ui`가 담당한다. 이 때문에
+`tools/scripts/measure-tokens`의 `design-tokens` target 중 `dist/AGENTS.md`를 읽는
+시나리오(`agents+catalog`)는 현재 실패한다 — 그 README의 "알려진 제약" 참조.
 
 ## Validation
 
