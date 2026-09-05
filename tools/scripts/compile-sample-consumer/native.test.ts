@@ -95,6 +95,7 @@ describe('full rn record', () => {
         'shadow',
         'elevation',
         'component',
+        'motion',
       ]);
     }
   });
