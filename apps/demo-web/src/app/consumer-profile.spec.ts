@@ -65,3 +65,30 @@ describe('compiled sample consumer css', () => {
     expect(decls(css('variables.dark.css'))['--ds-stroke-default']).toBe('#C4B5FD');
   });
 });
+
+describe('design system page token references', () => {
+  /** 페이지가 참조하는 모든 `--ds-*` 가 실제로 정의돼 있는지. 오타는 CSS에서 조용히 실패한다. */
+  it('references only tokens that exist', () => {
+    const page = fs.readFileSync(path.resolve(__dirname, 'pages/DesignSystemPage.tsx'), 'utf8');
+    const variables = fs.readFileSync(
+      path.resolve(__dirname, '../../../../libs/design-tokens/dist/css/variables.css'),
+      'utf8',
+    );
+    const defined = new Set([...variables.matchAll(/(--ds-[a-z0-9-]+)\s*:/g)].map((m) => m[1]));
+
+    // 정적 참조 + 템플릿으로 만들어지는 동적 참조
+    const statics = [...page.matchAll(/--ds-[a-z0-9-]+(?=[)\s`'"])/g)].map((m) => m[0]);
+    const shadows = ['none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'].map((n) => `--ds-shadow-${n}`);
+    const buttons = ['primary', 'secondary', 'error'].flatMap((role) =>
+      ['default', 'hover', 'disabled', 'focus-ripple', 'outlined-hover'].map(
+        (slot) => `--ds-${role}-btn-${slot}`,
+      ),
+    );
+
+    const missing = [...new Set([...statics, ...shadows, ...buttons])]
+      .filter((v) => v !== '--ds-shadow-')
+      .filter((v) => !defined.has(v));
+
+    expect(missing).toEqual([]);
+  });
+});

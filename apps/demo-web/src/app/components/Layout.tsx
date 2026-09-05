@@ -80,6 +80,7 @@ const NAV_GROUPS = [
     label: 'Overview',
     items: [
       { label: 'Home', path: '/' },
+      { label: 'Design System', path: '/design-system' },
       { label: 'Design Tokens', path: '/tokens' },
       { label: 'Consumer Profile', path: '/consumer-profile' },
     ],

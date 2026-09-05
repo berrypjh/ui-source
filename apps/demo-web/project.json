@@ -18,7 +18,8 @@
       "outputs": ["{projectRoot}/src/_generated/sample-consumer"],
       "options": {
         "command": "tsx tools/scripts/compile-sample-consumer/index.ts --target=web"
-      }
+      },
+      "dependsOn": ["@berrypjh/design-tokens:build"]
     },
     "build": {
       "dependsOn": ["^build", "compile-sample-consumer"]

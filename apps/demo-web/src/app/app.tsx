@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ButtonPage } from './pages/ButtonPage';
 import { ConsumerProfilePage } from './pages/ConsumerProfilePage';
+import { DesignSystemPage } from './pages/DesignSystemPage';
 import { FabPage } from './pages/FabPage';
 import { HomePage } from './pages/HomePage';
 import { IconButtonPage } from './pages/IconButtonPage';
@@ -21,6 +22,7 @@ export const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/tokens" element={<TokensPage />} />
+        <Route path="/design-system" element={<DesignSystemPage />} />
         <Route path="/consumer-profile" element={<ConsumerProfilePage />} />
         <Route path="/components/button" element={<ButtonPage />} />
         <Route path="/components/text-field" element={<TextFieldPage />} />
