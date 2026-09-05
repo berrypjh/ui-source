@@ -27,7 +27,8 @@
       "outputs": ["{projectRoot}/src/_generated/sample-consumer"],
       "options": {
         "command": "tsx tools/scripts/compile-sample-consumer/index.ts --target=native"
-      }
+      },
+      "dependsOn": ["@berrypjh/design-tokens:build"]
     },
     "start": {
       "dependsOn": ["compile-sample-consumer"]
