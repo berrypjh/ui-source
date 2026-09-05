@@ -1,6 +1,6 @@
 import { Fab } from '@berrypjh/react-ui';
 
-import { DemoSection, PageHeader } from '../components/DemoSection';
+import { Page, Preview, Section } from '../shell/ui';
 
 const PlusIcon = () => (
   <svg
@@ -34,38 +34,44 @@ const EditIcon = () => (
 );
 
 export const FabPage = () => (
-  <div>
-    <PageHeader badge="Component" title="FAB" description="화면의 주된 액션을 표현하는 버튼" />
+  <Page title="FAB" lead="화면의 주된 액션을 표현하는 버튼">
+    <Section title="Shapes" note="원형과 확장형">
+      <Preview>
+        <Fab shape="circular" icon={<PlusIcon />} />
+        <Fab shape="extended" icon={<PlusIcon />}>
+          Create New
+        </Fab>
+      </Preview>
+    </Section>
 
-    <DemoSection title="Shapes" description="원형과 확장형">
-      <Fab shape="circular" icon={<PlusIcon />} />
-      <Fab shape="extended" icon={<PlusIcon />}>
-        Create New
-      </Fab>
-    </DemoSection>
+    <Section title="Sizes" note="Small, Medium, Large">
+      <Preview>
+        <Fab size="sm" shape="circular" icon={<PlusIcon />} />
+        <Fab size="md" shape="circular" icon={<PlusIcon />} />
+        <Fab size="lg" shape="circular" icon={<PlusIcon />} />
+      </Preview>
+    </Section>
 
-    <DemoSection title="Sizes" description="Small, Medium, Large">
-      <Fab size="sm" shape="circular" icon={<PlusIcon />} />
-      <Fab size="md" shape="circular" icon={<PlusIcon />} />
-      <Fab size="lg" shape="circular" icon={<PlusIcon />} />
-    </DemoSection>
+    <Section title="Colors" note="Primary와 Secondary 컬러">
+      <Preview>
+        <Fab color="primary" icon={<PlusIcon />} />
+        <Fab color="secondary" icon={<PlusIcon />} />
+        <Fab color="primary" shape="extended" icon={<EditIcon />}>
+          Edit
+        </Fab>
+        <Fab color="secondary" shape="extended" icon={<EditIcon />}>
+          Edit
+        </Fab>
+      </Preview>
+    </Section>
 
-    <DemoSection title="Colors" description="Primary와 Secondary 컬러">
-      <Fab color="primary" icon={<PlusIcon />} />
-      <Fab color="secondary" icon={<PlusIcon />} />
-      <Fab color="primary" shape="extended" icon={<EditIcon />}>
-        Edit
-      </Fab>
-      <Fab color="secondary" shape="extended" icon={<EditIcon />}>
-        Edit
-      </Fab>
-    </DemoSection>
-
-    <DemoSection title="Disabled">
-      <Fab disabled icon={<PlusIcon />} />
-      <Fab disabled shape="extended" icon={<PlusIcon />}>
-        Disabled
-      </Fab>
-    </DemoSection>
-  </div>
+    <Section title="Disabled">
+      <Preview>
+        <Fab disabled icon={<PlusIcon />} />
+        <Fab disabled shape="extended" icon={<PlusIcon />}>
+          Disabled
+        </Fab>
+      </Preview>
+    </Section>
+  </Page>
 );

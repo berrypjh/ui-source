@@ -1,6 +1,6 @@
 import { IconButton } from '@berrypjh/react-ui';
 
-import { DemoSection, PageHeader } from '../components/DemoSection';
+import { Page, Preview, Section } from '../shell/ui';
 
 const HeartIcon = () => (
   <svg
@@ -52,76 +52,80 @@ const ShareIcon = () => (
 );
 
 export const IconButtonPage = () => (
-  <div>
-    <PageHeader
-      badge="Component"
-      title="IconButton"
-      description="아이콘만 포함하는 버튼으로, 일반적이거나 상황에 따른 액션에 사용됩니다."
-    />
-
-    <DemoSection title="Size" description="Small, Medium, Large">
-      <IconButton size="sm">
-        <HeartIcon />
-      </IconButton>
-      <IconButton size="md">
-        <HeartIcon />
-      </IconButton>
-      <IconButton size="lg">
-        <HeartIcon />
-      </IconButton>
-    </DemoSection>
-
-    <DemoSection title="Colors" description="Primary와 Secondary 컬러">
-      <IconButton color="primary">
-        <HeartIcon />
-      </IconButton>
-      <IconButton color="secondary">
-        <HeartIcon />
-      </IconButton>
-      <IconButton color="primary">
-        <StarIcon />
-      </IconButton>
-      <IconButton color="secondary">
-        <StarIcon />
-      </IconButton>
-    </DemoSection>
-
-    <DemoSection title="Loading State">
-      <IconButton loading>
-        <HeartIcon />
-      </IconButton>
-      <IconButton loading size="lg">
-        <StarIcon />
-      </IconButton>
-    </DemoSection>
-
-    <DemoSection title="Disabled">
-      <IconButton disabled>
-        <HeartIcon />
-      </IconButton>
-      <IconButton disabled>
-        <StarIcon />
-      </IconButton>
-      <IconButton disabled>
-        <ShareIcon />
-      </IconButton>
-    </DemoSection>
-
-    <DemoSection
-      title="Edge Alignment"
-      description="edge='start'와 edge='end'는 각각의 면의 패딩을 줄여줍니다."
-    >
-      <div style={{ display: 'flex', gap: 4 }}>
-        <IconButton edge="start">
+  <Page
+    title="IconButton"
+    lead="아이콘만 포함하는 버튼으로, 일반적이거나 상황에 따른 액션에 사용됩니다."
+  >
+    <Section title="Size" note="Small, Medium, Large">
+      <Preview>
+        <IconButton size="sm">
           <HeartIcon />
         </IconButton>
-        <IconButton>
+        <IconButton size="md">
+          <HeartIcon />
+        </IconButton>
+        <IconButton size="lg">
+          <HeartIcon />
+        </IconButton>
+      </Preview>
+    </Section>
+
+    <Section title="Colors" note="Primary와 Secondary 컬러">
+      <Preview>
+        <IconButton color="primary">
+          <HeartIcon />
+        </IconButton>
+        <IconButton color="secondary">
+          <HeartIcon />
+        </IconButton>
+        <IconButton color="primary">
           <StarIcon />
         </IconButton>
-        <IconButton edge="end">
+        <IconButton color="secondary">
+          <StarIcon />
+        </IconButton>
+      </Preview>
+    </Section>
+
+    <Section title="Loading State">
+      <Preview>
+        <IconButton loading>
+          <HeartIcon />
+        </IconButton>
+        <IconButton loading size="lg">
+          <StarIcon />
+        </IconButton>
+      </Preview>
+    </Section>
+
+    <Section title="Disabled">
+      <Preview>
+        <IconButton disabled>
+          <HeartIcon />
+        </IconButton>
+        <IconButton disabled>
+          <StarIcon />
+        </IconButton>
+        <IconButton disabled>
           <ShareIcon />
         </IconButton>
-      </div>
-    </DemoSection>
-  </div>
+      </Preview>
+    </Section>
+
+    <Section title="Edge Alignment" note="edge='start'와 edge='end'는 각 면의 패딩을 줄입니다">
+      <Preview>
+        <div style={{ display: 'flex', gap: 4 }}>
+          <IconButton edge="start">
+            <HeartIcon />
+          </IconButton>
+          <IconButton>
+            <StarIcon />
+          </IconButton>
+          <IconButton edge="end">
+            <ShareIcon />
+          </IconButton>
+        </div>
+      </Preview>
+    </Section>
+  </Page>
 );

@@ -1,6 +1,6 @@
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@berrypjh/react-ui';
 
-import { DemoSection, PageHeader } from '../components/DemoSection';
+import { Page, Preview, Section } from '../shell/ui';
 
 const FRUITS = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
 
@@ -37,43 +37,45 @@ const LabeledSelect = ({
 );
 
 export const SelectPage = () => (
-  <div>
-    <PageHeader
-      badge="Component"
-      title="Select"
-      description="Select는 드롭다운 리스트에서 옵션을 선택할 수 있는 컴포넌트입니다."
-    />
+  <Page title="Select" lead="Select는 드롭다운 리스트에서 옵션을 선택할 수 있는 컴포넌트입니다.">
+    <Section title="Variants" note="Boxed, Filled, Plain">
+      <Preview>
+        <LabeledSelect label="Boxed" variant="boxed" />
+        <LabeledSelect label="Filled" variant="filled" />
+        <LabeledSelect label="Plain" variant="plain" />
+      </Preview>
+    </Section>
 
-    <DemoSection title="Variants" description="Boxed, Filled, Plain">
-      <LabeledSelect label="Boxed" variant="boxed" />
-      <LabeledSelect label="Filled" variant="filled" />
-      <LabeledSelect label="Plain" variant="plain" />
-    </DemoSection>
+    <Section title="Sizes" note="Small, Medium">
+      <Preview>
+        <LabeledSelect label="Small" size="sm" />
+        <LabeledSelect label="Medium" size="md" />
+      </Preview>
+    </Section>
 
-    <DemoSection title="Sizes" description="Small, Medium">
-      <LabeledSelect label="Small" size="sm" />
-      <LabeledSelect label="Medium" size="md" />
-    </DemoSection>
+    <Section title="States" note="Error, Disabled, Required">
+      <Preview>
+        <LabeledSelect label="Error" error helperText="Selection is required" />
+        <LabeledSelect label="Disabled" disabled />
+        <LabeledSelect label="Required" required />
+      </Preview>
+    </Section>
 
-    <DemoSection title="States" description="Error, Disabled, Required">
-      <LabeledSelect label="Error" error helperText="Selection is required" />
-      <LabeledSelect label="Disabled" disabled />
-      <LabeledSelect label="Required" required />
-    </DemoSection>
-
-    <DemoSection title="Full Width">
-      <div style={{ width: '100%' }}>
-        <FormControl variant="boxed" fullWidth>
-          <InputLabel>Full Width</InputLabel>
-          <Select placeholder="Choose an option">
-            {FRUITS.map((f) => (
-              <MenuItem key={f} value={f}>
-                {f}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-    </DemoSection>
-  </div>
+    <Section title="Full Width">
+      <Preview>
+        <div style={{ width: '100%' }}>
+          <FormControl variant="boxed" fullWidth>
+            <InputLabel>Full Width</InputLabel>
+            <Select placeholder="Choose an option">
+              {FRUITS.map((f) => (
+                <MenuItem key={f} value={f}>
+                  {f}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      </Preview>
+    </Section>
+  </Page>
 );
