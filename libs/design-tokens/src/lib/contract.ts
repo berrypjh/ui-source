@@ -209,6 +209,13 @@ export const PUBLIC_OVERRIDE_CONTRACT = [
     stability: 'experimental',
   },
   {
+    path: 'color.background.selected',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
     path: 'color.background.success',
     type: 'color',
     visibility: 'public',
@@ -427,6 +434,170 @@ export const PUBLIC_OVERRIDE_CONTRACT = [
   {
     path: 'color.primaryBtn.outlinedHover',
     type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+
+  // color.secondaryBtn (6 leaves)
+  {
+    path: 'color.secondaryBtn.default',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.secondaryBtn.disabled',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.secondaryBtn.focusRipple',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.secondaryBtn.hover',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.secondaryBtn.outlinedFocusRipple',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.secondaryBtn.outlinedHover',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+
+  // color.errorBtn (6 leaves)
+  {
+    path: 'color.errorBtn.default',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.errorBtn.disabled',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.errorBtn.focusRipple',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.errorBtn.hover',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.errorBtn.outlinedFocusRipple',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.errorBtn.outlinedHover',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+
+  // color.field (7 leaves)
+  {
+    path: 'color.field.border',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.field.borderHover',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.field.borderStrong',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.field.focusRing',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.field.focusRingError',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.field.surface',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'color.field.surfaceSubtle',
+    type: 'color',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+
+  // component.field (2 leaves)
+  {
+    path: 'component.field.height.md',
+    type: 'dimension',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+  {
+    path: 'component.field.height.sm',
+    type: 'dimension',
+    visibility: 'public',
+    overridable: true,
+    stability: 'stable',
+  },
+
+  // component.field.focusRingWidth
+  {
+    path: 'component.field.focusRingWidth',
+    type: 'dimension',
     visibility: 'public',
     overridable: true,
     stability: 'stable',

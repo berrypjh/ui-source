@@ -157,6 +157,7 @@ describe('rn output', () => {
         'shadow',
         'elevation',
         'component',
+        'motion',
       ]);
     }
   });

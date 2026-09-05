@@ -45,7 +45,63 @@ export const declsFromDict = (
       if (channels) decls.push({ name: `${name}-rgb`, value: channels });
     }
   }
+  decls.push(...composedShadowDecls(tokens));
   return decls.sort((a, b) => a.name.localeCompare(b.name));
+};
+
+/**
+ * boxShadow는 sd-transforms가 레이어별 자식 변수로 분해한다
+ * (`--ds-shadow-lg-1-blur` …). 그래서 `--ds-shadow-lg` 같은 **바로 쓸 수 있는 단일 변수**가
+ * 없고, 소비자가 자식 5개를 손으로 조합해야 했다. 여기서 그 합성본을 함께 만들어 준다.
+ *
+ * 그룹 경로는 항상 `[카테고리, 이름]`(+ 선택적 레이어)이다 —
+ * `shadow.lg.1.blur`, `shadow.none.blur`, `elevation.3.1.blur`.
+ */
+const SHADOW_HEADS = new Set(['shadow', 'elevation']);
+const SHADOW_PARTS = ['offsetX', 'offsetY', 'blur', 'spread', 'color', 'type'] as const;
+
+type ShadowLayer = Partial<Record<(typeof SHADOW_PARTS)[number], string>>;
+
+/** 한 레이어를 CSS box-shadow 조각으로. innerShadow는 `inset`을 앞에 붙인다. */
+const shadowLayerCss = (layer: ShadowLayer): string | null => {
+  const { offsetX, offsetY, blur, spread, color, type } = layer;
+  if (!offsetX || !offsetY || !blur || !spread || !color) return null;
+  const inset = type === 'innerShadow' ? 'inset ' : '';
+  return `${inset}${offsetX} ${offsetY} ${blur} ${spread} ${color}`;
+};
+
+/**
+ * 분해된 shadow 자식들을 모아 `--ds-<name>` 합성 선언을 만든다.
+ * 레이어는 번호 순으로 `, ` 결합한다.
+ */
+const composedShadowDecls = (tokens: TransformedToken[]): Decl[] => {
+  const groups = new Map<string, { path: string[]; layers: Map<string, ShadowLayer> }>();
+
+  for (const t of tokens) {
+    const part = t.path[t.path.length - 1] as (typeof SHADOW_PARTS)[number];
+    if (!SHADOW_HEADS.has(t.path[0]) || !SHADOW_PARTS.includes(part)) continue;
+
+    const rest = t.path.slice(0, -1);
+    const name = rest.slice(0, 2);
+    const layer = rest[2] ?? '1';
+    const key = name.join('.');
+
+    if (!groups.has(key)) groups.set(key, { path: name, layers: new Map() });
+    const group = groups.get(key);
+    if (!group) continue;
+    if (!group.layers.has(layer)) group.layers.set(layer, {});
+    (group.layers.get(layer) as ShadowLayer)[part] = stringify(getTokenValue(t));
+  }
+
+  const decls: Decl[] = [];
+  for (const { path, layers } of groups.values()) {
+    const ordered = [...layers.entries()]
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .map(([, layer]) => shadowLayerCss(layer));
+    if (ordered.some((l) => l === null)) continue;
+    decls.push({ name: cssVarName(PREFIX, path), value: ordered.join(', ') });
+  }
+  return decls;
 };
 
 /** `selector { --x: y; ... }` 형태의 CSS 룰 블록 문자열을 생성. */

@@ -74,6 +74,9 @@ const HEAD_REWRITE: Record<string, readonly string[]> = {
   warning: ['color', 'warning'],
   error: ['color', 'error'],
   primaryBtn: ['color', 'primaryBtn'],
+  secondaryBtn: ['color', 'secondaryBtn'],
+  errorBtn: ['color', 'errorBtn'],
+  field: ['color', 'field'],
   text: ['color', 'text'],
   background: ['color', 'background'],
   icon: ['color', 'icon'],
@@ -99,6 +102,7 @@ const HEAD_REWRITE: Record<string, readonly string[]> = {
   elevation: ['elevation'],
   border: ['border'],
   component: ['component'],
+  motion: ['motion'],
 };
 
 /**
@@ -127,4 +131,5 @@ export const TOKEN_CATEGORIES = [
   'shadow',
   'elevation',
   'component',
+  'motion',
 ] as const;

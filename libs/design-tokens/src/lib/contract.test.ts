@@ -122,10 +122,22 @@ describe('primitive deny-by-default', () => {
     for (const p of ramps) expect(isOverridable(p)).toBe(false);
   });
 
-  it('denies component tokens until they are explicitly opted in', () => {
-    const componentPaths = [...graph.keys()].filter((p) => p.startsWith('component.'));
-    expect(componentPaths).toEqual(['component.button']);
-    for (const p of componentPaths) expect(isOverridable(p)).toBe(false);
+  it('opts component tokens in one by one, never as a category', () => {
+    const componentPaths = [...graph.keys()].filter((p) => p.startsWith('component.')).sort();
+    expect(componentPaths).toEqual([
+      'component.button',
+      'component.field.focusRingWidth',
+      'component.field.height.md',
+      'component.field.height.sm',
+    ]);
+
+    // 폼 컨트롤 높이는 input-base/select 가 공유하고 RN 이 숫자로 필요로 해 opt-in 했다.
+    expect(isOverridable('component.field.height.sm')).toBe(true);
+    expect(isOverridable('component.field.height.md')).toBe(true);
+    expect(isOverridable('component.field.focusRingWidth')).toBe(true);
+
+    // component.button 은 아직 소비처가 없어 internal 이다 — 카테고리 전체 공개가 아니다.
+    expect(isOverridable('component.button')).toBe(false);
   });
 
   it('denies raw scales that are not part of the v1 public surface', () => {

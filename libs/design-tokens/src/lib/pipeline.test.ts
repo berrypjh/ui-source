@@ -187,13 +187,14 @@ describe('tokens.json catalog ABI', () => {
     expect(catalog.themes).toEqual(['light', 'dark', 'sepia']);
   });
 
-  it('lists the nine categories sorted', () => {
+  it('lists the ten categories sorted', () => {
     expect(catalog.categories).toEqual([
       'border',
       'borderWidth',
       'color',
       'component',
       'elevation',
+      'motion',
       'radius',
       'shadow',
       'spacing',
@@ -250,4 +251,59 @@ describe('deterministic generation', () => {
     expect(await readTree(second.distDir)).toEqual(await readTree(first.distDir));
     expect(await readTree(second.generatedDir)).toEqual(await readTree(first.generatedDir));
   }, 60_000);
+});
+
+describe('composed shadow variables', () => {
+  /**
+   * sd-transforms가 boxShadow를 레이어 자식으로 분해하므로 바로 쓸 수 있는 단일 변수가
+   * 없었다. `genCss`가 합성본을 함께 만든다 — 소비자가 자식 5개를 손으로 조합하지 않는다.
+   */
+  it('emits a single ready-to-use variable per shadow', () => {
+    expect(lightCss).toMatch(/^ {2}--ds-shadow-lg: .+;$/m);
+    expect(lightCss).toMatch(/^ {2}--ds-shadow-md: .+;$/m);
+    expect(lightCss).toMatch(/^ {2}--ds-shadow-none: .+;$/m);
+  });
+
+  it('emits one per elevation step too', () => {
+    for (const step of [0, 1, 2, 3, 4, 5, 6]) {
+      expect(lightCss).toMatch(new RegExp(`^ {2}--ds-elevation-${step}: .+;$`, 'm'));
+    }
+  });
+
+  it('joins multiple layers in numeric order', () => {
+    const value = /^ {2}--ds-shadow-lg: (.+);$/m.exec(lightCss)?.[1];
+    const layers = value?.split(', ') ?? [];
+    expect(layers).toHaveLength(3);
+
+    const decls = (name: string) => new RegExp(`^ {2}${name}: (.+);$`, 'm').exec(lightCss)?.[1];
+    // 첫 레이어가 자식 변수들과 정확히 같은 순서·값으로 조립된다.
+    expect(layers[0]).toBe(
+      [
+        decls('--ds-shadow-lg-1-offset-x'),
+        decls('--ds-shadow-lg-1-offset-y'),
+        decls('--ds-shadow-lg-1-blur'),
+        decls('--ds-shadow-lg-1-spread'),
+        decls('--ds-shadow-lg-1-color'),
+      ].join(' '),
+    );
+  });
+
+  it('prefixes inset for an inner shadow', () => {
+    expect(/^ {2}--ds-shadow-inner: (.+);$/m.exec(lightCss)?.[1]).toMatch(/^inset /);
+  });
+
+  it('does not prefix inset for a drop shadow', () => {
+    expect(/^ {2}--ds-shadow-lg: (.+);$/m.exec(lightCss)?.[1]).not.toMatch(/inset/);
+  });
+
+  it('keeps the expanded child variables alongside the composed one', () => {
+    expect(lightCss).toMatch(/^ {2}--ds-shadow-lg-1-blur: .+;$/m);
+    expect(lightCss).toMatch(/^ {2}--ds-shadow-lg-3-color: .+;$/m);
+  });
+
+  it('leaves the tokens.json catalog shape untouched', () => {
+    // 합성은 CSS 전용이다 — 값 인벤토리 ABI는 그대로다.
+    expect(catalog.tokens['shadow.lg']).toBeUndefined();
+    expect(catalog.tokens['shadow.lg.1.blur']).toBeDefined();
+  });
 });

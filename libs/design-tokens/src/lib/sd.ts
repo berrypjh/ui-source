@@ -10,7 +10,7 @@ import type { Dictionary, Transform, TransformedToken } from 'style-dictionary/t
 
 import type { ThemeDef } from '../themes.js';
 
-import { toRnNumeric, toWebRem } from './platformValue.js';
+import { toRnNumeric, toWebDuration, toWebRem } from './platformValue.js';
 import { getTokenType, getTokenValue } from './tokens.js';
 
 export type ThemeBuild = {
@@ -26,6 +26,7 @@ const RN_NUMERIC_TYPES = new Set([
   'lineHeight',
   'letterSpacing',
   'fontWeight',
+  'duration',
 ]);
 
 /**
@@ -62,6 +63,15 @@ const webRemTransform: Transform = {
   transform: (t: TransformedToken) => toWebRem(getTokenValue(t)),
 };
 
+/** duration 토큰을 Web에서 `140ms` 형태로 노출하는 transform. */
+const webDurationTransform: Transform = {
+  name: 'ds/web/duration',
+  type: 'value',
+  transitive: true,
+  filter: (t) => getTokenType(t) === 'duration',
+  transform: (t: TransformedToken) => toWebDuration(getTokenValue(t)),
+};
+
 let registered = false;
 
 /** Tokens Studio + 자체 transform을 SD에 1회만 등록. 중복 호출 안전. */
@@ -71,6 +81,7 @@ const registerOnce = () => {
   registerTokensStudio(StyleDictionary);
   StyleDictionary.registerTransform(rnNumberTransform);
   StyleDictionary.registerTransform(webRemTransform);
+  StyleDictionary.registerTransform(webDurationTransform);
 };
 
 /** `arr`에서 `rm`에 포함된 항목을 제거한 새 배열을 반환. */
@@ -86,6 +97,7 @@ const baseTransforms = getTransforms({ platform: 'css' })
 const WEB_TRANSFORMS = [
   ...without(baseTransforms, ['ts/color/css/hexrgba', 'ts/size/px']),
   'ds/web/rem',
+  'ds/web/duration',
   'name/kebab',
 ];
 

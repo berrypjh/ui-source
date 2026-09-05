@@ -83,6 +83,20 @@ const collect = (
   return out;
 };
 
+/**
+ * shadow/elevation은 레이어 자식으로 분해되지만 `genCss`가 합성 변수를 함께 만든다.
+ * 그 합성 변수를 Tailwind boxShadow 유틸에 연결한다 — 값을 굽지 않고 변수를 가리킨다.
+ */
+const collectShadows = (tokens: Flat[], head: string): SimpleMap => {
+  const out: SimpleMap = {};
+  for (const t of tokens) {
+    if (t.path[0] !== head || t.path.length < 2) continue;
+    const name = t.path.slice(0, 2);
+    out[name[1]] = twVar(cssVarName(PREFIX, name));
+  }
+  return out;
+};
+
 /** preset 파일에 들어갈 `const X = {...} as const;` 선언 문자열을 만든다. */
 const tsConst = (name: string, obj: unknown) =>
   `const ${name} = ${JSON.stringify(obj, null, 2)} as const;\n\n`;
@@ -90,7 +104,7 @@ const tsConst = (name: string, obj: unknown) =>
 /**
  * Tailwind preset(`.generated/tailwind/preset.ts`) 생성.
  * 모든 색상/사이즈는 CSS 변수 참조라 테마 무관 → base 사전만 사용한다.
- * boxShadow는 expand로 child 변수로 분해되어 단일 변수가 없으므로 비워둔다.
+ * boxShadow는 genCss가 만드는 합성 변수(--ds-shadow-lg 등)를 가리킨다.
  */
 export const writeTailwindPreset = async (
   builds: ThemeBuild[],
@@ -100,14 +114,12 @@ export const writeTailwindPreset = async (
   if (!base) throw new Error(`base theme "${baseTheme.name}" not found in builds`);
   const tokens = base.web.allTokens.map(toFlat);
 
-  const emptyMap: SimpleMap = {};
-
   const sections = {
     colors: buildColors(tokens),
     spacing: collect(tokens, 'spacing', true),
     borderRadius: collect(tokens, 'radius', true),
     borderWidth: collect(tokens, ['primitiveBorder', 'semanticBorder'], false),
-    boxShadow: emptyMap,
+    boxShadow: { ...collectShadows(tokens, 'shadow'), ...collectShadows(tokens, 'elevation') },
     fontFamily: collect(tokens, 'fontFamilies', true, true),
     fontWeight: collect(tokens, ['fontWeight', 'fontWeights'], true, true),
     fontSize: collect(tokens, ['fontSize', 'fontSizes'], true, true),

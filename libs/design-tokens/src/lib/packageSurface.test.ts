@@ -60,8 +60,14 @@ describe('internal modules are not reachable', () => {
 });
 
 describe('publish configuration', () => {
-  it('is publishable so consumers can install the compiler', async () => {
-    expect((await readPkg()).private).toBe(false);
+  /**
+   * 이 패키지는 의도적으로 `private: true`다.
+   * 직접 publish하지 않고 react-ui / react-native-ui 빌드 시 d.ts와 CSS로 번들되어
+   * 다운스트림에 전달된다. `nx.json`의 `release.projects`에는 남아 있어
+   * 버전·changelog는 함께 생성된다 (README의 Publish 절 참고).
+   */
+  it('stays private — downstream gets tokens through react-ui / react-native-ui', async () => {
+    expect((await readPkg()).private).toBe(true);
   });
 
   it('ships only dist', async () => {

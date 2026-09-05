@@ -119,7 +119,7 @@ describe('colorToRgbChannels', () => {
 });
 
 describe('TOKEN_CATEGORIES', () => {
-  it('is the current nine-category ABI in order', () => {
+  it('is the current ten-category ABI in order', () => {
     expect(TOKEN_CATEGORIES).toEqual([
       'color',
       'spacing',
@@ -130,6 +130,7 @@ describe('TOKEN_CATEGORIES', () => {
       'shadow',
       'elevation',
       'component',
+      'motion',
     ]);
   });
 });

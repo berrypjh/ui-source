@@ -63,13 +63,14 @@ tokens/
 `src/lib/contract.ts`가 **Consumer가 무엇을 override할 수 있는지**를 코드로 고정한다.
 deny-by-default — `PUBLIC_OVERRIDE_CONTRACT`에 leaf로 명시되지 않으면 전부 internal이다.
 
-| 층                    | 예시                                                                                                                               | Consumer override |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| Internal Primitive    | `color.primary.pr700`, `borderWidth.primitive.*`                                                                                   | 불가              |
-| Public Semantic       | `color.text.*`, `color.background.*`, `color.icon.*`, `color.stroke.*`, `color.primaryBtn.*`, `border.*`, `borderWidth.semantic.*` | 가능              |
-| Raw scale / Component | `spacing.*`, `radius.*`, `typography.*`, `shadow.*`, `component.*`                                                                 | v1에서는 불가     |
+| 층                 | 예시                                                                                                                               | Consumer override |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| Internal Primitive | `color.primary.pr700`, `borderWidth.primitive.*`                                                                                   | 불가              |
+| Public Semantic    | `color.text.*`, `color.background.*`, `color.icon.*`, `color.stroke.*`, `color.primaryBtn.*`, `border.*`, `borderWidth.semantic.*` | 가능              |
+| Raw scale          | `spacing.*`, `radius.*`, `typography.*`, `shadow.*`                                                                                | v1에서는 불가     |
+| Component          | `component.field.height.*` 만 opt-in. 나머지(`component.button`)는 internal                                                        | opt-in 한 것만    |
 
-- **wildcard 금지**: category/root가 아니라 leaf path 61개를 전부 열거한다.
+- **wildcard 금지**: category/root가 아니라 leaf path 83개를 전부 열거한다.
 - **stability**: shared component가 이미 소비하면 `stable`, 아직이면 `experimental`.
 - **deprecated/replacement**: 지금 deprecated 토큰은 없지만 표현·검증 가능하다.
   `deprecated: true`면 `replacement`가 반드시 다른 contract path여야 한다.
@@ -79,6 +80,80 @@ deny-by-default — `PUBLIC_OVERRIDE_CONTRACT`에 leaf로 명시되지 않으면
 `src/lib/contract.test.ts`가 contract를 실제 토큰 그래프에 대해 검증한다 — path 존재,
 타입 일치, primitive 유출, deprecation metadata, 결정적 순서. public 토큰을 지우거나
 이름을 바꾸면 이 테스트가 정확한 path를 지목하며 실패한다.
+
+### 시맨틱 패밀리 구성
+
+컴포넌트가 primitive를 직접 참조하지 않도록, 역할별로 패밀리를 맞춰 둔다.
+
+| 패밀리                                                         | 용도                                                                                                                           | 소비처                                                                               |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `color.primaryBtn.*` `color.secondaryBtn.*` `color.errorBtn.*` | 버튼 색 역할 3종. 각각 `default`/`hover`/`disabled`/`focusRipple`/`outlinedHover`/`outlinedFocusRipple`                        | `button-base`, `fab`, `icon-button`                                                  |
+| `color.field.*`                                                | 폼 컨트롤 표면·테두리·포커스 링 (`border`/`borderHover`/`borderStrong`/`surface`/`surfaceSubtle`/`focusRing`/`focusRingError`) | `input-base`, `boxed-input`, `filled-input`, `plain-input`, `search-field`, `select` |
+
+세 버튼 패밀리는 **같은 shape**를 갖는다 — 새 색 역할을 추가할 때 이 6개 키를 그대로 따른다.
+
+### component 토큰을 만드는 기준
+
+컴포넌트 값은 기본적으로 `react-ui`의 `--ui-*` SCSS 지역 변수에 둔다 —
+스코프되고 캐스케이드되며 빌드 비용이 없다. **아래 셋을 모두 만족할 때만** 토큰으로 승격한다.
+
+1. **RN이 필요로 하는가** — RN은 `--ui-*`를 못 쓴다. 웹 전용이면 SCSS에 둔다.
+2. **기존 시맨틱으로 표현 불가능한가** — 가능하면 시맨틱을 쓴다.
+3. **여러 컴포넌트가 공유하거나 안정적인가**
+
+승격된 것은 둘이다.
+
+| 토큰                             | 왜                                                                                                                    |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `component.field.height.{sm,md}` | `input-base`/`select`가 같은 값(40/52)을 각자 하드코딩. Web `2.5rem`/`3.25rem`, RN `40`/`52`                          |
+| `component.field.focusRingWidth` | 폼 필드 포커스 링은 2px, 버튼은 `borderWidth.semantic.focus`(4px)로 서로 다르다. 3개 컴포넌트에 8회 하드코딩돼 있었다 |
+
+`component.button`은 소비처가 없어 **internal로 남긴다** — 카테고리 통째 공개가 아니라
+path 단위 opt-in이다.
+
+### 접근성 (WCAG) 보장
+
+토큰 **기본값**은 WCAG 2.1 AA 대비를 충족한다. `lib/contrast.ts`의 순수 함수로 계산하고
+`contrast.test.ts`가 3테마 × 실제 컴포넌트 조합을 검사한다 — 색을 바꿔 대비가 내려가면 실패한다.
+
+| 대상                                              | 기준  | 근거                  |
+| ------------------------------------------------- | ----- | --------------------- |
+| 본문·보조·placeholder·링크·오류 텍스트, 버튼 라벨 | 4.5:1 | WCAG 1.4.3            |
+| 필드 테두리(평소/hover)                           | 3:1   | WCAG 1.4.11 (UI 경계) |
+
+**테마마다 값이 달라야 한다.** `dark`는 `neutral` 램프를 재정의하지 않는데 표면만 뒤집히므로,
+한 값이 세 테마를 동시에 만족하지 못한다 — 시맨틱 토큰에서 테마별로 잡는다.
+예: `field.border` = light/sepia `ne500`, dark `ne300`.
+
+새 색을 넣을 때는 `contrastRatio()`로 먼저 재고, 통과하는 **최소 단계**를 고른다
+(디자인 의도에서 최소한으로 벗어나기 위함).
+
+### motion 카테고리
+
+10번째 카테고리. `transition`/`animation` 값이 4개 컴포넌트에 22회 하드코딩돼 있어 승격했다.
+
+|                                             | Web                             | RN                      |
+| ------------------------------------------- | ------------------------------- | ----------------------- |
+| `motion.duration.{fast,normal,slow,slower}` | `60ms` `140ms` `650ms` `1200ms` | `60` `140` `650` `1200` |
+| `motion.easing.{standard,linear}`           | `ease` `linear`                 | `ease` `linear`         |
+
+`duration`은 dimension과 같은 방식으로 플랫폼이 갈린다 — Web은 `ds/web/duration` transform이
+`ms`를 붙이고, RN은 `RN_NUMERIC_TYPES`에 `duration`이 포함돼 숫자로 나간다.
+RN의 `Animated.timing({ duration })`이 숫자를 요구하기 때문이다.
+
+spacing/typography와 같은 **raw scale**이므로 v1 public contract에는 넣지 않았다.
+
+### 합성 shadow 변수
+
+`boxShadow`는 sd-transforms가 레이어 자식으로 분해하므로(`--ds-shadow-lg-1-blur` …)
+바로 쓸 수 있는 단일 변수가 없었다. `genCss`가 합성본을 함께 만든다.
+
+- `--ds-shadow-{none,xs,sm,md,lg,xl,2xl,inner}` / `--ds-elevation-{0..6}`
+- 레이어는 번호 순으로 `, ` 결합, `innerShadow`는 `inset` 접두
+- 자식 변수는 **그대로 유지**된다 (기존 소비자 무해)
+- Tailwind `boxShadow` 유틸이 이 합성 변수를 가리킨다
+- **CSS 전용**이다 — `tokens.json` ABI와 RN 트리는 그대로다. RN은 구조화된 자식 값을
+  그대로 쓰는 것이 맞다 (`shadowColor`/`shadowOffset`/`elevation`으로 매핑).
 
 ## Consumer Token Extension
 
@@ -158,28 +233,52 @@ normalize → contract/path → type → reference(mode별) → compose → comp
 - 검증에 실패하면 **파일을 하나도 쓰지 않고** manifest 없이 진단만 돌려준다.
 - Shared 빌드 산출물은 이 컴파일러가 전혀 건드리지 않는다 (`compiler/parity.test.ts`).
 
-## 공개 표면 (package exports)
+## 표면 경계 (package exports)
 
-공개 경계는 **`package.json`의 exports map**이 정한다. `dist/`에 internal 모듈이 있어도
-subpath로는 들어올 수 없다 (`packageSurface.test.ts`가 고정).
+**이 패키지는 `private: true`다. 소비자는 절대 설치하지 않는다.**
+소비자는 `react-ui` / `react-native-ui`만 설치하고, 이 패키지의 존재를 알 필요가 없다.
+따라서 아래 exports map은 **워크스페이스 내부 경계**다 — 외부 공개 API가 아니다.
 
-| subpath                             | 용도                                                    |
-| ----------------------------------- | ------------------------------------------------------- |
-| `.` `/web` `/rn` `/css` `/tailwind` | 기존 토큰 표면 (변경 없음)                              |
-| `/contract`                         | contract 조회 API + `diffContracts`                     |
-| `/contract.json`                    | governance sidecar (원시 JSON)                          |
-| `/tokens`                           | 값 인벤토리 (`tokens.json`)                             |
-| `/extension`                        | Consumer authoring — **Style Dictionary 불필요**        |
-| `/compiler`                         | Consumer 컴파일 — `style-dictionary` optional peer 필요 |
+역할은 둘이다.
 
-`style-dictionary`/`@tokens-studio/sd-transforms`는 **optional peerDependencies**다.
-토큰만 쓰는 Consumer는 설치하지 않아도 되고, `/compiler`를 쓰는 Consumer만 설치한다.
-이를 위해 dimension 변환은 `lib/platformValue.ts`(SD 비의존)로 분리되어 있다.
+1. shared-stack 자신의 도구(`tools/scripts/**`, 데모 생성 타깃)가 컴파일러에 닿는 경로를 하나로 고정
+2. `dist/`에 들어 있는 internal 모듈이 subpath로 새어 나가는 것을 차단 (`packageSurface.test.ts`가 고정)
+
+| subpath                                | 누가 쓰나                                                    |
+| -------------------------------------- | ------------------------------------------------------------ |
+| `.` `/web` `/rn` `/css` `/tailwind`    | ui-core (→ react-ui / react-native-ui로 번들되어 소비자에게) |
+| `/tokens` `/contract` `/contract.json` | ui-core 경유로 다운스트림에 **복사**되어 전달                |
+| `/extension` `/compiler`               | **shared-stack 내부 전용** — 브랜드 컴파일 도구              |
+
+`style-dictionary`/`@tokens-studio/sd-transforms`는 optional peerDependencies로 선언돼 있다.
+publish하지 않으므로 소비자에겐 의미가 없고, 워크스페이스 안에서 `/extension`이
+Style Dictionary를 런타임에 끌어오지 않는다는 사실을 문서화하는 역할만 한다
+(dimension 변환이 `lib/platformValue.ts`로 분리된 이유).
 
 `tokens.json`의 positional ABI는 **바뀌지 않았다**. governance는 별도 `contract.json`이다.
+둘 다 design-tokens → ui-core → react-ui/react-native-ui 로 **복사**되어 흐른다.
+생성 지점은 design-tokens 빌드 하나뿐이다.
 
-sidecar는 design-tokens → ui-core → react-ui/react-native-ui 로 **복사**되어 흐른다
-(기존 `tokens.json`과 같은 경로). 생성 지점은 design-tokens 빌드 하나뿐이다.
+## 브랜드 컴파일은 누가 하나
+
+**shared-stack이 한다.** 소비자가 컴파일러를 돌리지 않는다.
+
+```
+shared-stack
+  tools/fixtures/<brand>.ts          브랜드 extension 정의 (여기 소유)
+  tools/scripts/compile-sample-consumer   여기서 컴파일
+        ↓ 산출물만 전달
+consumer
+  @berrypjh/react-ui  (+ 받은 CSS / RN 토큰 레코드)
+```
+
+- Web 소비자는 컴파일된 **CSS delta 파일** 하나를 Shared CSS 뒤에 넣는다.
+- RN 소비자는 컴파일된 **완전한 토큰 레코드**를 `ThemeProvider`의 `tokensByMode`에 넣는다.
+- 두 산출물 모두 소비자가 손으로 쓰지 않는다. design-tokens·컴파일러·Style Dictionary는
+  소비자 쪽에 전혀 나타나지 않는다.
+
+`apps/demo-web` / `apps/demo-mobile`이 이 소비자 역할을 그대로 모델링한다 —
+두 앱 모두 `react-ui` / `react-native-ui`만 의존하고 design-tokens를 import하지 않는다.
 
 ## SemVer 규칙 (contract 기준)
 

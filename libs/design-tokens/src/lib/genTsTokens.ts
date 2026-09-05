@@ -70,6 +70,7 @@ export type TypographyTokens = Tokens['typography'];
 export type ShadowTokens = Tokens['shadow'];
 export type ElevationTokens = Tokens['elevation'];
 export type ComponentTokens = Tokens['component'];
+export type MotionTokens = Tokens['motion'];
 
 export type ThemeTokens = {
   color: ColorTokens;
@@ -81,6 +82,7 @@ export type ThemeTokens = {
   shadow: ShadowTokens;
   elevation: ElevationTokens;
   component: ComponentTokens;
+  motion: MotionTokens;
 };
 `;
 

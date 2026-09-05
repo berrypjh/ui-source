@@ -150,7 +150,9 @@ describe('token type propagation', () => {
     const types = [...new Set(byTheme('light').web.allTokens.map(getTokenType))].sort();
     expect(types).toEqual([
       'color',
+      'cubicBezier',
       'dimension',
+      'duration',
       'fontFamily',
       'fontSize',
       'fontWeight',

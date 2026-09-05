@@ -1,11 +1,3 @@
-/**
- * 플랫폼별 dimension 값 변환. Style Dictionary에 의존하지 않는 순수 함수다.
- *
- * `sd.ts`의 transform과 Consumer compiler가 같은 구현을 쓴다. 여기 따로 둔 이유는
- * authoring/합성 경로가 Style Dictionary를 런타임에 끌어오지 않게 하기 위해서다 —
- * `sd.ts`는 import 시점에 SD transform을 등록한다.
- */
-
 /** rem 변환 base. CSS 표준 16px. */
 const REM_BASE_PX = 16;
 
@@ -43,6 +35,12 @@ export const toRnNumeric = (v: unknown): unknown => {
     return o;
   }
   return v;
+};
+
+/** duration 값을 Web `ms` 문자열로 변환. 단위가 이미 붙어 있으면 그대로 둔다. */
+export const toWebDuration = (v: unknown): unknown => {
+  const n = toNumeric(v);
+  return n === null ? v : `${n}ms`;
 };
 
 /** dimension 값을 Web rem 문자열로 변환. 단위가 이미 붙어 있으면 그대로 둔다. */
