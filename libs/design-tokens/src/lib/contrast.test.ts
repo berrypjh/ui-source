@@ -45,6 +45,22 @@ const NON_TEXT_PAIRS: [string, string, string][] = [
   ['field hover border', 'color.field.borderHover', 'color.background.surface'],
 ];
 
+/**
+ * 구분선이 배경에 묻히지 않는 최소 대비.
+ *
+ * 순수 장식 구분선은 WCAG 1.4.11 대상이 아니라 3:1 을 요구하지 않는다. 다만 배경과 같은 값이면
+ * 선을 그려도 보이지 않는다 — 실제로 `stroke.light` 가 `background.default` 와 같은 ramp 단계라
+ * light·sepia 에서 대비가 1.00 이었다. 눈에 보이는 최소선을 가드로 고정한다.
+ */
+const DIVIDER_MIN = 1.2;
+
+const DIVIDER_PAIRS: [string, string, string][] = [
+  ['divider on page', 'color.stroke.light', 'color.background.default'],
+  ['divider on surface', 'color.stroke.light', 'color.background.surface'],
+  ['chrome border on page', 'color.stroke.default', 'color.background.default'],
+  ['chrome border on surface', 'color.stroke.default', 'color.background.surface'],
+];
+
 describe('contrastRatio', () => {
   it('matches the WCAG reference extremes', () => {
     expect(contrastRatio('#000000', '#FFFFFF')).toBeCloseTo(21, 2);
@@ -73,5 +89,9 @@ describe.each(catalog.themes)('WCAG AA — %s theme', (theme) => {
     expect(contrastRatio(value(fg, theme), value(bg, theme))).toBeGreaterThanOrEqual(
       WCAG_AA.nonText,
     );
+  });
+
+  it.each(DIVIDER_PAIRS)('%s stays visible', (_label, fg, bg) => {
+    expect(contrastRatio(value(fg, theme), value(bg, theme))).toBeGreaterThanOrEqual(DIVIDER_MIN);
   });
 });

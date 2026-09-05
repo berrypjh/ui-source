@@ -10,7 +10,7 @@ import type { Dictionary, Transform, TransformedToken } from 'style-dictionary/t
 
 import type { ThemeDef } from '../themes.js';
 
-import { toRnNumeric, toWebDuration, toWebRem } from './platformValue.js';
+import { toRnNumeric, toWebDuration, toWebFontStack, toWebRem } from './platformValue.js';
 import { getTokenType, getTokenValue } from './tokens.js';
 
 export type ThemeBuild = {
@@ -72,6 +72,15 @@ const webDurationTransform: Transform = {
   transform: (t: TransformedToken) => toWebDuration(getTokenValue(t)),
 };
 
+/** fontFamily 토큰을 Web에서 fallback 스택으로 노출하는 transform. */
+const webFontFamilyTransform: Transform = {
+  name: 'ds/web/fontFamily',
+  type: 'value',
+  transitive: true,
+  filter: (t) => getTokenType(t) === 'fontFamily',
+  transform: (t: TransformedToken) => toWebFontStack(getTokenValue(t)),
+};
+
 let registered = false;
 
 /** Tokens Studio + 자체 transform을 SD에 1회만 등록. 중복 호출 안전. */
@@ -82,6 +91,7 @@ const registerOnce = () => {
   StyleDictionary.registerTransform(rnNumberTransform);
   StyleDictionary.registerTransform(webRemTransform);
   StyleDictionary.registerTransform(webDurationTransform);
+  StyleDictionary.registerTransform(webFontFamilyTransform);
 };
 
 /** `arr`에서 `rm`에 포함된 항목을 제거한 새 배열을 반환. */
@@ -98,6 +108,7 @@ const WEB_TRANSFORMS = [
   ...without(baseTransforms, ['ts/color/css/hexrgba', 'ts/size/px']),
   'ds/web/rem',
   'ds/web/duration',
+  'ds/web/fontFamily',
   'name/kebab',
 ];
 

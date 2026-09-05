@@ -123,6 +123,26 @@ describe('rn transforms', () => {
   });
 });
 
+describe('font family platform split', () => {
+  const web = () => byTheme('light').web.allTokens;
+  const rn = () => byTheme('light').rn.allTokens;
+
+  it('appends Korean fallbacks on web and keeps a bare name on RN', () => {
+    expect(find(web(), 'fontFamilies.pretendard')).toBe(
+      "Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
+    );
+    // RN 은 등록된 서체 이름 하나만 받는다. 스택을 넘기면 조용히 무시된다.
+    expect(find(rn(), 'fontFamilies.pretendard')).toBe('Pretendard');
+  });
+
+  it('applies the fallback exactly once to composite typography', () => {
+    // transform 이 transitive 라 primitive 와 composite 양쪽에서 돈다. 두 번 붙으면 안 된다.
+    const value = find(web(), 'body.medium.fontFamily');
+    expect(value).toBe("Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif");
+    expect(String(value).split('Pretendard')).toHaveLength(2);
+  });
+});
+
 describe('token type propagation', () => {
   const typeOf = (tokenPath: string) => {
     const token = byTheme('light').web.allTokens.find((t) => t.path.join('.') === tokenPath);
@@ -139,7 +159,7 @@ describe('token type propagation', () => {
     expect(typeOf('fontSize.md')).toBe('fontSize');
     expect(typeOf('lineHeight.md')).toBe('lineHeight');
     expect(typeOf('fontWeight.bold')).toBe('fontWeight');
-    expect(typeOf('fontFamilies.inter')).toBe('fontFamily');
+    expect(typeOf('fontFamilies.pretendard')).toBe('fontFamily');
   });
 
   it('keeps color as color', () => {

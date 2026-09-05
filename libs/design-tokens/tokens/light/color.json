@@ -495,7 +495,7 @@
       "$type": "color"
     },
     "light": {
-      "$value": "{neutral.ne100}",
+      "$value": "{neutral.ne300}",
       "$type": "color"
     },
     "disable": {

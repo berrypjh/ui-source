@@ -111,6 +111,12 @@
       "$type": "color"
     }
   },
+  "stroke": {
+    "light": {
+      "$value": "{neutral.ne400}",
+      "$type": "color"
+    }
+  },
   "neutral": {
     "ne100": {
       "$value": "#FAF4E4",

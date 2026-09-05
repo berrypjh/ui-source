@@ -43,6 +43,27 @@ export const toWebDuration = (v: unknown): unknown => {
   return n === null ? v : `${n}ms`;
 };
 
+/**
+ * Web fallback 서체. 웹폰트가 늦거나 실패해도 한글이 기본 명조로 떨어지지 않게 한다.
+ * macOS / Windows 의 기본 한글 고딕을 차례로 두고 마지막에 generic 을 둔다.
+ */
+const WEB_FONT_FALLBACK = ["'Apple SD Gothic Neo'", "'Malgun Gothic'", 'system-ui', 'sans-serif'];
+
+/**
+ * fontFamily 값을 Web CSS 스택으로 변환.
+ *
+ * RN 은 등록된 서체 이름 하나만 받으므로 스택을 토큰 값에 넣을 수 없다. 그래서 이름은
+ * 토큰에 하나만 두고, fallback 은 Web 출력에서만 붙인다.
+ */
+export const toWebFontStack = (v: unknown): unknown => {
+  if (typeof v !== 'string' || v.trim() === '') return v;
+  const name = v.trim();
+  // 이미 스택이면 그대로 둔다. transitive transform 이라 composite 의 해석된 값에서 다시 돈다.
+  if (name.includes(',')) return name;
+  const primary = /^[A-Za-z][\w-]*$/.test(name) ? name : `'${name}'`;
+  return [primary, ...WEB_FONT_FALLBACK].join(', ');
+};
+
 /** dimension 값을 Web rem 문자열로 변환. 단위가 이미 붙어 있으면 그대로 둔다. */
 export const toWebRem = (v: unknown): unknown => {
   const n = toNumeric(v);
