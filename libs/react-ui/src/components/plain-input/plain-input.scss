@@ -1,6 +1,6 @@
 .ui-plain-input {
   border: 0;
-  border-bottom: var(--ds-border-primary-width) solid var(--ds-neutral-ne300);
+  border-bottom: var(--ds-border-primary-width) solid var(--ds-field-border);
   border-radius: 0;
   background: transparent;
   box-shadow: none;
@@ -9,7 +9,7 @@
 .ui-plain-input:hover:not(.ui-plain-input-base--disabled):not(.ui-plain-input-base--focused):not(
     .ui-plain-input-base--error
   ) {
-  border-bottom-color: var(--ds-neutral-ne600);
+  border-bottom-color: var(--ds-field-border-strong);
 }
 
 .ui-plain-input.ui-plain-input-base--focused {

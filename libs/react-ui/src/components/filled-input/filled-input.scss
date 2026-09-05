@@ -1,8 +1,8 @@
 .ui-filled-input {
-  --ui-filled-input-bg: var(--ds-neutral-ne200);
-  --ui-filled-input-bg-hover: var(--ds-neutral-ne200);
-  --ui-filled-input-border: var(--ds-neutral-ne300);
-  --ui-filled-input-border-hover: var(--ds-neutral-ne500);
+  --ui-filled-input-bg: var(--ds-field-surface);
+  --ui-filled-input-bg-hover: var(--ds-field-surface);
+  --ui-filled-input-border: var(--ds-field-border);
+  --ui-filled-input-border-hover: var(--ds-field-border-hover);
 
   border: var(--ds-border-primary-width) solid var(--ui-filled-input-border);
   border-radius: var(--ui-input-radius);
@@ -19,7 +19,7 @@
 
 .ui-filled-input.ui-input-base--focused {
   border-color: var(--ui-input-active-color);
-  box-shadow: 0 0 0 2px var(--ui-input-focus-halo);
+  box-shadow: 0 0 0 var(--ds-component-field-focus-ring-width) var(--ui-input-focus-halo);
 }
 
 .ui-filled-input.ui-input-base--error {
@@ -27,12 +27,12 @@
 }
 
 .ui-filled-input.ui-input-base--error.ui-input-base--focused {
-  box-shadow: 0 0 0 2px var(--ds-error-er100);
+  box-shadow: 0 0 0 var(--ds-component-field-focus-ring-width) var(--ds-field-focus-ring-error);
 }
 
 .ui-filled-input.ui-input-base--disabled {
   border-color: var(--ds-border-disabled-color);
-  background-color: var(--ds-neutral-ne200);
+  background-color: var(--ds-field-surface);
 }
 
 .ui-filled-input__input {
