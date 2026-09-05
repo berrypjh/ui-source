@@ -22,8 +22,8 @@ const SAMPLE = {
 };
 
 const gotoPage = async (page: Page) => {
-  await page.goto('/consumer-profile');
-  await expect(page.getByTestId('consumer-profile-page')).toBeVisible();
+  await page.goto('/verify');
+  await expect(page.getByTestId('verify-page')).toBeVisible();
 };
 
 const setProfile = async (page: Page, profile: 'default' | 'sample') => {
@@ -104,6 +104,7 @@ test.describe('sample profile', () => {
   });
 
   test('reaches a real React UI component', async ({ page }) => {
+    await page.goto('/verify/profile');
     const button = page.getByTestId('probe-button-contained').getByRole('button');
     await expect(button).toBeVisible();
     expect(await button.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(
@@ -112,6 +113,7 @@ test.describe('sample profile', () => {
   });
 
   test('reaches shared tailwind utilities with no consumer preset', async ({ page }) => {
+    await page.goto('/verify/profile');
     expect(await computed(page, 'probe-tw-background-primary', 'background-color')).toBe(
       SAMPLE.backgroundPrimaryLight,
     );
@@ -121,6 +123,7 @@ test.describe('sample profile', () => {
   });
 
   test('leaves a non-overridden tailwind utility alone', async ({ page }) => {
+    await page.goto('/verify/profile');
     expect(await computed(page, 'probe-tw-background-secondary', 'background-color')).toBe(
       SHARED.backgroundSecondaryLight,
     );
@@ -129,7 +132,8 @@ test.describe('sample profile', () => {
 
 test.describe('profile isolation', () => {
   test('switching back to default restores every shared value', async ({ page }) => {
-    await gotoPage(page);
+    await page.goto('/verify/profile');
+    await expect(page.getByTestId('profile-page')).toBeVisible();
 
     const read = () =>
       Promise.all([
@@ -183,5 +187,62 @@ test.describe('profile isolation', () => {
       await computed(page, 'probe-spacing-md', 'padding-top'),
       await computed(page, 'probe-radius-lg', 'border-radius'),
     ]).toEqual(defaults);
+  });
+});
+
+test.describe('runtime verification surface', () => {
+  /**
+   * Demo 의 Runtime Verification 패널은 ThemeProvider 바깥에 probe 를 심어 Default 와 Sample 을
+   * 동시에 측정한다. 그 메커니즘은 실제 브라우저에서만 성립하므로(CSS 복합 선택자 매칭 +
+   * getComputedStyle) 여기서 한 번 확인한다. 개별 계약의 상세 검증은 위 테스트들이 담당한다.
+   */
+  test('reports every integration contract as passing', async ({ page }) => {
+    await gotoPage(page);
+
+    const panel = page.getByTestId('runtime-verification');
+    await expect(panel).toBeVisible();
+
+    // 측정이 끝나 상태가 확정될 때까지 기다린다.
+    await expect(page.getByTestId('check-override')).toHaveAttribute('data-status', 'pass');
+
+    for (const id of ['override', 'preserved', 'derived', 'react-ui', 'tailwind']) {
+      await expect(page.getByTestId(`check-${id}`), `${id} 계약`).toHaveAttribute(
+        'data-status',
+        'pass',
+      );
+    }
+  });
+
+  test('keeps reporting pass after switching theme', async ({ page }) => {
+    await gotoPage(page);
+    await setTheme(page, 'dark');
+
+    for (const id of ['override', 'preserved', 'derived', 'react-ui']) {
+      await expect(page.getByTestId(`check-${id}`)).toHaveAttribute('data-status', 'pass');
+    }
+  });
+});
+
+test.describe('demo runtime health', () => {
+  /** 콘솔 에러는 실제 실행에서만 드러난다 — 깨진 import, React 오류, 누락된 자산 등. */
+  test('loads every demo route without console errors', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+    page.on('pageerror', (e) => errors.push(e.message));
+
+    for (const path of [
+      '/',
+      '/design-system',
+      '/tokens',
+      '/components/button',
+      '/components/select',
+    ]) {
+      await page.goto(path);
+      await expect(page.locator('main')).toBeVisible();
+    }
+
+    expect(errors).toEqual([]);
   });
 });
