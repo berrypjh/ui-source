@@ -232,15 +232,21 @@ test.describe('demo runtime health', () => {
     });
     page.on('pageerror', (e) => errors.push(e.message));
 
-    for (const path of [
-      '/',
-      '/design-system',
-      '/tokens',
-      '/components/button',
-      '/components/select',
-    ]) {
+    // 화면의 h1 으로 확인한다. AppShell 은 어떤 경로에서든 <main> 을 렌더하므로
+    // <main> 만 보면 존재하지 않는 경로에서도 통과해 버린다.
+    const ROUTES: [path: string, heading: string][] = [
+      ['/', '개요'],
+      ['/verify', 'Runtime'],
+      ['/verify/profile', 'Consumer Profile'],
+      ['/tokens', 'Tokens'],
+      ['/foundation', 'Styles'],
+      ['/components/button', 'Button'],
+      ['/components/select', 'Select'],
+    ];
+
+    for (const [path, heading] of ROUTES) {
       await page.goto(path);
-      await expect(page.locator('main')).toBeVisible();
+      await expect(page.getByRole('heading', { level: 1, name: heading }), path).toBeVisible();
     }
 
     expect(errors).toEqual([]);
