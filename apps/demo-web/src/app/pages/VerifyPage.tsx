@@ -8,7 +8,7 @@ import { useProbeValues } from '../verification/useProbes';
 
 export const VerifyPage = () => {
   const theme = useCurrentTheme();
-  const values = useProbeValues(theme, CONTRAST_VARS);
+  const values = useProbeValues(CONTRAST_VARS);
   // 접근성은 현재 화면에 적용된 프로필 기준으로 본다.
   const current = values?.default ?? null;
 
@@ -84,7 +84,7 @@ export const VerifyPage = () => {
         <div className="flex flex-wrap gap-2xl">
           {[
             { id: 'probe-background-primary', v: '--ds-background-primary' },
-            { id: 'probe-background-secondary', v: '--ds-background-secondary' },
+            { id: 'probe-background-error', v: '--ds-background-error' },
             { id: 'probe-text-default', v: '--ds-text-default' },
             { id: 'probe-stroke-default', v: '--ds-stroke-default' },
           ].map((p) => (

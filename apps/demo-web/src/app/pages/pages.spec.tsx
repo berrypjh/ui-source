@@ -1,3 +1,5 @@
+import { themes } from '@berrypjh/react-ui';
+
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -20,7 +22,6 @@ describe('라우팅', () => {
   it.each([
     ['/', 'overview-page'],
     ['/verify', 'verify-page'],
-    ['/verify/profile', 'profile-page'],
     ['/tokens', 'tokens-page'],
     ['/foundation', 'foundation-page'],
   ])('%s 가 렌더된다', (path, testId) => {
@@ -32,15 +33,15 @@ describe('라우팅', () => {
 describe('전역 컨트롤', () => {
   it('어느 페이지에서든 같은 자리에 있다', () => {
     at('/tokens');
-    expect(screen.getByTestId('theme-dark')).toBeTruthy();
-    expect(screen.getByTestId('profile-sample')).toBeTruthy();
+    const select = screen.getByTestId('theme-select') as HTMLSelectElement;
+    // themes.ts 에 줄을 더하면 여기에 자동으로 나타난다.
+    expect(select.options.length).toBe(themes.length);
   });
 
   it('현재 테마와 프로필을 루트 속성으로 노출한다', () => {
     at('/');
     const root = screen.getByTestId('theme-root');
     expect(root.getAttribute('data-theme')).toBe('light');
-    expect(root.getAttribute('data-profile')).toBe('default');
   });
 });
 
@@ -155,8 +156,8 @@ describe('사이드바 현재 위치', () => {
       .map((el) => el.textContent);
 
   it('하위 경로에서 상위 항목까지 켜지지 않는다', () => {
-    at('/verify/profile');
-    expect(currentLinks()).toEqual(['Consumer Profile']);
+    at('/components/button');
+    expect(currentLinks()).toEqual(['Button']);
   });
 
   it('상위 경로에서는 그 항목만 켜진다', () => {
@@ -173,25 +174,14 @@ describe('사이드바 현재 위치', () => {
 describe('E2E 앵커', () => {
   it('Runtime 화면이 계약 상태 앵커를 갖는다', async () => {
     at('/verify');
-    for (const id of ['override', 'preserved', 'derived', 'react-ui', 'tailwind']) {
+    for (const id of ['themed', 'shared', 'derived', 'react-ui', 'tailwind']) {
       expect(await screen.findByTestId(`check-${id}`)).toBeTruthy();
     }
   });
 
   it('Runtime 화면이 측정 probe 를 갖는다', () => {
     at('/verify');
-    for (const id of [
-      'probe-background-primary',
-      'probe-background-secondary',
-      'probe-spacing-md',
-    ]) {
-      expect(screen.getByTestId(id)).toBeTruthy();
-    }
-  });
-
-  it('Consumer Profile 이 컴포넌트·Tailwind 앵커를 갖는다', () => {
-    at('/verify/profile');
-    for (const id of ['probe-button-contained', 'probe-tw-background-primary']) {
+    for (const id of ['probe-background-primary', 'probe-background-error', 'probe-spacing-md']) {
       expect(screen.getByTestId(id)).toBeTruthy();
     }
   });

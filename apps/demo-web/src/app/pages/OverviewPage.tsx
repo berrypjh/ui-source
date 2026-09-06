@@ -8,9 +8,9 @@ import { useCurrentTheme } from '../verification/useCurrentTheme';
 
 const ENTRIES = [
   {
-    to: '/verify/profile',
-    name: 'Consumer Profile',
-    desc: 'Default와 Sample을 나란히 비교합니다. 무엇이 바뀌고 무엇이 그대로인지 봅니다.',
+    to: '/verify',
+    name: 'Runtime',
+    desc: '토큰이 이 실행 환경의 최종 UI까지 도달했는지 테마별로 확인합니다.',
   },
   { to: '/tokens', name: 'Tokens', desc: '현재 테마의 토큰을 이름이나 CSS 변수로 찾습니다.' },
   {

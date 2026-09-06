@@ -5,7 +5,6 @@ import { FabPage } from './pages/FabPage';
 import { FoundationPage } from './pages/FoundationPage';
 import { IconButtonPage } from './pages/IconButtonPage';
 import { OverviewPage } from './pages/OverviewPage';
-import { ProfilePage } from './pages/ProfilePage';
 import { SearchFieldPage } from './pages/SearchFieldPage';
 import { SelectPage } from './pages/SelectPage';
 import { TextFieldPage } from './pages/TextFieldPage';
@@ -14,15 +13,12 @@ import { VerifyPage } from './pages/VerifyPage';
 import { AppShell } from './shell/AppShell';
 
 import '@berrypjh/react-ui/styles.css';
-// Shared CSS 뒤에 와야 한다 — 같은 specificity 에서 순서로 이긴다.
-import '../_generated/sample-consumer/css/variables.css';
 
 export const App = () => (
   <AppShell>
     <Routes>
       <Route path="/" element={<OverviewPage />} />
       <Route path="/verify" element={<VerifyPage />} />
-      <Route path="/verify/profile" element={<ProfilePage />} />
       <Route path="/tokens" element={<TokensPage />} />
       <Route path="/foundation" element={<FoundationPage />} />
       <Route path="/components/button" element={<ButtonPage />} />

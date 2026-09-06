@@ -17,10 +17,7 @@ const SOURCE: NavSource[] = [
   { label: null, items: [{ label: '개요', path: '/' }] },
   {
     label: '검증',
-    items: [
-      { label: 'Runtime', path: '/verify' },
-      { label: 'Consumer Profile', path: '/verify/profile' },
-    ],
+    items: [{ label: 'Runtime', path: '/verify' }],
   },
   {
     label: 'Foundation',

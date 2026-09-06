@@ -15,7 +15,7 @@ describe('정보 구조', () => {
   it('현재 경로의 페이지 이름을 찾는다', () => {
     expect(titleFor('/')).toBe('개요');
     expect(titleFor('/verify')).toBe('Runtime');
-    expect(titleFor('/verify/profile')).toBe('Consumer Profile');
+    expect(titleFor('/components/button')).toBe('Button');
     expect(titleFor('/components/button')).toBe('Button');
   });
 
@@ -23,16 +23,21 @@ describe('정보 구조', () => {
     expect(titleFor('/nope')).toBe('개요');
   });
 
-  it('상위 경로는 정확히 일치할 때만 active 다', () => {
-    // `/verify` 는 `/verify/profile` 의 접두사라, end 가 없으면 하위 페이지에서 둘 다 켜진다.
-    const item = (path: string) => NAV.flatMap((g) => g.items).find((i) => i.path === path);
-    expect(item('/verify')?.end).toBe(true);
-    expect(item('/')?.end).toBe(true);
+  /**
+   * `end` 는 손으로 적지 않고 경로에서 유도한다. 특정 경로를 박아 두면 IA 가 바뀔 때
+   * 함께 낡으므로, 규칙 자체를 검증한다.
+   */
+  it('다른 항목의 상위 경로이거나 루트면 정확히 일치할 때만 active 다', () => {
+    const items = NAV.flatMap((g) => g.items);
+    for (const item of items) {
+      const isParent = items.some(
+        (o) => o.path !== item.path && o.path.startsWith(`${item.path}/`),
+      );
+      expect(item.end).toBe(item.path === '/' || isParent);
+    }
   });
 
-  it('하위 경로가 없는 항목은 접두사 매칭을 허용한다', () => {
-    const item = (path: string) => NAV.flatMap((g) => g.items).find((i) => i.path === path);
-    expect(item('/tokens')?.end).toBe(false);
-    expect(item('/verify/profile')?.end).toBe(false);
+  it('루트는 언제나 정확히 일치다', () => {
+    expect(NAV.flatMap((g) => g.items).find((i) => i.path === '/')?.end).toBe(true);
   });
 });

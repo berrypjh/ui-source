@@ -1,54 +1,40 @@
 import { ReactNode } from 'react';
 
 /**
- * 전역 컨트롤. Topbar 에 고정 배치해 어느 페이지에서든 같은 자리에서 현재 상태를 읽고 바꾼다.
+ * 선택지가 많거나 늘어나는 축은 select 로 받는다.
  *
- * pill 이 아니라 segmented control 이다 — 선택지가 상호배타적이고 개수가 고정이라
- * 개발 도구에서 가장 읽기 쉬운 형태다.
+ * 테마는 `themes.ts`에 줄을 더하면 늘어난다 — 개수가 고정이 아니므로 segmented control 이
+ * 맞지 않는다. 네이티브 select 는 개수와 무관하게 폭이 일정하고 모바일에서도 그대로 쓴다.
  */
-export const Segmented = <T extends string>({
+export const SelectControl = <T extends string>({
   label,
   value,
   options,
   onChange,
-  testIdPrefix,
+  testId,
 }: {
   label: string;
   value: T;
   options: { value: T; label: string }[];
   onChange: (v: T) => void;
-  testIdPrefix: string;
+  testId: string;
 }) => (
-  <div className="flex items-center gap-md">
-    {/* 좁은 화면에서는 접는다. group 의 aria-label 이 이름을 계속 제공한다. */}
+  <label className="flex items-center gap-md">
     <span className="hidden md:inline text-text-light text-xxsm whitespace-nowrap">{label}</span>
-    <div
-      role="group"
-      aria-label={label}
-      className="inline-flex rounded-sm border border-stroke-default overflow-hidden"
+    <span className="sr-only md:hidden">{label}</span>
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as T)}
+      data-testid={testId}
+      className="px-md py-xs text-xxsm rounded-sm border border-stroke-default bg-background-surface text-text-default cursor-pointer focus:outline-none focus:border-stroke-primary"
     >
-      {options.map((o) => {
-        const active = o.value === value;
-        return (
-          <button
-            key={o.value}
-            type="button"
-            onClick={() => onChange(o.value)}
-            aria-pressed={active}
-            data-testid={`${testIdPrefix}-${o.value}`}
-            className={[
-              'px-md py-xs text-xxsm border-0 cursor-pointer transition-colors',
-              active
-                ? 'bg-background-primary text-text-contrastText'
-                : 'bg-background-surface text-text-light hover:text-text-default',
-            ].join(' ')}
-          >
-            {o.label}
-          </button>
-        );
-      })}
-    </div>
-  </div>
+      {options.map((o) => (
+        <option key={o.value} value={o.value}>
+          {o.label}
+        </option>
+      ))}
+    </select>
+  </label>
 );
 
 /** 상태 한 줄. 색만으로 의미를 전달하지 않도록 점 + 텍스트를 함께 쓴다. */

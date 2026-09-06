@@ -5,7 +5,7 @@ import { Button, ThemeName } from '@berrypjh/react-ui';
 import { StatusRow } from '../shell/controls';
 
 import { CheckResult, Probe, PROBE_VARS, runChecks, summarize } from './checks';
-import { probeRootId, ProbeTrees } from './useProbes';
+import { PROBE_THEMES, probeRootId, ProbeTrees } from './useProbes';
 
 /**
  * 통합 계약 상태. 개발자가 이 화면에서 가장 먼저 보는 것이다.
@@ -14,8 +14,8 @@ import { probeRootId, ProbeTrees } from './useProbes';
  * compiler 테스트가, 브라우저 최종 결과의 회귀는 Playwright 가 담당한다.
  */
 
-const read = (profile: 'default' | 'sample'): Probe | null => {
-  const root = document.getElementById(probeRootId(profile));
+const read = (theme: ThemeName): Probe | null => {
+  const root = document.getElementById(probeRootId(theme));
   const button = root?.querySelector('button');
   const tailwind = root?.querySelector('[data-probe="tailwind"]');
   if (!root || !button || !tailwind) return null;
@@ -28,6 +28,10 @@ const read = (profile: 'default' | 'sample'): Probe | null => {
   };
 };
 
+/** 비교 기준 테마와, 화면이 base 일 때 맞대어 볼 테마. */
+const BASE_THEME = PROBE_THEMES[0];
+const OTHER_THEME = PROBE_THEMES[1] ?? PROBE_THEMES[0];
+
 const TONE = { pass: 'ok', fail: 'error', unknown: 'idle' } as const;
 const LABEL = { pass: '정상', fail: '확인 필요', unknown: '측정 불가' } as const;
 
@@ -37,9 +41,9 @@ export const RuntimeVerification = ({ theme }: { theme: ThemeName }) => {
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => {
-      const base = read('default');
-      const sample = read('sample');
-      setResults(base && sample ? runChecks(base, sample) : null);
+      const base = read(BASE_THEME);
+      const other = read(theme === BASE_THEME ? OTHER_THEME : theme);
+      setResults(base && other ? runChecks(base, other) : null);
       setCheckedAt(
         new Date().toLocaleTimeString('ko-KR', {
           hour: '2-digit',
@@ -56,7 +60,7 @@ export const RuntimeVerification = ({ theme }: { theme: ThemeName }) => {
 
   return (
     <>
-      <ProbeTrees theme={theme}>
+      <ProbeTrees>
         {() => (
           <>
             <Button variant="contained">probe</Button>

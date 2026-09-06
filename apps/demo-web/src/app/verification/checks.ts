@@ -1,8 +1,8 @@
 /**
- * Runtime verification — Consumer override 가 최종 UI까지 도달했는지 판정한다.
+ * Runtime verification — 토큰이 테마별로 최종 UI까지 도달했는지 판정한다.
  *
  * 검사 단위는 **토큰 하나**가 아니라 **integration contract** 다. 토큰 값 자체의 정합성은
- * design-tokens 의 compiler/contract 테스트가, 브라우저 최종 결과의 회귀는 Playwright 가
+ * design-tokens 의 테스트가, 브라우저 최종 결과의 회귀는 Playwright 가
  * 담당한다. 여기서는 개발자가 "지금 이 실행 환경에서 무엇이 살아 있고 무엇이 끊겼는지"를
  * 몇 초 안에 판단하도록 돕는 것이 목적이다.
  */
@@ -19,7 +19,7 @@ export type CheckResult = {
   readonly actual?: string;
 };
 
-/** 한 (theme, profile) 조합에서 실제로 계산된 값. */
+/** 한 테마에서 실제로 계산된 값. */
 export type Probe = {
   /** CSS 변수 이름 → 계산된 값. */
   readonly vars: Readonly<Record<string, string>>;
@@ -29,8 +29,10 @@ export type Probe = {
   readonly tailwindBg: string;
 };
 
-const OVERRIDDEN = '--ds-background-primary';
-const PRESERVED = '--ds-background-secondary';
+/** 테마마다 값이 달라야 하는 토큰. */
+const THEMED = '--ds-background-primary';
+/** 테마와 무관하게 같아야 하는 토큰 — 상태색은 세 테마에서 동일하다. */
+const SHARED = '--ds-background-error';
 const DERIVED = '--ds-background-primary-rgb';
 const BUTTON = '--ds-primary-btn-default';
 
@@ -77,54 +79,54 @@ const result = (
 });
 
 /**
- * Default 와 Sample 두 조합을 비교해 계약별 상태를 낸다.
+ * 두 테마를 비교해 계약별 상태를 낸다.
  * 값을 읽지 못하면 `fail` 이 아니라 `unknown` 이다 — 측정 실패를 회귀로 오인하지 않기 위함.
  */
-export const runChecks = (base: Probe, sample: Probe): CheckResult[] => [
+export const runChecks = (base: Probe, other: Probe): CheckResult[] => [
   result(
-    'override',
-    'Consumer override가 CSS 변수에 반영됩니다',
-    'compiled CSS → CSS custom property',
-    !sameColor(base.vars[OVERRIDDEN] ?? '', sample.vars[OVERRIDDEN] ?? ''),
-    measured(base.vars[OVERRIDDEN] ?? '', sample.vars[OVERRIDDEN] ?? ''),
-    `Shared(${base.vars[OVERRIDDEN]}) 와 달라야 함`,
-    sample.vars[OVERRIDDEN],
+    'themed',
+    '테마를 바꾸면 CSS 변수가 함께 바뀝니다',
+    'tokens/<theme> → 테마별 CSS 블록',
+    !sameColor(base.vars[THEMED] ?? '', other.vars[THEMED] ?? ''),
+    measured(base.vars[THEMED] ?? '', other.vars[THEMED] ?? ''),
+    `${base.vars[THEMED]} 와 달라야 함`,
+    other.vars[THEMED],
   ),
   result(
-    'preserved',
-    'override하지 않은 토큰은 Shared 값을 유지합니다',
-    'consumer CSS delta 범위',
-    sameColor(base.vars[PRESERVED] ?? '', sample.vars[PRESERVED] ?? ''),
-    measured(base.vars[PRESERVED] ?? '', sample.vars[PRESERVED] ?? ''),
-    base.vars[PRESERVED],
-    sample.vars[PRESERVED],
+    'shared',
+    '테마가 덮어쓰지 않은 토큰은 base 값을 유지합니다',
+    'light 풀세트 → 테마별 deep-merge',
+    sameColor(base.vars[SHARED] ?? '', other.vars[SHARED] ?? ''),
+    measured(base.vars[SHARED] ?? '', other.vars[SHARED] ?? ''),
+    base.vars[SHARED],
+    other.vars[SHARED],
   ),
   result(
     'derived',
-    '파생 RGB 채널이 override된 색을 따릅니다',
+    '파생 RGB 채널이 색을 따릅니다',
     'genCss RGB 파생',
-    (sample.vars[DERIVED] ?? '').trim() === toChannels(sample.vars[OVERRIDDEN] ?? ''),
-    measured(sample.vars[DERIVED] ?? '', sample.vars[OVERRIDDEN] ?? ''),
-    toChannels(sample.vars[OVERRIDDEN] ?? '') ?? '',
-    sample.vars[DERIVED],
+    (other.vars[DERIVED] ?? '').trim() === toChannels(other.vars[THEMED] ?? ''),
+    measured(other.vars[DERIVED] ?? '', other.vars[THEMED] ?? ''),
+    toChannels(other.vars[THEMED] ?? '') ?? '',
+    other.vars[DERIVED],
   ),
   result(
     'react-ui',
-    '실제 React UI 컴포넌트가 override를 소비합니다',
+    '실제 React UI 컴포넌트가 토큰을 소비합니다',
     'CSS variable → react-ui SCSS → rendered element',
-    sameColor(sample.buttonBg, sample.vars[BUTTON] ?? ''),
-    measured(sample.buttonBg, sample.vars[BUTTON] ?? ''),
-    sample.vars[BUTTON],
-    sample.buttonBg,
+    sameColor(other.buttonBg, other.vars[BUTTON] ?? ''),
+    measured(other.buttonBg, other.vars[BUTTON] ?? ''),
+    other.vars[BUTTON],
+    other.buttonBg,
   ),
   result(
     'tailwind',
-    'Shared Tailwind 유틸리티가 override를 따릅니다',
+    'Shared Tailwind 유틸리티가 토큰을 따릅니다',
     'RGB 채널 변수 → Tailwind preset → utility class',
-    sameColor(sample.tailwindBg, sample.vars[OVERRIDDEN] ?? ''),
-    measured(sample.tailwindBg, sample.vars[OVERRIDDEN] ?? ''),
-    sample.vars[OVERRIDDEN],
-    sample.tailwindBg,
+    sameColor(other.tailwindBg, other.vars[THEMED] ?? ''),
+    measured(other.tailwindBg, other.vars[THEMED] ?? ''),
+    other.vars[THEMED],
+    other.tailwindBg,
   ),
 ];
 
@@ -137,4 +139,4 @@ export const summarize = (results: CheckResult[]) => ({
 });
 
 /** probe 에서 읽어야 하는 CSS 변수 목록. */
-export const PROBE_VARS = [OVERRIDDEN, PRESERVED, DERIVED, BUTTON] as const;
+export const PROBE_VARS = [THEMED, SHARED, DERIVED, BUTTON] as const;

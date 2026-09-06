@@ -4,7 +4,7 @@ import { ThemeName, ThemeProvider, themes } from '@berrypjh/react-ui';
 
 import { NavLink, useLocation } from 'react-router-dom';
 
-import { Segmented } from './controls';
+import { SelectControl } from './controls';
 import { NAV, titleFor } from './nav';
 
 /**
@@ -14,17 +14,14 @@ import { NAV, titleFor } from './nav';
  * 크롬까지 semantic 토큰을 쓴다. 그래야 테마를 바꿨을 때 화면 전체가 함께 움직인다.
  */
 
-export type Profile = 'default' | 'sample';
+/** 테마 이름을 사람이 읽는 라벨로. 여러 단어면 띄어 쓴다 (`deepSea` → `Deep Sea`). */
+const themeLabel = (name: string) =>
+  name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, (c) => c.toUpperCase());
 
 const THEME_OPTIONS = themes.map((t) => ({
   value: t.name as ThemeName,
-  label: t.name.charAt(0).toUpperCase() + t.name.slice(1),
+  label: themeLabel(t.name),
 }));
-
-const PROFILE_OPTIONS: { value: Profile; label: string }[] = [
-  { value: 'default', label: 'Default' },
-  { value: 'sample', label: 'Sample' },
-];
 
 const Sidebar = () => (
   <nav
@@ -89,16 +86,12 @@ const Topbar = ({
   title,
   mode,
   onMode,
-  profile,
-  onProfile,
   onOpenMenu,
   menuOpen,
 }: {
   title: string;
   mode: ThemeName;
   onMode: (m: ThemeName) => void;
-  profile: Profile;
-  onProfile: (p: Profile) => void;
   onOpenMenu: () => void;
   menuOpen: boolean;
 }) => (
@@ -122,19 +115,12 @@ const Topbar = ({
       </span>
     </div>
     <div className="flex items-center gap-md sm:gap-xl">
-      <Segmented
-        label="Profile"
-        value={profile}
-        options={PROFILE_OPTIONS}
-        onChange={onProfile}
-        testIdPrefix="profile"
-      />
-      <Segmented
+      <SelectControl
         label="Theme"
         value={mode}
         options={THEME_OPTIONS}
         onChange={onMode}
-        testIdPrefix="theme"
+        testId="theme-select"
       />
     </div>
   </header>
@@ -143,7 +129,6 @@ const Topbar = ({
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const { pathname } = useLocation();
   const [mode, setMode] = useState<ThemeName>('light');
-  const [profile, setProfile] = useState<Profile>('default');
   const [menuOpen, setMenuOpen] = useState(false);
 
   // 페이지를 옮기면 드로어는 할 일이 끝났다. 열린 채로 두면 이동한 화면을 가린다.
@@ -157,11 +142,8 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   }, [menuOpen]);
 
   return (
-    // `data-profile` 은 ThemeProvider 가 rest props 로 넘긴다 — 컴파일된 Sample CSS 가 이 속성을
-    // scope 로 쓴다. JS 스타일 주입은 없다.
     <ThemeProvider
       mode={mode}
-      data-profile={profile}
       data-testid="theme-root"
       className="min-h-screen bg-[var(--demo-canvas)]"
     >
@@ -198,8 +180,6 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
             title={titleFor(pathname)}
             mode={mode}
             onMode={setMode}
-            profile={profile}
-            onProfile={setProfile}
             onOpenMenu={() => setMenuOpen(true)}
             menuOpen={menuOpen}
           />

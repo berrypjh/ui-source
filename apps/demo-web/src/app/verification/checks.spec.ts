@@ -9,20 +9,20 @@ import { CheckResult, Probe, runChecks, sameColor, summarize, toChannels } from 
 
 const probe = (over: Partial<Probe> & { vars?: Record<string, string> } = {}): Probe => ({
   vars: {
-    '--ds-background-primary': '#5B21B6',
-    '--ds-background-secondary': '#865A1D',
-    '--ds-background-primary-rgb': '91 33 182',
-    '--ds-primary-btn-default': '#5B21B6',
+    '--ds-background-primary': '#136F47',
+    '--ds-background-error': '#B42318',
+    '--ds-background-primary-rgb': '19 111 71',
+    '--ds-primary-btn-default': '#136F47',
     ...over.vars,
   },
-  buttonBg: over.buttonBg ?? 'rgb(91, 33, 182)',
-  tailwindBg: over.tailwindBg ?? 'rgb(91, 33, 182)',
+  buttonBg: over.buttonBg ?? 'rgb(19, 111, 71)',
+  tailwindBg: over.tailwindBg ?? 'rgb(19, 111, 71)',
 });
 
 const base = probe({
   vars: {
     '--ds-background-primary': '#047857',
-    '--ds-background-secondary': '#865A1D',
+    '--ds-background-error': '#B42318',
     '--ds-background-primary-rgb': '4 120 87',
     '--ds-primary-btn-default': '#047857',
   },
@@ -73,14 +73,14 @@ describe('runChecks', () => {
     expect(summarize(results)).toEqual({ pass: 5, fail: 0, unknown: 0, total: 5 });
   });
 
-  it('fails when the override never reaches the CSS variable', () => {
+  it('fails when the theme never reaches the CSS variable', () => {
     const results = runChecks(base, probe({ vars: { '--ds-background-primary': '#047857' } }));
-    expect(status(results, 'override')).toBe('fail');
+    expect(status(results, 'themed')).toBe('fail');
   });
 
-  it('fails when a non-overridden token drifted from Shared', () => {
-    const results = runChecks(base, probe({ vars: { '--ds-background-secondary': '#123456' } }));
-    expect(status(results, 'preserved')).toBe('fail');
+  it('fails when a token the theme should not touch drifted', () => {
+    const results = runChecks(base, probe({ vars: { '--ds-background-error': '#123456' } }));
+    expect(status(results, 'shared')).toBe('fail');
   });
 
   it('fails when the derived rgb channel does not follow its source colour', () => {
