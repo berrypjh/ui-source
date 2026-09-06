@@ -28,7 +28,6 @@
     "release:npm:beta": "tsx tools/scripts/release/release-npm.ts --beta",
     "release:npm:first-release": "tsx tools/scripts/release/release-npm.ts --first-release",
     "reset": "nx reset",
-    "sample:gen": "tsx tools/scripts/compile-sample-consumer/index.ts",
     "size": "size-limit",
     "size:why": "size-limit --why",
     "start": "nx serve @berrypjh/demo-web",
