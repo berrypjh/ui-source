@@ -6,7 +6,7 @@ const isPlainObj = (v: unknown): v is Record<string, unknown> =>
   !!v && typeof v === 'object' && !Array.isArray(v);
 
 /** 숫자 또는 숫자 문자열을 number로 변환. 단위가 붙어 있으면 null. */
-export const toNumeric = (v: unknown): number | null => {
+const toNumeric = (v: unknown): number | null => {
   if (typeof v === 'number') return Number.isFinite(v) ? v : null;
   if (typeof v !== 'string') return null;
   const s = v.trim();

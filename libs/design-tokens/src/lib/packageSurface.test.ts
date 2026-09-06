@@ -30,11 +30,7 @@ describe('public subpaths', () => {
     ['@berrypjh/design-tokens/web', 'dist/web.js'],
     ['@berrypjh/design-tokens/rn', 'dist/rn.js'],
     ['@berrypjh/design-tokens/tailwind', 'dist/tailwind.js'],
-    ['@berrypjh/design-tokens/contract', 'dist/contract.js'],
-    ['@berrypjh/design-tokens/contract.json', 'dist/contract.json'],
     ['@berrypjh/design-tokens/tokens', 'dist/tokens.json'],
-    ['@berrypjh/design-tokens/extension', 'dist/extension.js'],
-    ['@berrypjh/design-tokens/compiler', 'dist/compiler.js'],
   ])('resolves %s', (subpath, target) => {
     expect(resolve(subpath)).toBe(target);
   });
@@ -43,12 +39,9 @@ describe('public subpaths', () => {
 describe('internal modules are not reachable', () => {
   it.each([
     '@berrypjh/design-tokens/dist/lib/sd.js',
-    '@berrypjh/design-tokens/dist/lib/contract.js',
-    '@berrypjh/design-tokens/dist/extension/validate.js',
-    '@berrypjh/design-tokens/dist/compiler/selector.js',
+    '@berrypjh/design-tokens/dist/lib/genCss.js',
+    '@berrypjh/design-tokens/src/lib/sd.ts',
     '@berrypjh/design-tokens/dist/index.js',
-    '@berrypjh/design-tokens/src/lib/contract.ts',
-    '@berrypjh/design-tokens/lib/contract',
   ])('blocks %s', (subpath) => {
     expect(resolve(subpath)).toBe('ERR_PACKAGE_PATH_NOT_EXPORTED');
   });
@@ -74,12 +67,10 @@ describe('publish configuration', () => {
     expect((await readPkg()).files).toEqual(['dist']);
   });
 
-  it('keeps style dictionary an optional peer, not a hard dependency', async () => {
+  it('ships no runtime dependency — Style Dictionary is build-time only', async () => {
     const pkg = await readPkg();
     expect(pkg.dependencies).toBeUndefined();
-    expect(pkg.peerDependencies).toHaveProperty('style-dictionary');
-    expect(pkg.peerDependenciesMeta['style-dictionary'].optional).toBe(true);
-    expect(pkg.peerDependenciesMeta['@tokens-studio/sd-transforms'].optional).toBe(true);
+    expect(pkg.peerDependencies).toBeUndefined();
   });
 
   it('keeps the css side-effect declaration', async () => {
@@ -87,16 +78,14 @@ describe('publish configuration', () => {
   });
 });
 
-describe('authoring entry stays free of style dictionary at runtime', () => {
-  it('does not import sd.js from the extension entry graph', async () => {
-    const entry = await fs.readFile(path.join(PKG_ROOT, 'dist/extension.js'), 'utf8');
-    expect(entry).not.toContain('style-dictionary');
-
-    const compose = await fs.readFile(path.join(PKG_ROOT, 'dist/extension/compose.js'), 'utf8');
-    // 값 변환은 SD 없는 모듈에서 온다.
-    expect(compose).toContain('platformValue');
-    expect(compose).not.toMatch(/from '\.\.\/lib\/sd/);
-  });
+describe('published entries stay free of style dictionary', () => {
+  // SD 는 빌드 도구다. dist 로 나가는 진입점 어디에도 남으면 안 된다.
+  it.each(['dist/index.js', 'dist/web.js', 'dist/rn.js', 'dist/tailwind.js'])(
+    '%s does not reference style-dictionary',
+    async (rel) => {
+      expect(await fs.readFile(path.join(PKG_ROOT, rel), 'utf8')).not.toContain('style-dictionary');
+    },
+  );
 });
 
 describe('downstream propagation', () => {
@@ -112,27 +101,20 @@ describe('downstream propagation', () => {
     ).flatMap((t) => t.options?.commands ?? []);
   };
 
-  it('copies the contract from design-tokens into ui-core', async () => {
+  it('copies the token catalog from design-tokens into ui-core', async () => {
     expect(await allCommands('libs/ui-core/project.json')).toContain(
-      'cp libs/design-tokens/dist/contract.json libs/ui-core/dist/contract.json',
+      'cp libs/design-tokens/dist/tokens.json libs/ui-core/dist/tokens.json',
     );
   });
 
   it.each([
     ['libs/react-ui/project.json', 'react-ui'],
     ['libs/react-native-ui/project.json', 'react-native-ui'],
-  ])('copies the contract from ui-core into %s', async (project, pkg) => {
+  ])('copies the token catalog from ui-core into %s', async (project, pkg) => {
     expect(await allCommands(project)).toContain(
-      `cp libs/ui-core/dist/contract.json libs/${pkg}/dist/contract.json`,
+      `cp libs/ui-core/dist/tokens.json libs/${pkg}/dist/tokens.json`,
     );
   });
-
-  it.each(['libs/react-ui/package.json', 'libs/react-native-ui/package.json'])(
-    'exposes ./contract from %s',
-    async (pkg) => {
-      expect((await json(pkg)).exports['./contract']).toBe('./dist/contract.json');
-    },
-  );
 
   it('keeps the existing ./tokens subpath untouched', async () => {
     for (const pkg of ['libs/react-ui/package.json', 'libs/react-native-ui/package.json']) {
@@ -146,9 +128,9 @@ describe('downstream propagation', () => {
       ...(await allCommands('libs/react-ui/project.json')),
       ...(await allCommands('libs/react-native-ui/project.json')),
     ];
-    // contract.json을 만드는 곳은 design-tokens 빌드 하나뿐이다.
+    // tokens.json을 만드는 곳은 design-tokens 빌드 하나뿐이다.
     expect(
-      commands.filter((c) => c.includes('contract.json')).every((c) => c.startsWith('cp ')),
+      commands.filter((c) => c.includes('tokens.json')).every((c) => c.startsWith('cp ')),
     ).toBe(true);
   });
 });

@@ -14,6 +14,19 @@ export const themes = [
   { name: 'light', selector: ':root', sourceDirs: ['light'] },
   { name: 'dark', selector: '[data-theme="dark"], .theme-dark', sourceDirs: ['light', 'dark'] },
   { name: 'sepia', selector: '[data-theme="sepia"], .theme-sepia', sourceDirs: ['light', 'sepia'] },
+  // 어두운 계열은 `dark`를 중간에 끼워 시맨틱 재지정을 재사용하고 램프만 갈아끼운다.
+  { name: 'amber', selector: '[data-theme="amber"], .theme-amber', sourceDirs: ['light', 'amber'] },
+  {
+    name: 'ember',
+    selector: '[data-theme="ember"], .theme-ember',
+    sourceDirs: ['light', 'dark', 'ember'],
+  },
+  { name: 'frost', selector: '[data-theme="frost"], .theme-frost', sourceDirs: ['light', 'frost'] },
+  {
+    name: 'midnight',
+    selector: '[data-theme="midnight"], .theme-midnight',
+    sourceDirs: ['light', 'dark', 'midnight'],
+  },
 ] as const satisfies readonly ThemeDef[];
 
 export type ThemeName = (typeof themes)[number]['name'];

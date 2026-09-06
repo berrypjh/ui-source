@@ -36,10 +36,7 @@ export type ReadValue = (token: TransformedToken) => unknown;
  * SD 사전을 9개 카테고리로 분류해 정렬·중첩한 JSON 문자열을 반환.
  * 키 순서는 authoring path 정렬을 따른다 — Shared와 Consumer 산출물이 같은 형태를 갖는다.
  */
-export const groupedTokensJson = (
-  dict: Dictionary,
-  readValue: ReadValue = getTokenValue,
-): string => {
+const groupedTokensJson = (dict: Dictionary, readValue: ReadValue = getTokenValue): string => {
   const root: Rec = Object.fromEntries(TOKEN_CATEGORIES.map((c) => [c, {}]));
   const tokens = [...dict.allTokens].sort((a, b) =>
     a.path.join('.').localeCompare(b.path.join('.')),

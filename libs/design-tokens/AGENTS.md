@@ -23,22 +23,9 @@ src/
     genTsTokens.ts  writeTsTokens → src/.generated/{web,rn}/themes/<t>/tokens.ts + index.ts
     genTailwind.ts  writeTailwindPreset → src/.generated/tailwind/preset.ts
     genCatalog.ts   writeTokensJson → dist/tokens.json (슬림 평탄 카탈로그)
-    contract.ts     Consumer Override Contract — public semantic allowlist + primitive deny
-    genContract.ts  writeContractMetadata → dist/contract.json (governance sidecar)
-    contractDiff.ts 두 contract metadata 비교 → upgrade 안전성 분류
-    platformValue.ts  SD 비의존 dimension 변환 (toWebRem / toRnNumeric)
-  extension/        Consumer Token Extension authoring (TS 정의 → canonical 표현 + 검증)
-    types.ts        authoring 타입. contract에서 path union과 값 타입을 파생
-    defineTokenExtension.ts  authoring helper (const 제네릭 + freeze)
-    normalize.ts    authoring shape → canonical dot-path (변환 지점은 여기 하나)
-    validate.ts     런타임 검증 + reference 정책
-    typeFixtures.ts 컴파일 타임 타입 테스트 (@ts-expect-error)
-    diagnostics.ts  구조적 진단 (severity/code/extension/mode/path/platform/chain)
-    references.ts   Consumer 참조 그래프 — dangling/cycle 검출, alias 해소
-    compose.ts      Shared 사전 + Consumer 정의 → 검증된 합성 모델
-  compiler/         Consumer 산출물 컴파일러 (기존 generator 재사용)
-    compileExtension.ts  합성 모델 → Consumer CSS delta + RN 완전 레코드 + manifest
-    selector.ts     테마 selector에 Consumer scope 씌우기
+    contrast.ts     WCAG 대비 회귀 가드
+    pipeline.ts     생성 단계 조립
+    platformValue.ts  SD 비의존 값 변환 (rem / 숫자 / ms / 서체 스택)
 tokens/
   light/   base 풀세트 (color/typography/spacing/radius/borderWidth/border/shadow/elevation/component)
   dark/, sepia/   light 위 override
@@ -52,34 +39,52 @@ tokens/
 | 새 테마                           | `tokens/<name>/` + `src/themes.ts` 배열에 항목 추가                                              |
 | 새 top-level 키 (e.g. `tertiary`) | `src/lib/tokens.ts`의 `HEAD_REWRITE`                                                             |
 | 새 token type 어휘                | `src/lib/sd.ts` transforms (필요 시) + `HEAD_REWRITE` 매핑                                       |
-| public override 가능 토큰 추가    | `src/lib/contract.ts`의 `PUBLIC_OVERRIDE_CONTRACT`                                               |
-| Consumer extension authoring 변경 | `src/extension/types.ts` + `typeFixtures.ts`                                                     |
 | 새 카테고리 (10번째)              | `src/lib/tokens.ts`의 `TOKEN_CATEGORIES` + `genTsTokens.ts`의 type alias + `genTailwind.ts` 분기 |
 
 `HEAD_REWRITE`: `path[0]` → 카테고리 path 접두로 치환 (예: `primary` → `['color', 'primary']`).
 
-## Consumer Override Contract
+## 테마 추가
 
-`src/lib/contract.ts`가 **Consumer가 무엇을 override할 수 있는지**를 코드로 고정한다.
-deny-by-default — `PUBLIC_OVERRIDE_CONTRACT`에 leaf로 명시되지 않으면 전부 internal이다.
+브랜드든 다크모드든 **테마를 직접 추가하는 방법 하나**뿐이다. 소비자용 override 레이어는 두지 않는다.
 
-| 층                 | 예시                                                                                                                               | Consumer override |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| Internal Primitive | `color.primary.pr700`, `borderWidth.primitive.*`                                                                                   | 불가              |
-| Public Semantic    | `color.text.*`, `color.background.*`, `color.icon.*`, `color.stroke.*`, `color.primaryBtn.*`, `border.*`, `borderWidth.semantic.*` | 가능              |
-| Raw scale          | `spacing.*`, `radius.*`, `typography.*`, `shadow.*`                                                                                | v1에서는 불가     |
-| Component          | `component.field.height.*` 만 opt-in. 나머지(`component.button`)는 internal                                                        | opt-in 한 것만    |
+1. `tokens/<name>/*.json` — light 위에 덮어쓸 토큰만 (풀세트일 필요 없다)
+2. `src/themes.ts`에 한 줄
+   ```ts
+   { name: 'acme', selector: '[data-theme="acme"]', sourceDirs: ['light', 'acme'] }
+   ```
+3. `pnpm tokens:gen`
 
-- **wildcard 금지**: category/root가 아니라 leaf path 83개를 전부 열거한다.
-- **stability**: shared component가 이미 소비하면 `stable`, 아직이면 `experimental`.
-- **deprecated/replacement**: 지금 deprecated 토큰은 없지만 표현·검증 가능하다.
-  `deprecated: true`면 `replacement`가 반드시 다른 contract path여야 한다.
-- 이 제약은 **Consumer override 전용**이다. Shared 자신의 light/dark/sepia authoring은
-  종전대로 primitive를 자유롭게 참조한다.
+`themes.ts`가 단일 진실이라 CSS 블록·Web/RN 토큰 객체·Tailwind preset·namespace 진입점이
+함께 생성되고, `themes`를 읽는 화면(데모의 Theme 전환)에도 자동으로 나타난다.
 
-`src/lib/contract.test.ts`가 contract를 실제 토큰 그래프에 대해 검증한다 — path 존재,
-타입 일치, primitive 유출, deprecation metadata, 결정적 순서. public 토큰을 지우거나
-이름을 바꾸면 이 테스트가 정확한 path를 지목하며 실패한다.
+### 등록된 테마
+
+| 테마       | 성격                    | 쓰는 곳                                     |
+| ---------- | ----------------------- | ------------------------------------------- |
+| `light`    | base. 풀세트            | 기본                                        |
+| `dark`     | light 반전              | 기본 다크                                   |
+| `sepia`    | 종이톤                  | 읽기 모드                                   |
+| `amber`    | amber 강조 + paper 중립 | it-tech-blog `react-deep-dive-zone` (light) |
+| `ember`    | amber 강조 + near-black | it-tech-blog `react-deep-dive-zone` (dark)  |
+| `frost`    | cyan 강조 + slate 중립  | it-tech-blog `next-deep-dive-zone` (light)  |
+| `midnight` | cyan 강조 + navy        | it-tech-blog `next-deep-dive-zone` (dark)   |
+
+이름은 **분위기**를 말한다 — 소비자 앱 이름을 쓰지 않는다. 앱이 바뀌어도 테마는 그대로고,
+어느 앱이 어느 테마를 쓰는지는 이 표가 관리한다. `accessibility-zone`은 자체 팔레트 없이
+기본 `light`/`dark`를 쓴다.
+
+`sourceDirs`는 deep-merge 순서다(뒤가 우선). 첫 번째 테마가 base이고 풀세트를 가져야 한다.
+이름은 `genTsTokens`가 첫 글자만 대문자로 바꿔 `export * as <Name>`을 만들므로
+한 단어 소문자를 쓴다. 여러 단어가 필요하면 camelCase 여야 한다 (`deepSea` ✓, `deep-sea` ✗).
+
+시맨틱은 거의 전부 램프 alias라, 브랜드 테마는 보통 **`primary` 램프 + `neutral` 램프 +
+`background.surface`** 만 바꾸면 나머지가 따라온다. 다크 계열은 `dark`를 중간 단계로 끼우면
+(`['light', 'dark', 'ember']`) `dark`의 시맨틱 재지정을 재사용하고 램프만 갈아끼우면 된다.
+
+새 테마는 `contrast.test.ts`의 대비 가드를 **자동으로 함께 받는다** — 텍스트 4.5:1,
+UI 경계 3:1, 구분선 1.2:1을 모든 테마에 대해 검사한다. 팔레트를 넣고 테스트를 돌리면
+어느 조합이 모자란지 정확히 짚어 준다.
+color 램프 같은 primitive도 테마에서 자유롭게 덮어쓴다 — 이 저장소가 토큰의 소유자다.
 
 ### 시맨틱 패밀리 구성
 
@@ -141,8 +146,6 @@ path 단위 opt-in이다.
 `ms`를 붙이고, RN은 `RN_NUMERIC_TYPES`에 `duration`이 포함돼 숫자로 나간다.
 RN의 `Animated.timing({ duration })`이 숫자를 요구하기 때문이다.
 
-spacing/typography와 같은 **raw scale**이므로 v1 public contract에는 넣지 않았다.
-
 ### 합성 shadow 변수
 
 `boxShadow`는 sd-transforms가 레이어 자식으로 분해하므로(`--ds-shadow-lg-1-blur` …)
@@ -155,148 +158,61 @@ spacing/typography와 같은 **raw scale**이므로 v1 public contract에는 넣
 - **CSS 전용**이다 — `tokens.json` ABI와 RN 트리는 그대로다. RN은 구조화된 자식 값을
   그대로 쓰는 것이 맞다 (`shadowColor`/`shadowOffset`/`elevation`으로 매핑).
 
-## Consumer Token Extension
-
-`src/extension/`은 Consumer가 **Shared token source를 건드리지 않고** brand를 입히는 TS authoring 층이다.
-
-```ts
-defineTokenExtension({
-  name: 'acme',
-  source: { brand: { primary: '#5B21B6', ink: { strong: '#111827' } } }, // Consumer 전용
-  semantic: { 'color.background.primary': '{brand.primary}' }, // public contract path
-  modes: { dark: { 'color.background.primary': '{brand.primaryDark}' } },
-});
-```
-
-- **작성하는 것은 brand 값 + semantic mapping 둘뿐이다.** Shared 트리 복제도, RGB 채널 수동
-  입력도 필요 없다 (`-rgb`는 종전대로 `genCss`가 파생한다).
-- `semantic`/`modes`의 key는 contract path union이라 오타·primitive·raw scale·`--ui-*` local
-  토큰은 **컴파일 에러**다. `$type`은 생략 가능하고, 쓰면 contract 타입과 일치해야 한다.
-- `source`는 **authoring 전용**이다. 중첩 그룹으로 쓰고 `normalizeExtension`이 dot-path로
-  평탄화하며, `--ds-*`로 방출되지 않는다 (`NormalizedExtension`이 `source`/`semantic`을
-  구조적으로 분리한다).
-- **reference 정책**: alias 대상은 public contract token 또는 이 extension의 private source만
-  허용. internal primitive 경유는 `primitive-reference`로 거부된다.
-- 내부 표현은 canonical dot-path 하나뿐이고, 변환은 `normalize.ts` 한 곳에서만 일어난다.
-- `validateExtension`은 던지지 않고 문제 목록을 돌려준다 — compiler가 한 번에 모아 보고한다.
-  전체 그래프 대조는 아직 하지 않는다.
-
-타입 테스트는 별도 러너 없이 `typeFixtures.ts`의 `@ts-expect-error`로 고정하고
-`tsc -p tsconfig.spec.json`이 검사한다. 케이스가 합법이 되면 unused directive로 실패한다.
-
-### 합성 파이프라인
-
-`composeExtension(builds, extension?)` 이 전 단계를 한 번에 돌린다.
-`builds`는 `buildThemeDictionaries` 결과를 그대로 받는다 — DTCG 파싱과 Shared 참조 해소는
-Style Dictionary가 한 것을 재사용하고 여기서 다시 구현하지 않는다.
-
-```
-normalize → contract/path → type → reference(mode별) → compose → completeness → platform
-```
-
-- **우선순위**: Shared base → Shared mode delta → Consumer base → Consumer mode.
-  앞 두 단계는 SD가 테마별 사전을 만들 때 이미 적용했으므로 그 위에 Consumer 값만 얹는다.
-  override하지 않은 토큰은 해당 모드의 Shared 최종 값을 그대로 유지한다.
-- **입력 불변**: Shared 사전도 Consumer 정의도 변형하지 않는다. 매 호출이 새 Map을 만든다.
-- **모드 fallback**: Consumer가 어떤 모드를 override하지 않으면 그 모드의 Shared 값을 쓴다.
-  `source`는 **모드 독립적**이다 — 모드별 브랜드 값은 키를 나눠(`primary`/`primaryDark`)
-  `modes`에서 각각 참조해 표현한다.
-- **플랫폼 호환성**: dimension이 숫자로 안 떨어지면 `rn`, color에서 RGB 채널을 못 뽑으면 `web`.
-  판정은 `toRnNumeric`/`colorToRgbChannels` 즉 실제 빌드가 쓰는 함수를 그대로 쓴다.
-- **수명주기**: deprecated는 `warning` + `replacement` 제안, removed(contract에는 있으나
-  그래프에 없음)는 `error`. 경고는 console이 아니라 `result.diagnostics`로 실려 나간다.
-- 진단은 severity → code → mode → path → platform 순으로 정렬돼 결정적이다.
-- `result.ok`가 false면 `themes`는 비어 있다 — 반쯤 합성된 모델을 흘려보내지 않는다.
-
-## Consumer Compiler
-
-`compileExtension(builds, extension, { outDir, scope? })`.
-**새 Style Dictionary 설정을 만들지 않는다** — `buildThemeDictionaries` 결과와 합성 모델을
-기존 generator에 그대로 먹인다. CSS 변수 이름, RGB 파생, RN 트리 모양이 Shared 빌드와
-한 구현을 공유하도록 `genCss`/`genTsTokens`에 값 reader 하나만 주입할 수 있게 열어 두었다.
-
-| 산출물                        | 이유                                                                |
-| ----------------------------- | ------------------------------------------------------------------- |
-| `css/variables.{theme}.css`   | Shared 대비 **달라진 변수만**. 나머지는 Shared CSS가 계속 담당한다. |
-| `rn/themes/{theme}/tokens.ts` | RN에는 CSS 변수가 없다 — 모드별 **완전한** 값 트리가 필요하다.      |
-| `rn/index.ts`                 | `ThemeProvider`의 `tokensByMode`에 그대로 넣는 레코드.              |
-| `manifest.json`               | extension·contract version·modes·files·warnings.                    |
-
-- **Web TS 트리는 만들지 않는다.** Web은 CSS 변수로 동작하므로 값 트리를 또 내보내면
-  두 번째 진실 원본이 되어 drift한다. RN만 값이 필요하다는 비대칭이 이 결정의 근거다.
-- **Consumer용 Tailwind preset도 만들지 않는다.** 기존 preset이 `var(--ds-*)` /
-  `rgb(var(--ds-*-rgb) / <alpha-value>)`를 가리키므로 override가 자동으로 따라간다
-  (`compiler/tailwind.test.ts`가 고정).
-- 색 하나를 authoring하면 `--ds-x`와 `--ds-x-rgb`가 **함께** 나온다 — RGB 수동 입력은 없다.
-- `scope` 옵션은 Demo에서 Default와 Sample을 나란히 비교하기 위한 최소 장치다.
-  런타임 멀티브랜드 엔진이 아니다.
-- 검증에 실패하면 **파일을 하나도 쓰지 않고** manifest 없이 진단만 돌려준다.
-- Shared 빌드 산출물은 이 컴파일러가 전혀 건드리지 않는다 (`compiler/parity.test.ts`).
-
 ## 표면 경계 (package exports)
 
 **이 패키지는 `private: true`다. 소비자는 절대 설치하지 않는다.**
 소비자는 `react-ui` / `react-native-ui`만 설치하고, 이 패키지의 존재를 알 필요가 없다.
-따라서 아래 exports map은 **워크스페이스 내부 경계**다 — 외부 공개 API가 아니다.
+따라서 아래 exports map은 **워크스페이스 내부 경계**이고, `dist/`의 internal 모듈이
+subpath로 새어 나가는 것을 차단하는 역할이다 (`packageSurface.test.ts`가 고정).
 
-역할은 둘이다.
+| subpath                             | 누가 쓰나                                                    |
+| ----------------------------------- | ------------------------------------------------------------ |
+| `.` `/web` `/rn` `/css` `/tailwind` | ui-core (→ react-ui / react-native-ui로 번들되어 소비자에게) |
+| `/tokens`                           | ui-core 경유로 다운스트림에 **복사**되어 전달                |
 
-1. shared-stack 자신의 도구(`tools/scripts/**`, 데모 생성 타깃)가 컴파일러에 닿는 경로를 하나로 고정
-2. `dist/`에 들어 있는 internal 모듈이 subpath로 새어 나가는 것을 차단 (`packageSurface.test.ts`가 고정)
+`style-dictionary` / `@tokens-studio/sd-transforms`는 **빌드 도구**다. 런타임 의존이 아니므로
+`dependencies`에도 `peerDependencies`에도 넣지 않는다. `dist/`로 나가는 진입점 어디에도
+남지 않는다는 사실을 `packageSurface.test.ts`가 고정한다.
 
-| subpath                                | 누가 쓰나                                                    |
-| -------------------------------------- | ------------------------------------------------------------ |
-| `.` `/web` `/rn` `/css` `/tailwind`    | ui-core (→ react-ui / react-native-ui로 번들되어 소비자에게) |
-| `/tokens` `/contract` `/contract.json` | ui-core 경유로 다운스트림에 **복사**되어 전달                |
-| `/extension` `/compiler`               | **shared-stack 내부 전용** — 브랜드 컴파일 도구              |
+`tokens.json`의 positional ABI는 design-tokens → ui-core → react-ui/react-native-ui 로
+**복사**되어 흐른다. 생성 지점은 design-tokens 빌드 하나뿐이다.
 
-`style-dictionary`/`@tokens-studio/sd-transforms`는 optional peerDependencies로 선언돼 있다.
-publish하지 않으므로 소비자에겐 의미가 없고, 워크스페이스 안에서 `/extension`이
-Style Dictionary를 런타임에 끌어오지 않는다는 사실을 문서화하는 역할만 한다
-(dimension 변환이 `lib/platformValue.ts`로 분리된 이유).
+## 브랜드는 어떻게 추가하나
 
-`tokens.json`의 positional ABI는 **바뀌지 않았다**. governance는 별도 `contract.json`이다.
-둘 다 design-tokens → ui-core → react-ui/react-native-ui 로 **복사**되어 흐른다.
-생성 지점은 design-tokens 빌드 하나뿐이다.
-
-## 브랜드 컴파일은 누가 하나
-
-**shared-stack이 한다.** 소비자가 컴파일러를 돌리지 않는다.
+**이 저장소에서 테마로 추가한다.** 소비자가 컴파일러를 돌리거나 토큰을 재정의하지 않는다.
 
 ```
 shared-stack
-  tools/fixtures/<brand>.ts          브랜드 extension 정의 (여기 소유)
-  tools/scripts/compile-sample-consumer   여기서 컴파일
-        ↓ 산출물만 전달
+  tokens/<brand>/*.json  +  themes.ts 한 줄
+        ↓ pnpm tokens:gen → 빌드
 consumer
-  @berrypjh/react-ui  (+ 받은 CSS / RN 토큰 레코드)
+  @berrypjh/react-ui           <ThemeProvider mode="<brand>">
+  @berrypjh/react-native-ui
 ```
 
-- Web 소비자는 컴파일된 **CSS delta 파일** 하나를 Shared CSS 뒤에 넣는다.
-- RN 소비자는 컴파일된 **완전한 토큰 레코드**를 `ThemeProvider`의 `tokensByMode`에 넣는다.
-- 두 산출물 모두 소비자가 손으로 쓰지 않는다. design-tokens·컴파일러·Style Dictionary는
-  소비자 쪽에 전혀 나타나지 않는다.
+소비자가 하는 일은 `mode`를 그 이름으로 주는 것뿐이다. design-tokens·Style Dictionary는
+소비자 쪽에 전혀 나타나지 않는다.
 
 `apps/demo-web` / `apps/demo-mobile`이 이 소비자 역할을 그대로 모델링한다 —
 두 앱 모두 `react-ui` / `react-native-ui`만 의존하고 design-tokens를 import하지 않는다.
 
-## SemVer 규칙 (contract 기준)
+## SemVer 규칙 (토큰 표면 기준)
 
-Nx fixed release + conventional commits 위에서 contract 변경을 이렇게 읽는다.
+Nx fixed release + conventional commits 위에서 토큰 표면 변경을 이렇게 읽는다.
+소비자가 실제로 결합하는 것은 `--ds-*` CSS 변수 이름과 `tokens.json`이다.
 
-| 변경                             | 분류                                  | 커밋/릴리스                           |
-| -------------------------------- | ------------------------------------- | ------------------------------------- |
-| public semantic token 추가       | non-breaking                          | `feat` → minor                        |
-| token deprecated (+ replacement) | non-breaking                          | `feat` → minor, migration window 유지 |
-| public token 제거                | **breaking**                          | `!` → major                           |
-| token type 변경                  | **breaking**                          | `!` → major                           |
-| public → internal                | **breaking**                          | `!` → major                           |
-| overridable true → false         | **breaking**                          | `!` → major                           |
-| default 값이 눈에 보이게 바뀜    | non-breaking                          | changelog에 반드시 명시               |
-| internal primitive 변경          | public 표면에 영향 없으면 patch/minor |
+| 변경                           | 분류         | 커밋/릴리스             |
+| ------------------------------ | ------------ | ----------------------- |
+| 토큰 신규 추가                 | non-breaking | `feat` → minor          |
+| 새 테마 추가                   | non-breaking | `feat` → minor          |
+| 토큰 제거 (`--ds-*` 이름 소멸) | **breaking** | `!` → major             |
+| 토큰 rename                    | **breaking** | `!` → major             |
+| token type 변경                | **breaking** | `!` → major             |
+| 값이 눈에 보이게 바뀜          | non-breaking | changelog에 반드시 명시 |
 
-`diffContracts(prev, next)`가 위 표를 코드로 구현한다. `breaking: true`면 major다.
-deprecated는 **즉시 제거하지 않는다** — 최소 한 번의 minor 동안 replacement와 함께 남긴다.
+이 표는 사람이 판단한다 — 자동 비교기는 두지 않는다. `tokens.json`을 릴리스 diff에서
+직접 읽는 편이 정확하다. 토큰을 지울 때는 **즉시 제거하지 않는다** — 최소 한 번의 minor 동안
+새 이름과 함께 남긴다.
 
 ## 빌드
 

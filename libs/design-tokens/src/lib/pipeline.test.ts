@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { themes } from '../themes.js';
+
 import { buildTokenOutputs } from './pipeline.js';
 
 const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -61,30 +63,22 @@ afterAll(async () => {
 });
 
 describe('default build parity', () => {
+  // 산출물 목록은 레지스트리에서 유도한다. 테마를 더해도 이 테스트는 낡지 않는다.
   it('writes exactly the current dist artifact set', async () => {
-    expect(await listFiles(first.distDir)).toEqual([
-      'contract.json',
-      'css/index.d.ts',
-      'css/variables.css',
-      'css/variables.dark.css',
-      'css/variables.light.css',
-      'css/variables.sepia.css',
-      'tokens.json',
-    ]);
+    const perTheme = themes.map((t) => `css/variables.${t.name}.css`).sort();
+    expect(await listFiles(first.distDir)).toEqual(
+      ['css/index.d.ts', 'css/variables.css', ...perTheme, 'tokens.json'].sort(),
+    );
   });
 
   it('writes exactly the current generated artifact set', async () => {
-    expect(await listFiles(first.generatedDir)).toEqual([
-      'rn/index.ts',
-      'rn/themes/dark/tokens.ts',
-      'rn/themes/light/tokens.ts',
-      'rn/themes/sepia/tokens.ts',
-      'tailwind/preset.ts',
-      'web/index.ts',
-      'web/themes/dark/tokens.ts',
-      'web/themes/light/tokens.ts',
-      'web/themes/sepia/tokens.ts',
+    const perTheme = themes.flatMap((t) => [
+      `rn/themes/${t.name}/tokens.ts`,
+      `web/themes/${t.name}/tokens.ts`,
     ]);
+    expect(await listFiles(first.generatedDir)).toEqual(
+      ['rn/index.ts', 'tailwind/preset.ts', 'web/index.ts', ...perTheme].sort(),
+    );
   });
 
   it('opens each theme file with that theme selector', async () => {
@@ -184,7 +178,7 @@ describe('tokens.json catalog ABI', () => {
   });
 
   it('lists themes in registry order', () => {
-    expect(catalog.themes).toEqual(['light', 'dark', 'sepia']);
+    expect(catalog.themes).toEqual(themes.map((t) => t.name));
   });
 
   it('lists the ten categories sorted', () => {
@@ -210,18 +204,14 @@ describe('tokens.json catalog ABI', () => {
   });
 
   it('uses the positional row shape [cssVar, ...valuesInThemesOrder]', () => {
-    expect(catalog.tokens['color.background.primary']).toEqual([
-      '--ds-background-primary',
-      '#047857',
-      '#136F47',
-      '#1A6E37',
-    ]);
-    expect(catalog.tokens['spacing.md']).toEqual([
-      '--ds-spacing-md',
-      '0.75rem',
-      '0.75rem',
-      '0.75rem',
-    ]);
+    const row = catalog.tokens['color.background.primary'];
+    expect(row[0]).toBe('--ds-background-primary');
+    expect(row).toHaveLength(1 + themes.length);
+    expect(row.slice(1, 4)).toEqual(['#047857', '#136F47', '#1A6E37']);
+    // spacing 은 어떤 테마도 덮어쓰지 않으므로 모든 칸이 같은 값이다.
+    const spacing = catalog.tokens['spacing.md'];
+    expect(spacing[0]).toBe('--ds-spacing-md');
+    expect(spacing.slice(1)).toEqual(themes.map(() => '0.75rem'));
   });
 
   it('gives every row one cssVar plus one value per theme', () => {

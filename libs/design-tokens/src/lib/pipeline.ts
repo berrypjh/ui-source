@@ -4,7 +4,6 @@ import path from 'node:path';
 import { themes } from '../themes.js';
 
 import { writeTokensJson } from './genCatalog.js';
-import { writeContractMetadata } from './genContract.js';
 import { writeCss } from './genCss.js';
 import { writeTailwindPreset } from './genTailwind.js';
 import { writeTsTokens } from './genTsTokens.js';
@@ -25,12 +24,10 @@ export const buildTokenOutputs = async ({
 }: BuildPaths): Promise<void> => {
   const cssDir = path.join(distDir, 'css');
   const catalogFile = path.join(distDir, 'tokens.json');
-  const contractFile = path.join(distDir, 'contract.json');
 
   await fs.rm(generatedDir, { recursive: true, force: true });
   await fs.rm(cssDir, { recursive: true, force: true });
   await fs.rm(catalogFile, { force: true });
-  await fs.rm(contractFile, { force: true });
   await fs.mkdir(distDir, { recursive: true });
 
   const builds = await buildThemeDictionaries(themes, tokensDir);
@@ -38,5 +35,4 @@ export const buildTokenOutputs = async ({
   await writeTsTokens(builds, generatedDir);
   await writeTailwindPreset(builds, path.join(generatedDir, 'tailwind', 'preset.ts'));
   await writeTokensJson(builds, catalogFile);
-  await writeContractMetadata(contractFile);
 };

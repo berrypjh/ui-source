@@ -30,36 +30,11 @@
       "types": "./dist/tailwind.d.ts",
       "default": "./dist/tailwind.js"
     },
-    "./contract": {
-      "types": "./dist/contract.d.ts",
-      "default": "./dist/contract.js"
-    },
-    "./contract.json": "./dist/contract.json",
     "./tokens": "./dist/tokens.json",
-    "./extension": {
-      "types": "./dist/extension.d.ts",
-      "default": "./dist/extension.js"
-    },
-    "./compiler": {
-      "types": "./dist/compiler.d.ts",
-      "default": "./dist/compiler.js"
-    },
     "./package.json": "./package.json"
   },
   "devDependencies": {
     "@tokens-studio/sd-transforms": "^2.0.3",
     "style-dictionary": "^5.2.0"
-  },
-  "peerDependencies": {
-    "@tokens-studio/sd-transforms": "^2.0.3",
-    "style-dictionary": "^5.2.0"
-  },
-  "peerDependenciesMeta": {
-    "@tokens-studio/sd-transforms": {
-      "optional": true
-    },
-    "style-dictionary": {
-      "optional": true
-    }
   }
 }

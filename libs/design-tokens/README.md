@@ -18,6 +18,8 @@ import preset from '@berrypjh/design-tokens/tailwind';
 ```
 
 테마 전환은 `<html data-theme="dark">`처럼 `data-theme` 속성으로 한다(`themes.ts` 셀렉터 참조).
+현재 테마: `light` `dark` `sepia` `amber` `ember` `frost` `midnight` — 이름은 분위기를 뜻하며
+어떤 앱이 어느 테마를 쓰는지는 `AGENTS.md`의 표가 관리한다.
 
 ## Export 경로
 
@@ -31,7 +33,7 @@ import preset from '@berrypjh/design-tokens/tailwind';
 
 `Web.*` 와 `Native.*` 는 같은 토큰 트리 구조를 갖지만 RN 쪽은 px/dimension이 number로 변환되어 있다.
 
-추가로 **`dist/tokens.json`** (슬림 정적 카탈로그)이 npm 배포물에 포함된다 — 모든 토큰 path, cssVar, 테마별 값을 단일 평탄 JSON으로 enumerate. 자동화·문서화·AI 에이전트 분석용. 키는 결정적으로 정렬되어 빌드 간 diff가 0이다.
+추가로 **`dist/tokens.json`** (슬림 정적 카탈로그)을 만든다 — 모든 토큰 path, cssVar, 테마별 값을 단일 평탄 JSON으로 enumerate. 이 패키지는 배포되지 않으므로, 빌드 중 `ui-core`를 거쳐 `react-ui` / `react-native-ui`의 `./tokens`로 복사되어 소비자에게 닿는다. 자동화·문서화·AI 에이전트 분석용이며, 키는 결정적으로 정렬되어 빌드 간 diff가 0이다.
 
 ```jsonc
 // dist/tokens.json (발췌)
@@ -82,6 +84,9 @@ src/
     genTsTokens.ts          Web/RN TS 토큰 + namespace 인덱스 생성
     genTailwind.ts          Tailwind preset 생성
     genCatalog.ts           dist/tokens.json (슬림 카탈로그)
+    contrast.ts             WCAG 대비 회귀 가드
+    platformValue.ts        SD 비의존 값 변환 (rem / 숫자 / ms / 서체 스택)
+    pipeline.ts             생성 단계 조립
 tokens/
   light/                    base 풀세트
   dark/, sepia/, ...        light을 덮어쓰는 토큰만
@@ -101,7 +106,7 @@ tokens/
 ```
 
 - `$value`: 토큰 값. 다른 토큰 참조는 `{path.to.token}`
-- `$type`: `color`, `spacing`, `borderRadius`, `borderWidth`, `fontSizes`, `fontWeights`, `lineHeights`, `letterSpacing`, `fontFamilies`, `typography`, `boxShadow`, `dropShadow`, `innerShadow`, `border` (Tokens Studio 어휘 유지 — 전처리기가 DTCG 표준 type으로 자동 정렬)
+- `$type`: `color`, `spacing`, `borderRadius`, `borderWidth`, `fontSizes`, `fontWeights`, `lineHeights`, `letterSpacing`, `fontFamilies`, `typography`, `boxShadow`, `dropShadow`, `innerShadow`, `border`, `duration`, `cubicBezier` (Tokens Studio 어휘 유지 — 전처리기가 DTCG 표준 type으로 자동 정렬)
 
 ## 새 테마 추가
 
@@ -115,9 +120,13 @@ tokens/
 
 첫 번째 항목이 base 테마. 풀세트 토큰을 가져야 한다.
 
+`themes.ts` 한 곳이 단일 진실이라, 이 셋만 하면 CSS 블록·Web/RN 토큰 객체·Tailwind preset이
+함께 생성되고 `themes`를 읽는 화면(예: demo의 Theme 전환)에도 자동으로 나타난다.
+브랜드를 추가하는 방법도 이것 하나다 — 소비자용 override 레이어는 두지 않는다.
+
 ## 새 top-level 키 추가
 
-토큰의 path[0]은 카테고리(color / spacing / radius / borderWidth / border / typography / shadow / elevation / component)로 매핑되어야 한다. 매핑은 `src/lib/tokens.ts`의 `HEAD_REWRITE`에 정의된다.
+토큰의 path[0]은 카테고리(color / spacing / radius / borderWidth / border / typography / shadow / elevation / component / motion)로 매핑되어야 한다. 매핑은 `src/lib/tokens.ts`의 `HEAD_REWRITE`에 정의된다.
 
 새 키(예: `tertiary` 색상)를 도입할 땐 거기에 한 줄 추가한다.
 

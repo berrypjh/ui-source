@@ -31,7 +31,7 @@ beforeAll(async () => {
 
 describe('buildThemeDictionaries', () => {
   it('builds one web and one rn dictionary per registered theme', () => {
-    expect(builds.map((b) => b.theme)).toEqual(['light', 'dark', 'sepia']);
+    expect(builds.map((b) => b.theme)).toEqual(themes.map((t) => t.name));
     for (const build of builds) {
       expect(build.web.allTokens.length).toBeGreaterThan(0);
       expect(build.rn.allTokens).toHaveLength(build.web.allTokens.length);
