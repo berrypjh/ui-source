@@ -10,48 +10,13 @@ import {
   useTheme,
 } from '@berrypjh/react-native-ui';
 
-import { tokensByMode as sampleTokensByMode } from '../_generated/sample-consumer/rn';
-
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /**
- * Consumer profile. `default`는 ThemeProvider에 `tokensByMode`를 **주지 않는** 기존 경로이고,
- * `sample`은 컴파일러가 만든 완전한 레코드를 그대로 넘긴다.
- * 새 theme runtime 없이 기존 prop 하나만 쓴다.
+ * 테마 토큰이 실제로 해석됐는지 보여주는 구역.
+ * 테마가 덮어쓴 semantic color는 테마에 따라 바뀌고, 덮어쓰지 않은 값은 그대로다.
  */
-type Profile = 'default' | 'sample';
-
-const ProfileToggle = ({
-  profile,
-  onChange,
-}: {
-  profile: Profile;
-  onChange: (p: Profile) => void;
-}) => (
-  <View style={styles.toggleRow}>
-    {(['default', 'sample'] as const).map((p) => {
-      const active = profile === p;
-      return (
-        <Pressable
-          key={p}
-          onPress={() => onChange(p)}
-          style={[styles.toggleButton, active && styles.toggleButtonActive]}
-        >
-          <Text style={[styles.toggleText, active && styles.toggleTextActive]}>
-            {capitalize(p)}
-          </Text>
-        </Pressable>
-      );
-    })}
-  </View>
-);
-
-/**
- * Consumer extension이 실제로 적용됐는지 보여주는 구역.
- * override한 semantic color는 profile에 따라 바뀌고,
- * override하지 않은 spacing/radius는 두 profile에서 같아야 한다.
- */
-const ConsumerProfileDemo = ({ profile }: { profile: Profile }) => {
+const ThemeTokensDemo = ({ mode }: { mode: ThemeName }) => {
   const theme = useTheme();
   const { color, spacing, radius } = theme.tokens;
 
@@ -60,12 +25,12 @@ const ConsumerProfileDemo = ({ profile }: { profile: Profile }) => {
     ['color.background.surface', color.background.surface],
     ['color.text.default', color.text.default],
     ['color.primaryBtn.default', color.primaryBtn.default],
-    ['color.background.secondary (not overridden)', color.background.secondary],
+    ['color.background.error (테마 공통)', color.background.error],
   ];
 
   return (
     <View>
-      <Text style={styles.sectionLabel}>resolved via useTheme() — profile: {profile}</Text>
+      <Text style={styles.sectionLabel}>resolved via useTheme() — theme: {mode}</Text>
 
       {rows.map(([label, value]) => (
         <View key={label} style={styles.tokenRow}>
@@ -213,7 +178,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </View>
 );
 
-const Body = ({ mode, profile }: { mode: ThemeName; profile: Profile }) => {
+const Body = ({ mode }: { mode: ThemeName }) => {
   const theme = useTheme();
   const bg = theme.tokens.color.background.dark;
   const fg = theme.tokens.color.text.default;
@@ -236,8 +201,8 @@ const Body = ({ mode, profile }: { mode: ThemeName; profile: Profile }) => {
       <Section title="Box 컴포넌트">
         <BoxDemo />
       </Section>
-      <Section title="Consumer Profile (Default vs Sample)">
-        <ConsumerProfileDemo profile={profile} />
+      <Section title="테마 토큰">
+        <ThemeTokensDemo mode={mode} />
       </Section>
 
       <View style={styles.footerSpace} />
@@ -247,22 +212,15 @@ const Body = ({ mode, profile }: { mode: ThemeName; profile: Profile }) => {
 
 export const App = () => {
   const [mode, setMode] = useState<ThemeName>('light');
-  const [profile, setProfile] = useState<Profile>('default');
 
   return (
-    // Default는 `tokensByMode`를 넘기지 않는다 — 기존 기본 경로가 그대로 동작함을 증명한다.
-    <ThemeProvider
-      mode={mode}
-      {...(profile === 'sample' ? { tokensByMode: sampleTokensByMode } : {})}
-    >
+    <ThemeProvider mode={mode}>
       <View style={styles.appRoot}>
         <StatusBar barStyle={mode === 'light' ? 'dark-content' : 'light-content'} />
         <View style={styles.toggleBar}>
           <ThemeToggle mode={mode} onChange={setMode} />
-          <View style={styles.toggleSpacer} />
-          <ProfileToggle profile={profile} onChange={setProfile} />
         </View>
-        <Body mode={mode} profile={profile} />
+        <Body mode={mode} />
       </View>
     </ThemeProvider>
   );
@@ -285,7 +243,6 @@ const styles = StyleSheet.create({
   },
   toggleButton: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 6 },
   toggleButtonActive: { backgroundColor: '#f8fafc' },
-  toggleSpacer: { height: 8 },
   tokenRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
   tokenChip: { width: 28, height: 28, borderRadius: 6, marginRight: 10 },
   tokenLabel: { fontSize: 13 },
