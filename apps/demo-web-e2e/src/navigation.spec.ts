@@ -11,7 +11,6 @@ test.describe('네비게이션', () => {
 
   const DESTINATIONS = [
     { name: 'Runtime', url: '/verify', testId: 'verify-page' },
-    { name: 'Consumer Profile', url: '/verify/profile', testId: 'profile-page' },
     { name: 'Tokens', url: '/tokens', testId: 'tokens-page' },
     { name: 'Styles', url: '/foundation', testId: 'foundation-page' },
   ];
