@@ -5,7 +5,7 @@ import { REPO_ROOT, TARGETS } from '../scripts/generate-consumer-catalog/config'
 import { catalogSchema } from '../scripts/generate-consumer-catalog/schema';
 
 import type { CatalogSet } from './catalog';
-import type { ContractSource, TokenSource } from './tokens';
+import type { TokenSource } from './tokens';
 
 /**
  * 이 저장소의 빌드 산출물에서 카탈로그·토큰을 읽는다.
@@ -30,21 +30,6 @@ export const loadCatalogs = async (ids: string[] = Object.keys(TARGETS)): Promis
     out[catalog.package] = catalog;
   }
   return out;
-};
-
-/** contract sidecar를 읽는다. 아직 빌드되지 않았으면 undefined — 조회는 그대로 동작한다. */
-export const loadContractSource = async (
-  targetId = 'react-ui',
-): Promise<ContractSource | undefined> => {
-  const target = TARGETS[targetId];
-  if (!target) return undefined;
-  try {
-    return JSON.parse(
-      await fs.readFile(path.join(REPO_ROOT, target.packageRoot, 'dist', 'contract.json'), 'utf8'),
-    ) as ContractSource;
-  } catch {
-    return undefined;
-  }
 };
 
 export const loadTokenSource = async (targetId = 'react-ui'): Promise<TokenSource> => {

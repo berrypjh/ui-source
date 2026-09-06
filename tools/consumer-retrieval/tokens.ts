@@ -20,56 +20,6 @@ export type TokenMatch = {
   cssVar: string;
   /** theme 이름 → 값. tokens.json의 theme 순서를 그대로 따른다. */
   values: Record<string, string | number | null>;
-  /** `contract.json`이 있을 때만 붙는다. 없으면 기존 형태 그대로다. */
-  governance?: TokenGovernance;
-};
-
-/**
- * `contract.json` sidecar. `tokens.json`(값 인벤토리)과 별개 파일이며
- * 없으면 조회는 종전대로 동작한다.
- */
-export type ContractSource = {
-  schema: string;
-  contractVersion: number;
-  internalPrimitiveRoots: string[];
-  /** `[type, visibility, overridable, stability, deprecatedReplacement]`. */
-  tokens: Record<string, [string, string, boolean, string, string | null]>;
-};
-
-/** Consumer가 이 토큰을 override할 수 있는지, 그리고 왜인지. */
-export type TokenGovernance = {
-  visibility: 'public' | 'internal';
-  overridable: boolean;
-  stability?: string;
-  /** public이 아닐 때 그 이유. */
-  reason?: 'internal-primitive' | 'not-in-contract';
-  deprecated?: boolean;
-  replacement?: string;
-};
-
-/** 토큰 path의 override 가능 여부를 contract에서 읽는다. 미등재는 deny. */
-export const governanceOf = (contract: ContractSource, tokenPath: string): TokenGovernance => {
-  const row = contract.tokens[tokenPath];
-
-  if (row) {
-    const [, visibility, overridable, stability, replacement] = row;
-    return {
-      visibility: visibility === 'public' ? 'public' : 'internal',
-      overridable,
-      stability,
-      ...(replacement ? { deprecated: true, replacement } : {}),
-    };
-  }
-
-  const isPrimitive = contract.internalPrimitiveRoots.some(
-    (root) => tokenPath === root || tokenPath.startsWith(`${root}.`),
-  );
-
-  return {
-    visibility: 'internal',
-    overridable: false,
-    reason: isPrimitive ? 'internal-primitive' : 'not-in-contract',
-  };
 };
 
 export type TokenLookupMode = 'exact' | 'prefix' | 'category' | 'none';
@@ -87,13 +37,12 @@ export type TokenLookupResult = {
   refine: string | null;
 };
 
-const toMatch = (source: TokenSource, tokenPath: string, contract?: ContractSource): TokenMatch => {
+const toMatch = (source: TokenSource, tokenPath: string): TokenMatch => {
   const [cssVar, ...values] = source.tokens[tokenPath];
   return {
     path: tokenPath,
     cssVar: String(cssVar),
     values: Object.fromEntries(source.themes.map((theme, i) => [theme, values[i] ?? null])),
-    ...(contract ? { governance: governanceOf(contract, tokenPath) } : {}),
   };
 };
 
@@ -118,7 +67,7 @@ const refineHint = (query: string, paths: string[]): string => {
 export const lookupTokens = (
   source: TokenSource,
   query: string,
-  { limit = DEFAULT_TOKEN_LIMIT, contract }: { limit?: number; contract?: ContractSource } = {},
+  { limit = DEFAULT_TOKEN_LIMIT }: { limit?: number } = {},
 ): TokenLookupResult => {
   const base = {
     query,
@@ -130,7 +79,7 @@ export const lookupTokens = (
     return {
       ...base,
       mode: 'exact',
-      matches: [toMatch(source, query, contract)],
+      matches: [toMatch(source, query)],
       matchCount: 1,
       returned: 1,
       truncated: false,
@@ -160,7 +109,7 @@ export const lookupTokens = (
   return {
     ...base,
     mode: isCategory ? 'category' : 'prefix',
-    matches: paths.slice(0, limit).map((p) => toMatch(source, p, contract)),
+    matches: paths.slice(0, limit).map((p) => toMatch(source, p)),
     matchCount: paths.length,
     returned: Math.min(paths.length, limit),
     truncated,
