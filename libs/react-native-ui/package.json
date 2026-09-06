@@ -24,7 +24,6 @@
     },
     "./catalog": "./dist/llm-catalog.json",
     "./tokens": "./dist/tokens.json",
-    "./contract": "./dist/contract.json",
     "./agents": "./dist/AGENTS.md"
   },
   "bin": {
